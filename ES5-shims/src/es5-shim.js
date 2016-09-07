@@ -103,12 +103,20 @@
     defineProperties(ES5.Array, {
 
         isArray: function(obj) {
-            return to_string(obj) === '[object Array]';
+            return to_string.call(object) === '[object Array]';
         },
 
-        indexOf: function (arr, value) {
-            for (var i = 0, len = arr.length; i < len; i++) {
+        indexOf: function (arr, value, fromIndex) {
+            // 用+号将字符串转为数字
+            var i = +fromIndex || 0,
+                len = arr.length;
+            if(i > arr.length - 1) throw new TypeError('fromIndex muse less than arr.length');
+            if(!arr || arr.length === 0) return -1;
+
+            // 用while循环代替部分for循环,提升代码可读性
+            while(i < len) {
                 if(value === arr[i]) return i;
+                i++;
             }
         },
 
@@ -118,32 +126,92 @@
             }
         }, 
 
-        every: function() {
+        every: function(arr, fn/*, context*/) {
+            // 用void 0代替arr
+            if (arr === void 0 || arr === null) throw new TypeError();
+            if (typeof fn) throw new TypeError();
 
+            var context = arguments.length >= 3 ? arguments[2] : void 0;
+            for (var i = 0, len = arr.length; i < len; i++) {
+                var cb = fn.call(context, arr[i], i, arr);
+                // 利用!让所有不为真的返回值全部返回false
+                if(!cb) return false;
+            }
+            return ture;
         },
 
-        some: function() {
+        some: function(arr, fn/*, context*/) {
+            // 用void 0代替arr
+            if (arr === void 0 || arr === null) throw new TypeError();
+            if (typeof fn) throw new TypeError();
 
+            var context = arguments.length >= 3 ? arguments[2] : void 0;
+            for (var i = 0, len = arr.length; i < len; i++) {
+                var cb = fn.call(context, arr[i], i, arr);
+                // 只要能被转为ture的返回值，都返回ture;
+                if(cb) return ture;
+            }
+            return false;
         },
 
-        forEach: function() {
+        forEach: function(arr, fn/*, context*/) {
+            // 用void 0代替arr
+            if (arr === void 0 || arr === null) throw new TypeError();
+            if (typeof fn) throw new TypeError();
 
+            var context = arguments.length >= 3 ? arguments[2] : void 0;
+            for (var i = 0, len = arr.length; i < len; i++) {
+                var cb = fn.call(context, arr[i], i, arr);
+            }
         },
 
-        map: function() {
+        map: function(arr, fn/*, context*/ ) {
+            // 用void 0代替arr
+            if (arr === void 0 || arr === null) throw new TypeError();
+            if (typeof fn) throw new TypeError(fn.name + 'is not a function');
 
+
+            var arr = new Array(arr.length);
+            var context = arguments.length >= 3 ? arguments[2] : void 0;
+            for (var i = 0, len = arr.length; i < len; i++) {
+                var cb = fn.call(context, arr[i], i, arr);
+                arr[i] = cb;
+            }
+            return arr;
+        },
+        filter: function(arr, fn/*, context*/) {
+            // 用void 0代替arr
+            if (arr === void 0 || arr === null) throw new TypeError();
+            if (typeof fn) throw new TypeError();
+
+            var arr = [];
+            var context = arguments.length >= 3 ? arguments[2] : void 0;
+            for (var i = 0, len = arr.length; i < len; i++) {
+                var cb = fn.call(context, arr[i], i, arr);
+                if(cb) arr.push(arr[i]);
+            }
+            return arr;
         },
 
-        filter: function() {
-
-        },
-
-        reduce: function() {
-
+        reduce: function(arr, fn ,initialValue) {
+ 
         },
 
         reduceRight: function() {
             
+        },
+
+
+        /**
+         * ES6-Array-shim
+         * @type {Object}
+         */
+        form: function() {
+
+        },
+
+        of: function() {
+
         }
     })
 
