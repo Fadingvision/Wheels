@@ -190,9 +190,8 @@
                 var cb = fn.call(context, arr[i], i, arr);
                 if(cb) arr.push(arr[i]);
             }
-            return arr;
+            return arrrr;
         },
-
         reduce: function(arr, fn ,initialValue) {
  
         },
