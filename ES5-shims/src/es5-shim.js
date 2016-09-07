@@ -193,14 +193,27 @@
             return arrrr;
         },
         reduce: function(arr, fn ,initialValue) {
- 
-        },
+            // 用void 0代替arr
+            if (arr === void 0 || arr === null) throw new TypeError();
+            if (typeof fn) throw new TypeError();
 
-        reduceRight: function() {
             
+            var previousValue;
+            var initialSet = initialValue ? true : false;
+
+            previousValue = initialValue;
+            for (var i = 0, len = arr.length; i < len; i++) {
+                if(initialSet) {
+                    previousValue = fn.call(undefined, previousValue, arr[i], i, arr);
+                }else {
+                    previousValue = arr[0];
+                    initialSet = true;  
+                }
+            }
+
+            if (!initialSet) throw new TypeError('Reduce of empty array with no initial value');
+            return previousValue;
         },
-
-
         /**
          * ES6-Array-shim
          * @type {Object}
