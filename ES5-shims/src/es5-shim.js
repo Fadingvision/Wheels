@@ -129,7 +129,7 @@
         every: function(arr, fn/*, context*/) {
             // 用void 0代替arr
             if (arr === void 0 || arr === null) throw new TypeError();
-            if (typeof fn) throw new TypeError();
+            if (typeof fn !== 'function') throw new TypeError();
 
             var context = arguments.length >= 3 ? arguments[2] : void 0;
             for (var i = 0, len = arr.length; i < len; i++) {
@@ -143,7 +143,7 @@
         some: function(arr, fn/*, context*/) {
             // 用void 0代替arr
             if (arr === void 0 || arr === null) throw new TypeError();
-            if (typeof fn) throw new TypeError();
+            if (typeof fn !== 'function') throw new TypeError();
 
             var context = arguments.length >= 3 ? arguments[2] : void 0;
             for (var i = 0, len = arr.length; i < len; i++) {
@@ -157,7 +157,7 @@
         forEach: function(arr, fn/*, context*/) {
             // 用void 0代替arr
             if (arr === void 0 || arr === null) throw new TypeError();
-            if (typeof fn) throw new TypeError();
+            if (typeof fn !== 'function') throw new TypeError();
 
             var context = arguments.length >= 3 ? arguments[2] : void 0;
             for (var i = 0, len = arr.length; i < len; i++) {
@@ -168,7 +168,7 @@
         map: function(arr, fn/*, context*/ ) {
             // 用void 0代替arr
             if (arr === void 0 || arr === null) throw new TypeError();
-            if (typeof fn) throw new TypeError(fn.name + 'is not a function');
+            if (typeof fn !== 'function') throw new TypeError(fn.name + 'is not a function');
 
 
             var arr = new Array(arr.length);
@@ -182,7 +182,7 @@
         filter: function(arr, fn/*, context*/) {
             // 用void 0代替arr
             if (arr === void 0 || arr === null) throw new TypeError();
-            if (typeof fn) throw new TypeError();
+            if (typeof fn !== 'function') throw new TypeError();
 
             var arr = [];
             var context = arguments.length >= 3 ? arguments[2] : void 0;
@@ -195,7 +195,7 @@
         reduce: function(arr, fn ,initialValue) {
             // 用void 0代替arr
             if (arr === void 0 || arr === null) throw new TypeError();
-            if (typeof fn) throw new TypeError();
+            if (typeof fn !== 'function') throw new TypeError();
 
             
             var previousValue;
@@ -218,11 +218,48 @@
          * ES6-Array-shim
          * @type {Object}
          */
-        form: function() {
+        
+        // 不能直接传入参数，因为要保证from函数的length为1.
+        from: function(arrlike/*[, mapFn[, thisArg]]*/) {
+            if (arrlike === void 0 || arrlike === null) throw new TypeError();
+            // 不直接判断参数主要为了避免传入的undefined等值时，无法判断是否传了参数
+            var mapFn = arguments.length > 1 ? arguments[1] : void 0;
+            if (typeof mapFn !== 'function') throw new TypeError();
 
+            var thisArg = arguments.length > 2 ? arguments[2] : void 0;
+
+            var newArr = array_slice.call(arrlike);
+            return mapFn ? newArr : this.map(newArr, mapFn, thisArg);
+        },
+        
+        of: function() {
+            return array_slice.call(arguments);
         },
 
-        of: function() {
+
+        copyWithin: function(arr, target, start/*, end*/) {
+            if (arr === void 0 || arrlike === null) throw new TypeError();
+            var len = arr.length;
+
+            if (typeof target !== 'number') throw new TypeError();
+            // 不直接判断参数主要为了避免传入的undefined等值时，无法判断是否传了参数
+            var end = arguments.length > 3 ? arguments[3] : void 0;
+            if (typeof start !== 'undefined' && typeof start !== 'number') throw new TypeError();
+            if (typeof end !== 'undefined' && typeof end !== 'number') throw new TypeError();
+
+            if(target > len) return;
+            var to = target < 0 ? Math.max(target + len, 0) : Math.min(target, len - 1);
+
+            !start && (start = 0);
+            // start小于0时，不能超过数组第一位；start大于0时，不能超过数组长度
+            var from = start < 0 ? Math.max(start + len, 0) : Math.min(start, len - 1);
+            
+            !end && (end = arr.length -1);
+            // end小于0时，不能超过数组第一位；end大于0时，不能超过数组长度
+            var final = end < 0 ? Math.max(end + len, 0) : Math.min(end, len - 1);
+
+            // !!!
+            var count = Math.min(final - from, len - to);
 
         }
     })
