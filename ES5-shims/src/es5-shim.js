@@ -1,5 +1,5 @@
 ;
-// 使用,避免连续代码
+// 使用;避免连续代码
 
 
 // UMD通用模块加载方式
@@ -57,14 +57,12 @@
     })();
 
     // 定义defineProperties方法，用此方法进行原型扩展
-    var defineProperties　＝　(function() {
-        var defineProperty;
-
+    var defineProperties = (function() {
         // 如果支持defineProperty
-        defineProperty = isSupportDescriptors ? function(obj, key, value){
+        var defineProperty = isSupportDescriptors ? function(obj, key, value){
             if(key in obj) return;
             Object.defineProperty(obj, key, {
-                key: value,
+                value: value,
                 configurable: true,
                 enumerable: false,
                 writable: true,
@@ -80,6 +78,7 @@
                 if(Object.hasOwnProperty.call(map, key)) defineProperty(obj, key, map[key]);
             }
         }
+
     })();
 
 
@@ -92,14 +91,11 @@
 
 
     
-    // important!! 由于这里只是模仿，所以就不将方法挂在原生对象的原型上了，直接挂在我们的自定义对象上，这样方便测试
-
     /**********************************/
     /*           Array                */
     /**********************************/
 
     ES5.Array = {};
-
     defineProperties(ES5.Array, {
 
         isArray: function(obj) {
@@ -110,7 +106,7 @@
             // 用+号将字符串转为数字
             var i = +fromIndex || 0,
                 len = arr.length;
-            if(i > arr.length - 1) throw new TypeError('fromIndex muse less than arr.length');
+            if(i > arr.length - 1) throw new TypeError('fromIndex must less than arr.length');
             if(!arr || arr.length === 0) return -1;
 
             // 用while循环代替部分for循环,提升代码可读性
@@ -215,10 +211,16 @@
             return previousValue;
         },
         /**
+         * * * * * * * * * * * * * * * * * * * * *
          * ES6-Array-shim
-         * @type {Object}
+         * * * * * * * * * * * * * * * * * * * * * 
          */
-        
+
+        /**
+         * Array.from() 方法可以将一个类数组对象或可遍历对象转换成真正的数组。
+         * @param  {[type]} arrlike [description]
+         * @return {[type]}         [description]
+         */
         // 不能直接传入参数，因为要保证from函数的length为1.
         from: function(arrlike/*[, mapFn[, thisArg]]*/) {
             if (arrlike === void 0 || arrlike === null) throw new TypeError();
@@ -236,9 +238,16 @@
             return array_slice.call(arguments);
         },
 
-
+        /**
+         * 浅拷贝数组的部分元素到同一数组的不同位置，且不改变数组的大小，返回该数组。
+         * @param  {[type]} arr    [description]
+         * @param  {[type]} target [description]
+         * @param  {[type]} start  [description]
+         * @param  {[type]} end    [description]
+         * @return {[type]}        [description]
+         */
         copyWithin: function(arr, target, start/*, end*/) {
-            if (arr === void 0 || arrlike === null) throw new TypeError();
+            if (arr === void 0 || arr === null) throw new TypeError();
             var len = arr.length;
 
             if (typeof target !== 'number') throw new TypeError();
@@ -248,18 +257,126 @@
             if (typeof end !== 'undefined' && typeof end !== 'number') throw new TypeError();
 
             if(target > len) return;
-            var to = target < 0 ? Math.max(target + len, 0) : Math.min(target, len - 1);
+            var to = target < 0 ? Math.max(target + len, 0) : Math.min(target, len);
 
             !start && (start = 0);
             // start小于0时，不能超过数组第一位；start大于0时，不能超过数组长度
-            var from = start < 0 ? Math.max(start + len, 0) : Math.min(start, len - 1);
+            var from = start < 0 ? Math.max(start + len, 0) : Math.min(start, len);
             
             !end && (end = arr.length -1);
             // end小于0时，不能超过数组第一位；end大于0时，不能超过数组长度
-            var final = end < 0 ? Math.max(end + len, 0) : Math.min(end, len - 1);
+            var final = end < 0 ? Math.max(end + len, 0) : Math.min(end, len);
 
-            // !!!
+            /**
+             * start => 三个参数可能性太多，it's confusing me a lot.
+             */
+
+            /************************************************/
+            // !!!  计算复制的总位数
             var count = Math.min(final - from, len - to);
+
+            var direction = 1;
+
+            // 
+            if(from < count && to < (from + count)) {
+                direction = -1;
+                from += count - 1;
+                to += count - 1;
+            }
+            /***********************************************/
+
+            // 开始复制
+            var O = Object(arr);
+            while (count > 0) {
+                if (from in O) {
+                    O[to] = O[from];
+                } else {
+                    delete O[to];
+                }
+                from += direction;
+                to += direction;
+                count--;
+            }
+
+            return O;
+        },
+
+        /**
+         * 如果数组中某个元素满足测试条件，返回那个元素的值
+         * @param  {[type]} arr  [description]
+         * @param  {[type]} cbFn [description]
+         * @return {[type]}      [description]
+         */
+        find: function(arr, cbFn/*, thisArg*/) {
+            // 用void 0代替arr
+            if (arr === void 0 || arr === null) throw new TypeError();
+            if (typeof cbFn !== 'function') throw new TypeError();
+
+            var thisArg = arguments.length > 2 ? arguments[2] : void 0;
+
+            var list = Object(arr),
+                len = arr.length >>> 0,
+                k = 0;
+
+            while(k < len) {
+                if(cbFn.call(thisArg, list[k], k, list)) return list[k];
+                K++;
+            }
+            return undefined;
+        },
+
+        /**
+         * 如果数组中某个元素满足测试条件，返回那个元素的索引
+         * @param  {[type]} arr  [description]
+         * @param  {[type]} cbFn [description]
+         * @return {[type]}      [description]
+         */
+        findIndex: function(arr, cbFn/*, thisArg*/) {
+            // 用void 0代替arr
+            if (arr === void 0 || arr === null) throw new TypeError();
+            if (typeof cbFn !== 'function') throw new TypeError();
+
+            var thisArg = arguments.length > 2 ? arguments[2] : void 0;
+
+            var list = Object(arr),
+                len = arr.length >>> 0,
+                k = 0;
+
+            while(k < len) {
+                if(cbFn.call(thisArg, list[k], k, list)) return k;
+                K++;
+            }
+            return undefined;
+        },
+
+        /**
+         * fill方法使用给定值，填充一个数组。
+         * @param  {[type]} value [description]
+         * @param  {[type]} start [description]
+         * @param  {[type]} end   [description]
+         * @return {[type]}       [description]
+         */
+        fill: function(arr, value/* ,start, end*/) {
+            if (arr === void 0 || arr === null) throw new TypeError();
+            var start = arguments.length > 2 ? arguments[2] : void 0;
+            var end = arguments.length > 3 ? arguments[3] : void 0;
+
+            var list = Object(arr),
+                len = arr.length >>> 0,
+                k = 0;
+
+            !start && (start = 0);
+            !end && (end = len);
+            var from = start < 0 ? Math.max(start + len, 0) : Math.min(start, len);
+            var final = end < 0 ? Math.max(end + len, 0) : Math.min(end, len);
+
+            while(start < end) {
+                list[start] = value;
+                start++;
+            }
+
+            return list;
+
 
         }
     })
@@ -270,7 +387,7 @@
     /**********************************/
     ES5.Function = {};
 
-    defineProperties(ES5.Function, {
+    defineProperties(FunctionPrototype, {
         bind: function() {
 
         }
@@ -283,9 +400,8 @@
     /**********************************/
     /*           Object               */
     /**********************************/
-    ES5.Object = {};
 
-    defineProperties(ES5.Object, {
+    defineProperties(ObjectPrototype, {
 
         getPrototypeOf: function() {
 
@@ -358,7 +474,7 @@
     /**********************************/
 
     ES5.String = {};
-    defineProperties(ES5.String, {
+    defineProperties(StringPrototype, {
 
         trim: function() {
 
