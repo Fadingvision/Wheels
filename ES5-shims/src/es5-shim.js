@@ -11,7 +11,7 @@
 
 })(this, function(ES5) {
 
-    // 常用方法简写
+    // 常用方法安全引用 
     var ArrayPrototype = Array.prototype;
     var ObjectPrototype = Object.prototype;
     var FunctionPrototype = Function.prototype;
@@ -86,7 +86,11 @@
     /**********************************/
     /*           Util                 */
     /**********************************/
-
+    var Util = {
+        isNaN: function(value) {
+            return !(value === value);
+        }
+    }
 
 
 
@@ -94,7 +98,6 @@
     /**********************************/
     /*           Array                */
     /**********************************/
-
     ES5.Array = {};
     defineProperties(ES5.Array, {
 
@@ -376,8 +379,29 @@
             }
 
             return list;
+        },
 
+        /**
+         * 判断当前数组是否包含某指定的值，
+         * @param  {[type]} arr   [description]
+         * @param  {[type]} value [description]
+         * @return {boolean}      如果是，则返回 true，否则返回 false。
+         */
+        includes: function(arr, value /*, fromIndex*/) {
+            if (arr === void 0 || arr === null) throw new TypeError();
+            if (value === void 0 || value === null) throw new TypeError();
+            var fromIndex = arguments.length > 2 ? arguments[2] : 0;
 
+            var curEl, 
+                list = Object(arr),
+                len = list.length >>> 0;
+
+            while(fromIndex < len) {
+                curEl = list[fromIndex];
+                if(value === curEl || (Util.isNaN(curEl) && Util.isNaN(value))) return true;
+                fromIndex++;
+            }
+            return false;
         }
     })
 
@@ -385,13 +409,26 @@
     /**********************************/
     /*           Function             */
     /**********************************/
-    ES5.Function = {};
-
     defineProperties(FunctionPrototype, {
-        bind: function() {
-
+        /**
+         * 创建一个新函数，当这个新函数被调用时，它的this值是传递给bind()的第一个参数, 它的参数是bind()的其他参数和其原本的参数.
+         * @param  {Function} fn [description]
+         * @return {[type]}      [description]
+         */
+        
+        // 只实现了基本功能，没有完全完全按照规范实现。
+        bind: function(thisArg/*, params*/) {
+            if(typeof this !== 'function') throw new TypeError();
+            var bindArgs = array_slice.call(arguments, 1); 
+            var bindFn = this;
+            return function() {
+                var args = array_slice.call(arguments);
+                bindArgs = args.concat(args);
+                return bindFn.apply(thisArg, bindArgs);
+            }
         }
-    })
+
+    });
 
 
 
@@ -401,6 +438,74 @@
     /*           Object               */
     /**********************************/
 
+    // es5中obj的静态方法由于es3的局限性，不太可能完全实现
+
+    // static methods
+    defineProperties(Object, {
+
+        /**
+         * ES5--methods
+         */
+        
+        /**
+         * [keys description]
+         * @return {[type]} [description]
+         */
+        
+        // 1. object.keys　取得所有的自身可枚举属性
+        // 2. for...in 取得所有的自身和原型链上的可枚举属性
+        // 3. getOwnPropertyNames　取得所有的自身可枚举和不可枚举属性*(enumerable: false)
+        keys　: function(obj) {
+            if(typeof obj !== 'object') throw TypeError('Object.keys called on a non-object');
+
+            var keys = [], key;
+            for(key in obj) {
+                if(obj.hasOwnProperty(key)) keys.push(key);
+            }
+            return keys;
+        },
+
+        /**
+         * 创建一个拥有指定原型和若干个指定属性的对象。
+         * @param  {[type]} proto 指定原型
+         * @param  {[type]} propertiesObject 
+         * 该参数对象是一组属性与值，该对象的属性名称将是新创建的对象的属性名称，值是属性描述符
+         * @return {[type]}     [description]
+         */
+        create : function(proto /*, propertiesObject*/) {
+            if(typeof proto !== 'object') throw TypeError('Object.create called on a non-object');
+            var fn = function() {};
+            fn.prototype = proto;
+
+            var propertiesObject = arguments.length > 1 ? arguments[1] : {};
+            var hasOwn = Object.prototype.hasOwnProperty;
+            var obj = new fn();
+
+            for(var prop in propertiesObject) { 
+                hasOwn.call(propertiesObject, prop) && Object.defineProperty(obj, prop, propertiesObject[prop]);
+            }
+            return obj;
+        },
+
+        defineProperties: defineProperties,
+
+
+        /**
+         * ES6--methods
+         */
+
+        // 可以把任意多个的源对象自身的可枚举属性拷贝给目标对象，然后返回目标对象。
+        assign: function(target /* ...sources */) {
+
+        },
+
+
+        is: function() {
+
+        }
+    };
+
+    // prototype methods
     defineProperties(ObjectPrototype, {
 
         getPrototypeOf: function() {
@@ -415,10 +520,7 @@
 
         }, 
 
-        // !important
-        create: function() {
-
-        },
+        
 
         defineProperty: function() {
 
@@ -445,12 +547,6 @@
             
         },
 
-
-        // !important
-        keys: function() {
-            
-        },
-
         isExtensible: function() {
             
         }
@@ -460,13 +556,39 @@
     /**********************************/
     /*           Date                 */
     /**********************************/
+    Date.now = function() {
 
+    };
+    defineProperties(DatePrototype, {
+        toJSON: function() {
 
+        },
+
+        parse: function() {
+
+        },
+
+        toISOString: function() {
+
+        },
+    })
 
     /**********************************/
     /*           Number               */
     /**********************************/
 
+    defineProperties(StringPrototype, {
+
+        toFixed: function( ){
+
+        },
+
+        toPrecision: function() {
+
+        }
+    })
+
+    
 
 
     /**********************************/
@@ -477,6 +599,14 @@
     defineProperties(StringPrototype, {
 
         trim: function() {
+
+        },
+
+        split: function() {
+
+        }
+
+        ,lastIndexOf: function() {
 
         }
     })
@@ -495,7 +625,9 @@
 
         stringify: function() {
 
-        }
+        },
+
+
     })
 
     return ES5;
