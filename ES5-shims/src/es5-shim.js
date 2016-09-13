@@ -1,7 +1,6 @@
 ;
 // 使用;避免连续代码
 
-
 // UMD通用模块加载方式
 (function(global, factory) {
     'use strict';
@@ -78,7 +77,6 @@
                 if(Object.hasOwnProperty.call(map, key)) defineProperty(obj, key, map[key]);
             }
         }
-
     })();
 
 
@@ -90,7 +88,7 @@
         isNaN: function(value) {
             return !(value === value);
         }
-    }
+    };
 
 
 
@@ -403,7 +401,7 @@
             }
             return false;
         }
-    })
+    });
 
 
     /**********************************/
@@ -427,10 +425,7 @@
                 return bindFn.apply(thisArg, bindArgs);
             }
         }
-
     });
-
-
 
 
 
@@ -438,11 +433,10 @@
     /*           Object               */
     /**********************************/
 
-    // es5中obj的静态方法由于es3的局限性，不太可能完全实现
+    // es5中Object的静态方法由于es3的局限性，不太可能完全实现
 
     // static methods
     defineProperties(Object, {
-
         /**
          * ES5--methods
          */
@@ -491,23 +485,17 @@
 
 
         /**
-         * ES6--methods
+         * 定义一个对象的属性
+         * 由于不能模仿属性描述符，只能简单的赋值
+         * @param  {[type]} obj   [description]
+         * @param  {[type]} key   [description]
+         * @param  {[type]} value [description]
+         * @return {[type]}       [description]
          */
-
-        // 可以把任意多个的源对象自身的可枚举属性拷贝给目标对象，然后返回目标对象。
-        assign: function(target /* ...sources */) {
-
+        defineProperty: function(obj, key, value) {
+            if(key in obj) return;
+            obj[key] = value;
         },
-
-
-        is: function() {
-
-        }
-    };
-
-    // prototype methods
-    defineProperties(ObjectPrototype, {
-
         getPrototypeOf: function() {
 
         },
@@ -517,17 +505,6 @@
         },
 
         getOwnPropertyNames: function() {
-
-        }, 
-
-        
-
-        defineProperty: function() {
-
-        },
-
-        // !important
-        defineProperties: function() {
 
         },
 
@@ -550,18 +527,51 @@
         isExtensible: function() {
             
         }
-    })
 
+
+        /**
+         * ES6--methods
+         */
+        
+        // 可以把任意多个的源对象自身的可枚举属性拷贝给目标对象，然后返回目标对象。
+        assign: function(target /* ...sources */) {
+
+        },
+
+        /**
+         * is它用来比较两个值是否严格相等，与严格比较运算符（===）的行为基本一致。
+         * @param  {[type]}  val1 [description]
+         * @param  {[type]}  val2 [description]
+         * @return {Boolean}      [description]
+         */
+        is: function(val1, val2) {
+            if(arguments.length < 2) throw new TypeError();
+            if(Util.isNaN(val1) && Util.isNaN(val2)) return true;
+            return val1 === val2;
+        }
+
+        // Trailing commas in object literals
+        // es5中允许对象最后出现逗号
+        ,
+    };
+
+  
 
     /**********************************/
     /*           Date                 */
     /**********************************/
-    Date.now = function() {
 
+    /**
+     * now方法返回自1970年1月1日 00:00:00 UTC到当前时间的毫秒数。
+     * @return {[type]} 1970年1月1日 00:00:00 UTC到当前时间的毫秒数。
+     */
+    Date.now = function() {
+        return new Date().getTime();
     };
     defineProperties(DatePrototype, {
         toJSON: function() {
-
+            if(typeof this !== 'Object') throw new TypeError();
+            return this.toString();
         },
 
         parse: function() {
@@ -573,62 +583,94 @@
         },
     })
 
+
+    
     /**********************************/
     /*           Number               */
     /**********************************/
 
-    defineProperties(StringPrototype, {
+    defineProperties(Number, {
+        /**
+         * ES6--methods
+         */
 
-        toFixed: function( ){
-
+        // 传统方法先调用Number()将非数值的值转为数值，再进行判断，而这两个Number上的新方法只对数值有效，非数值一律返回false。
+        isFinite: function(num){
+            return typeof num === 'number' && isFinite(value);
+        },
+ 
+        isNaN: function(num) {
+            return typeof num === 'number' && num !== num;
         },
 
-        toPrecision: function() {
-
+        /**
+         * 判断是否是正整数
+         * @param  {[type]}  value [description]
+         * @return {Boolean}       [description]
+         */
+        isInteger: function(value) {
+            return typeof value === 'number' && isFinite(value) &&
+                    value > -9007199254740992 && value < 9007199254740992 &&
+                    Math.floor(value) === value;
         }
-    })
-
-    
+    });
 
 
     /**********************************/
     /*           String               */
     /**********************************/
 
-    ES5.String = {};
     defineProperties(StringPrototype, {
+        /**
+         * ES5--methods
+         */
+        // 1. ES5中允许用下标法取得字符串中对应位置的值
+        // 'asd'[0] === 'a'
+        
 
+        /**
+         * 2. 新增trim方法去除前后空格
+         * @return {[type]} [description]
+         */
         trim: function() {
+            if(typeof this !== 'string') throw new TypeError();
+            return this.replace(/^[\s\uFEFF\xA0]+|[\s\uFEFF\xA0]+$/g, '');
+        },
+
+        /**
+         * ES6--methods
+         */
+        includes: function(search, start)) {
+            if(typeof this !== 'string') throw new TypeError();
+            if (typeof start !== 'number') start = 0;
+            
+            if (start + search.length > this.length) {
+                return false;
+            } else {
+                return this.indexOf(search, start) !== -1;
+            }
+        },
+
+        startsWith: function() {
 
         },
 
-        split: function() {
-
-        }
-
-        ,lastIndexOf: function() {
-
-        }
-    })
-
-
-
-
-    /**********************************/
-    /*           JSON               */
-    /**********************************/
-    ES5.JSON = {};
-    defineProperties(ES5.JSON, {
-        parse: function() {
+        endsWith: function() {
 
         },
 
-        stringify: function() {
+        repeat: function() {
 
         },
 
+        padStart: function() {
 
-    })
+        },
+
+        padEnd: function() {
+
+        },
+    });
 
     return ES5;
 });
