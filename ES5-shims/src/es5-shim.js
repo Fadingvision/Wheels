@@ -96,6 +96,7 @@
     /**********************************/
     /*           Array                */
     /**********************************/
+
     ES5.Array = {};
     defineProperties(ES5.Array, {
 
@@ -551,7 +552,7 @@
         }
 
         // Trailing commas in object literals
-        // es5中允许对象最后出现逗号
+        // es5中允许对象最后出现逗号   
         ,
     };
 
@@ -568,6 +569,7 @@
     Date.now = function() {
         return new Date().getTime();
     };
+
     defineProperties(DatePrototype, {
         toJSON: function() {
             if(typeof this !== 'Object') throw new TypeError();
@@ -579,7 +581,18 @@
         },
 
         toISOString: function() {
-
+            if(typeof this !== 'Object') throw new TypeError();
+            var ISOString = '', date = this;
+            var pad = function (num) { return num < 10 ? ('0' + num) : num; };
+            ISOString = date.getFullYear() + '-'
+                        + pad( date.getMonth() + 1 ) + '-'
+                        + pad(date.getDate()) + 'T'
+                        + pad(date.getUTCHours()) + ':' 
+                        + pad(date.getUTCMinutes()) + ':' 
+                        + pad(date.getUTCSeconds()) + '.'
+                        + (this.getUTCMilliseconds() / 1000).toFixed(3).slice(2, 5) + 'Z';
+                        
+            return ISOString;
         },
     })
 
