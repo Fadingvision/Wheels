@@ -84,10 +84,18 @@
     /**********************************/
     /*           Util                 */
     /**********************************/
+
+
     var Util = {
+
+        /**
+         * 判断是否是NaN
+         * @param  {[type]}  value [description]
+         * @return {Boolean}       [description]
+         */
         isNaN: function(value) {
             return !(value === value);
-        }
+        },
     };
 
 
@@ -108,7 +116,10 @@
             // 用+号将字符串转为数字
             var i = +fromIndex || 0,
                 len = arr.length;
-            if(i > arr.length - 1) throw new TypeError('fromIndex must less than arr.length');
+            
+            i = (i >= 0 && Math.min(i, len));
+            i = i >= 0 ? i : max(0, length + i);
+
             if(!arr || arr.length === 0) return -1;
 
             // 用while循环代替部分for循环,提升代码可读性
@@ -116,6 +127,8 @@
                 if(value === arr[i]) return i;
                 i++;
             }
+
+            return -1;
         },
 
         lastIndexOf: function(arr, value) {
@@ -171,6 +184,7 @@
 
             var arr = new Array(arr.length);
             var context = arguments.length >= 3 ? arguments[2] : void 0;
+
             for (var i = 0, len = arr.length; i < len; i++) {
                 var cb = fn.call(context, arr[i], i, arr);
                 arr[i] = cb;
@@ -188,7 +202,7 @@
                 var cb = fn.call(context, arr[i], i, arr);
                 if(cb) arr.push(arr[i]);
             }
-            return arrrr;
+            return arr;
         },
         reduce: function(arr, fn ,initialValue) {
             // 用void 0代替arr
