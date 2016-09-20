@@ -1,0 +1,23 @@
+{
+  "name": "wheels",
+  "version": "1.0.0",
+  "description": "Only for doing some exercise",
+  "main": "index.js",
+  "scripts": {
+    "test": "npm test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/blackLearning/Wheels.git"
+  },
+  "author": "fuyigekua@foxmail.com",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/blackLearning/Wheels/issues"
+  },
+  "homepage": "https://github.com/blackLearning/Wheels#readme",
+  "devDependencies": {
+    "jasmine": "^2.5.2",
+    "karma": "^1.3.0"
+  }
+}

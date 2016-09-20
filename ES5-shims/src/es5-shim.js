@@ -465,7 +465,7 @@
         // 2. for...in 取得所有的自身和原型链上的可枚举属性
         // 3. getOwnPropertyNames　取得所有的自身可枚举和不可枚举属性*(enumerable: false)
         keys　: function(obj) {
-            if(typeof obj !== 'object') throw TypeError('Object.keys called on a non-object');
+            if(typeof obj !== 'object' || obj === null) throw TypeError('Object.keys called on a non-object');
 
             var keys = [], key;
             for(key in obj) {
@@ -495,10 +495,6 @@
             }
             return obj;
         },
-
-        defineProperties: defineProperties,
-
-
         /**
          * 定义一个对象的属性
          * 由于不能模仿属性描述符，只能简单的赋值
@@ -511,36 +507,66 @@
             if(key in obj) return;
             obj[key] = value;
         },
-        getPrototypeOf: function() {
 
+        defineProperties: function(object, properties) {
+            Object.keys(properties).forEach(function (property) {
+                if (property !== '__proto__') {
+                    Object.defineProperty(object, property, properties[property]);
+                }
+            });
+            return object;
         },
 
-        getOwnPropertyDescriptor: function () {
 
+
+        getOwnPropertyNames: function(obj) {
+            return Object.keys(obj);
         },
 
-        getOwnPropertyNames: function() {
-
+        seal: function(object) {
+            if (Object(object) !== object) {
+                throw new TypeError('Object.seal can only be called on Objects.');
+            }
+            return object;
         },
 
-        seal: function() {
-
+        freeze: function(object) {
+            if (Object(object) !== object) {
+                throw new TypeError('Object.freeze can only be called on Objects.');
+            }
+            return object;
         },
 
-        freeze: function() {
-
+        isSealed: function(object) {
+            if (Object(object) !== object) {
+                throw new TypeError('Object.isSealed can only be called on Objects.');
+            }
+            return object;
         },
 
-        isSealed: function() {
-
+        isFrozen: function(object) {
+            if (Object(object) !== object) {
+                throw new TypeError('Object.isFrozen can only be called on Objects.');
+            }
+            return object;
         },
 
-        isFrozen: function() {
-            
-        },
+        /**
+         * 判断一个对象是否是可以扩展的
+         * @param  {[type]}  object [description]
+         * @return {Boolean}        [description]
+         */
+        isExtensible: function(object) {
+            if (Object(object) !== object) {
+                throw new TypeError('Object.isExtensible can only be called on Objects.');
+            }
+            var name = '';
+            while(Object.hasOwnProperty.call(object, name)) name += '?'; 
+            object[name] = true;
 
-        isExtensible: function() {
-            
+            var returnValue = Object.hasOwnProperty.call(object, name);
+            delete object[name];
+            return returnValue;
         }
 
 
@@ -586,14 +612,11 @@
 
     defineProperties(DatePrototype, {
         toJSON: function() {
-            if(typeof this !== 'Object') throw new TypeError();
+            // if(typeof this !== 'Object') throw new TypeError();
+            if(!this || !(this instanceOf Date)) throw new TypeError();
+
             return this.toString();
         },
-
-        parse: function() {
-
-        },
-
         toISOString: function() {
             if(typeof this !== 'Object') throw new TypeError();
             var ISOString = '', date = this;
