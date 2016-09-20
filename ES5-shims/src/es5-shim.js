@@ -567,7 +567,7 @@
             var returnValue = Object.hasOwnProperty.call(object, name);
             delete object[name];
             return returnValue;
-        }
+        },
 
 
         /**
@@ -594,7 +594,7 @@
         // Trailing commas in object literals
         // es5中允许对象最后出现逗号   
         ,
-    };
+    });
 
   
 
@@ -610,10 +610,10 @@
         return new Date().getTime();
     };
 
-    defineProperties(DatePrototype, {
+    defineProperties(Date.prototype, {
         toJSON: function() {
             // if(typeof this !== 'Object') throw new TypeError();
-            if(!this || !(this instanceOf Date)) throw new TypeError();
+            // if(!this || !(this instanceOf Date)) throw new TypeError();
 
             return this.toString();
         },
@@ -690,7 +690,7 @@
         /**
          * ES6--methods
          */
-        includes: function(search, start)) {
+        includes: function(search, start) {
             if(typeof this !== 'string') throw new TypeError();
             if (typeof start !== 'number') start = 0;
             
