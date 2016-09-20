@@ -59,19 +59,18 @@
     var defineProperties = (function() {
         // 如果支持defineProperty
         var defineProperty = isSupportDescriptors ? function(obj, key, value){
-            if(key in obj) return;
+            // if(key in obj) return;
             Object.defineProperty(obj, key, {
                 value: value,
-                configurable: true,
-                enumerable: false,
-                writable: true,
+                configurable: true,  // 可配置
+                enumerable: false,   // 不可枚举
+                writable: true,      // 可赋值
             })
         // else
         } : function(obj, key, value) {
             if(key in obj) return;
             obj[key] = value;
         }
-        
         return function(obj, map) {
             for(var key in map) {
                 if(Object.hasOwnProperty.call(map, key)) defineProperty(obj, key, map[key]);
@@ -436,8 +435,8 @@
             var bindFn = this;
             return function() {
                 var args = array_slice.call(arguments);
-                bindArgs = args.concat(args);
-                return bindFn.apply(thisArg, bindArgs);
+                actualArgs = args.concat(bindArgs);
+                return bindFn.apply(thisArg, actualArgs);
             }
         }
     });
