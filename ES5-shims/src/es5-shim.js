@@ -433,11 +433,46 @@
             if(typeof this !== 'function') throw new TypeError();
             var bindArgs = array_slice.call(arguments, 1); 
             var bindFn = this;
-            return function() {
+            var fBound =  function() {
                 var args = array_slice.call(arguments);
-                actualArgs = args.concat(bindArgs);
+                // bind的参数在前，执行参数在后
+                actualArgs = bindArgs.concat(args);
+
+                /* 
+                 * 修复当做构造函数使用时，thisArg应该无效的bug.
+                 * 这里采用严格模式，即当传入的thisArg为null和undefined时，不会自动指向全局对象.
+                 * 同时值为原始值（数字，字符串，布尔值）的 thisArg，不会指向该原始值的自动包装对象.
+                 * 而是依然指向undefined或null.
+                 */
+                thisArg = this instanceof fNOP ? this : thisArg;
+
+                /**
+                 * unstrict mode
+                 */
+                // thisArg = this instanceof fNOP ? this : thisArg || this;
+
                 return bindFn.apply(thisArg, actualArgs);
-            }
+            };
+
+            /* 修复当做构造函数使用时，thisArg应该无效的bug */
+
+            // 导致这部分实现创建的函数有 prototype 属性。（正确的绑定函数没有）
+            fNOP = function () {},
+            fNOP.prototype = this.prototype;
+            fBound.prototype = new fNOP();
+            
+            // 这部分实现创建的绑定函数所有的 length 属性并不是同ECMA-262标准一致的：它的 length 是0，
+            // 而在实际的实现中根据目标函数的 length 和预先指定的参数个数可能会返回非零的 length。
+
+            /**
+             * 修复length属性不正确的bug
+             */
+            
+            // error: 不能重写函数的length属性
+            // fBound.length = Math.max(0, bindFn.length - bindArgs.length);
+            
+            // es-shim中用eval+new Function()在构造函数时制造形式参数来强改length属性。
+            return fBound;
         }
     });
 

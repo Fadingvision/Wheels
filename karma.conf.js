@@ -14,6 +14,7 @@ module.exports = function(config) {
 
 
     // list of files / patterns to load in the browser
+    // 需要测试的文件与测试文件
     files: [
       'ES5-shims/src/es5-shim.js',
       'ES5-shims/test/*.js'
@@ -28,21 +29,46 @@ module.exports = function(config) {
     // preprocess matching files before serving them to the browser
     // available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
     
-    preprocessors: {},
-    // preprocessors : {'./src/*.js': 'coverage'},
+    // 配置预处理器
+    // 为添加的文件添加覆盖率打点
+    // preprocessors: {},
+    preprocessors : {'ES5-shims/src/es5-shim.js': 'coverage'},
 
-    // coverageReporter: {
-    //     type : 'html',
-    //     dir : 'coverage/'
-    // },
+    
 
 
     // test results reporter to use
     // possible values: 'dots', 'progress'
     // available reporters: https://npmjs.org/browse/keyword/karma-reporter
     
-    reporters: ['progress'],
-    // reporters: ['progress','coverage'],
+    // reporters: ['progress'],
+    // 报告器
+    reporters: ['progress','coverage'],
+
+    // coverageReporter: {
+    //     type : 'html',
+    //     dir : 'coverage/'
+    // },
+
+    // 覆盖率报告格式
+    coverageReporter: {
+        dir : './coverage',
+        reporters : [
+        {
+            type : 'html',
+            subdir : 'report-html'
+        },
+        {
+            type : 'lcov',
+            subdir : 'report-lcov'
+        },{
+            type : 'text',
+            subdir : 'text.txt'
+        },{
+            type : 'text-summary',
+            subdir : 'text-summary.txt'
+        }]
+    },
 
 
     // web server port
@@ -64,7 +90,10 @@ module.exports = function(config) {
 
     // start these browsers
     // available browser launchers: https://npmjs.org/browse/keyword/karma-launcher
-    browsers: ['Chrome'],
+    // browsers: ['PhantomJS', 'Chrome'],
+    
+    // 需要测试的浏览器
+    browsers: ['PhantomJS'],
 
 
     // Continuous Integration mode
