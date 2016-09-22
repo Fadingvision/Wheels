@@ -43,7 +43,30 @@ module.exports = function(config) {
     
     // reporters: ['progress'],
     // 报告器
-    reporters: ['progress','coverage'],
+    // 新增spec报告器，仿mocha格式
+    reporters: ['spec', 'coverage'],
+    specReporter: {
+        // When test faild - report it at the end of all tests  
+        lateReport:      true,
+
+        // Max Error log lines to display 
+        maxLogLines:     5,
+
+        // Don't show faild tests 
+        suppressFaild:   false,
+
+        // Don't show successful tests 
+        suppressSuccess: false,
+
+        // Don't show skipped tests 
+        suppressSkipped: false,
+
+        // Every test that is more slower than the slowest test is mark as slow 
+        slowTestTime: 40,
+        fastTestTime: 20
+
+    },
+    // plugins: ["karma-spec-reporter-2", 'karma-coverage'],
 
     // coverageReporter: {
     //     type : 'html',

@@ -14,8 +14,9 @@
 2. var self = Object(o); ???
 3. array.length >>> 0 ???  ToUint32
 4. forEach:　
-- 用while代替for循环，将i的自增语句用前置自增语句，写入循环判断语句。
-- 加入i in arr的判断语句，保证arr[i]存在于arr中。
+
+    - 用while代替for循环，将i的自增语句用前置自增语句，写入循环判断语句。
+    - 加入i in arr的判断语句，保证arr[i]存在于arr中。
 
 ```js
 var i = -1;

@@ -17,6 +17,27 @@ describe('Array', function() {
             arr.forEach(array, callback);
             expect(callback).toHaveBeenCalledWith('1', 0, array);
         })
+
+
+        it('应该检测是否是数组', function() {
+            var callback = jasmine.createSpy('callback');
+            var str = undefined;
+            try{
+                arr.forEach(str, callback);
+            }catch(e) {
+                expect(e).toBeTruthy();
+            }
+        })
+
+        it('应该检测是否是函数', function() {
+            var callback = 123;
+            var array = ['1'];
+            try{
+                arr.forEach(array, callback);
+            }catch(e) {
+                expect(e).toBeTruthy();
+            }
+        })
     });
 
 
