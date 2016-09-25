@@ -12,7 +12,13 @@
 
 1. fix (version < IE8) 下bug: **[].unshift(0) !== 1**;
 2. var self = Object(o); ???
-3. array.length >>> 0 ???  ToUint32
+
+
+3. array.length >>> 0 ----使用位操作符将字符串转为数字.
+> >>>位运算符的作用在于：
+将所有非数值转换成0
+将所有大于等于 0 数取整数部分
+
 4. forEach:　
 
     - 用while代替for循环，将i的自增语句用前置自增语句，写入循环判断语句。
