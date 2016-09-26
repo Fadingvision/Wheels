@@ -10,7 +10,12 @@ describe('Array', function() {
     });
 
     describe('#forEach()', function() {
+        var expected, actual;
 
+        beforeEach(function () {
+            expected = { 0: 2, 2: undefined, 3: true, 4: 'hej', 5: null, 6: false, 7: 0 };
+            actual = {};
+        });
         it('应该传递正确的参数', function() {
             var callback = jasmine.createSpy('callback');
             var array = ['1'];
@@ -38,6 +43,33 @@ describe('Array', function() {
                 expect(e).toBeTruthy();
             }
         })
+
+
+        it('在循环中添加的元素应该无效', function(){
+            var array = [1, 2, 3];
+            var i = 0;
+            arr.forEach(array, function(a) {
+                i += 1;
+                array.push(a + 3);
+            });
+            expect(array).toEqual([1, 2, 3, 4, 5, 6]);
+            expect(i).toBe(3);
+        })
+
+        it('当不设置thisArg的时候，this应该为undefined', function(){
+            var context;
+            arr.forEach([1], function(){context = this});
+
+            expect(context).toBe(function() {return this;}.call());
+        });
+
+        it('should iterate all', function () {
+            testSubject.forEach(function (obj, index) {
+                actual[index] = obj;
+            });
+            expect(actual).toExactlyMatch(expected);
+        });
+        
     });
 
 
