@@ -31,10 +31,13 @@ function calculateMonthLoan(totalLoan) {
 
 let localStorage;
 
-
+// 这里应该把controller的函数体都写入constructor,
+// 因为controller是个单例的函数，只会实例化一次，同时也不需要继承和被继承，
+// 因此可以不用把函数体挂在原型上．
 
 class LoanCtrl{
-    /* @ngInject */
+
+    /*@ngInject*/
     constructor(localStorageService, $scope, $rootScope, $state) {
         let basicInfo = localStorageService.get('basic');
         if(!basicInfo) $state.go('applicationForm.basic');
@@ -65,23 +68,19 @@ class LoanCtrl{
         this.isShow = false;
         this.msg = '';
 
-        $scope.$watch('this.loan.loanMoney', () => {
-            console.log(123)
+        $scope.$watch('vm.loan.loanMoney', () => {
             this.loan.instalments = calculateMonthLoan.call(this, this.loan.loanMoney);
         });
 
-        $scope.$watch('this.loan.ensurance', () => {
-            console.log(123)
+        $scope.$watch('vm.loan.ensurance', () => {
             this.loan.instalments = calculateMonthLoan.call(this, this.loan.loanMoney);
         });
 
-        $scope.$watch('this.loan.package', () => {
-            console.log(123)
+        $scope.$watch('vm.loan.package', () => {
             this.loan.instalments = calculateMonthLoan.call(this, this.loan.loanMoney);
         });
 
-        $scope.$watch('this.loan.stage', () => {
-            console.log(123)
+        $scope.$watch('vm.loan.stage', () => {
             this.loan.instalments = calculateMonthLoan.call(this, this.loan.loanMoney);
         });
     }
