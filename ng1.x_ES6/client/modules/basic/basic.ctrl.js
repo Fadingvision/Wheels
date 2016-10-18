@@ -1,13 +1,25 @@
 import ValidatorFactory from '../../utils/util';
+import {localKey} from '../../consts/const.js';
+
+/**
+ * 获取字符串长度，中文为２，英文和数字为１
+ * @param  {[type]} str [description]
+ * @return {[type]}     [description]
+ */
 const getLen = function(str) {
     if (str === null) return 0;
     if (typeof str != 'string') str += '';
     return str.replace(/[^\x00-\xff]/g, '01').length;
 };
+let state;
+let localStorage;
 class BasicCtrl{
     /* @ngInject */
-    constructor(localStorageService) {
+    constructor(localStorageService, $scope, $rootScope, $state) {
         let localBasic = localStorageService.get('basic');
+        console.log($state)
+        state = $state;
+        localStorage = localStorageService;
         let basic = {
             name: '',
             phone: '',
@@ -42,7 +54,7 @@ class BasicCtrl{
 
 
     vertifyInfo() {
-        var validatorIns = new ValidatorFactory();
+        let validatorIns = new ValidatorFactory();
         validatorIns
             .addRule(this.basic.name, [
                 {rule: 'isEmpty', errMsg: '请输入姓名!'},
@@ -57,27 +69,10 @@ class BasicCtrl{
             validatorIns
             .addRule(this.basic.email, [{rule: 'isIegalEmail', errMsg: '请输入正确的邮箱'}]);
         }
-        var res = validatorIns.startVal(this.showMsg.bind(this));
+        let res = validatorIns.startVal(this.showMsg.bind(this));
         if(!res) return false;
-
-        console.log(res)
-
-        // applicationCustomerFactory
-        //     .saveBasicInfo(vm.basic).then(function(res){
-        //         ErrorHandler(res, function(result) {
-        //             localStorageService.set('basic', vm.basic);
-        //             localStorageService.set('orderNum', result.data.orderNum);
-        //             $rootScope.$isStudent = vm.basic.isStudent == 1 ? true : false;
-
-        //             // remove the needless localStorage item.
-        //             var removeKey = $rootScope.$isStudent ? 'job' : 'student';
-        //             localStorageService.remove(removeKey);
-
-        //             $state.go('applicationForm.loan');
-        //         });
-        //     }, function(res) {
-        //         vm.showMsg('请检查输入！');
-        //     })
+        localStorage.set('basic', this.basic);
+        state.go('applicationForm.loan');
     }
 }
 

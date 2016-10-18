@@ -1,20 +1,23 @@
 import flexible from 'lib-flexible';
 import angular from 'angular';
+
 import uiRouter from 'angular-ui-router';
 import localStroageModule from 'angular-local-storage';
+
 import appModule from './modules/app.modules';
+import appComponent from './components/app.components';
 
 import indexHtml from './modules/index/index.html';
 import basicHtml from './modules/basic/basic.html';
+import loanHtml from './modules/loan/loan.html';
 
-
-
-import './less/main.less';
+import './assets/less/main.less';
 
 angular.module('Application', [
         uiRouter,
         localStroageModule,
-        appModule
+        appModule,
+        appComponent
     ])
     .config(config);
 
@@ -36,6 +39,13 @@ function config($locationProvider, $stateProvider, $urlRouterProvider, $httpProv
             url: '/basic',
             template: basicHtml,
             controller: 'BasicCtrl',
+            controllerAs: 'vm'
+        })
+        // 基本信息
+        .state('applicationForm.loan', {
+            url: '/loan',
+            template: loanHtml,
+            controller: 'LoanCtrl',
             controllerAs: 'vm'
         });
 

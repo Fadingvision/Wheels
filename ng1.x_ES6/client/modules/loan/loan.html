@@ -1,0 +1,92 @@
+<div>
+    <div class="loan-box loan-box_2">
+        <span>贷款信息</span>
+    </div>
+
+    <div class="form-box">
+        <div class="line">
+            <label>产品类别<span class="red-icon">*</span></label>
+            <select class="common-select" ng-model="vm.loan.productCat">
+                <option ng-repeat="(key, val) in vm.productCat" ng-bind="val" value="{{key}}"></option>
+            </select>
+        </div>
+
+        <div class="line">
+            <label>产品名称<span class="red-icon">*</span></label>
+            <input type="text" ng-model="vm.loan.productName" name="productName" placeholder="请输入产品名称" class="common-input" ng-keydown="vm.vertifyInputNum()">
+        </div>
+        <div class="line">
+            <label>产品总价<span class="red-icon">*</span></label>
+            <div class="input-box">
+                <input type="text" ng-model="vm.loan.productPrice" name="productName" placeholder="请输入数字" class="common-input">
+                <span class="amount">元</span>
+            </div>
+        </div>
+
+        <div class="line">
+            <label>借款金额<span class="red-icon">*</span></label>
+            <div class="input-box">
+                <input type="text" ng-model="vm.loan.loanMoney" name="productName" placeholder="请输入借款金额" class="common-input">
+                <span class="amount">元</span>
+            </div>
+        </div>
+
+        <div class="loan-money-box">
+            <label class="input-label">分期期数<span class="red-icon">*</span></label>
+            <div class="choose-stage clearfix">
+                <div class="radio-spec">
+                    <span>
+                        <input type="radio" name="stageNum" class="spec-radio" value="3" ng-model="vm.loan.stage" id="stageNum3">
+                        <label for="stageNum3"><i></i>3</label>
+                    </span>
+                    <span>
+                        <input type="radio" name="stageNum" class="spec-radio" value="6" ng-model="vm.loan.stage" id="stageNum6">
+                        <label for="stageNum6"><i></i>6</label>
+                    </span>
+                    <span>
+                        <input type="radio" name="stageNum" class="spec-radio" value="9" ng-model="vm.loan.stage" id="stageNum9">
+                        <label for="stageNum9"><i></i>9</label>
+                    </span>
+                    <span>
+                        <input type="radio" name="stageNum" class="spec-radio" value="12" ng-model="vm.loan.stage" id="stageNum12">
+                        <label for="stageNum12"><i></i>12</label>
+                    </span>
+                </div>
+                <p　class="gb-money">每月需还款<span ng-bind="vm.loan.instalments"></span>元</p>
+            </div>
+
+            <div class="extra-option-box">
+                <div class="ensurance">
+                    <span>
+                        <input type="checkbox" id="ensurance-checkbox" ng-model="vm.loan.ensurance">
+                        <label class="beatuy-checkbox" for="ensurance-checkbox"><i></i>保险</label>
+                        <!-- <a href="#" ng-click="vm.goUserAgree()"><i class="icon-wenhao"></i></a> -->
+                    </span>
+                    <span>
+                        <input  type="checkbox" id="package-checkbox" ng-model="vm.loan.package">
+                        <label class="beatuy-checkbox" for="package-checkbox"><i></i>还款随心包</label>
+                        <a href="#" ng-click="vm.goUserAgree()"><i class="icon-wenhao"></i></a>
+                    </span>
+                    
+                </div>
+            </div>
+        </div>
+
+        <div class="line">
+            <label>银行卡号<span class="red-icon">*</span></label>
+            <input type="text" ng-model="vm.loan.bankNum" name="productName" placeholder="请输入银行卡号" class="common-input">
+        </div>
+
+        <div class="line">
+            <label>账户名<span class="red-icon">*</span></label>
+            <input type="text" ng-model="vm.loan.accountName" name="productName" placeholder="请输入开户姓名" class="common-input">
+            </div>
+        </div>
+        <div class="operation-box">
+            <a href="/application/basic" class="previous">上一步</a>
+            <a href="#" class="next" ng-click="vm.vertifyInfo($event)">下一步</a>
+        </div>
+    </div>
+
+</div>
+<alert-direc msg="vm.msg" is-show="vm.isShow"></alert-direc>

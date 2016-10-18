@@ -3,12 +3,13 @@ var webpack = require('webpack');
 var HtmlWebpackPlugin = require('html-webpack-plugin');
 
 module.exports = {
-  devtool: 'source-map',
+  // devtool: 'source-map',  // develop
+  devtool: false, // production
   entry: {},
   module: {
     loaders: [
        { test: /\.js$/, exclude: [/app\/lib/, /node_modules/], loader: 'ng-annotate!babel' },
-       { test: /\.html$/, loader: 'raw' },
+       { test: /\.html$/, loader: 'html-withimg-loader!raw' },
        { test: /\.less$/, loader: 'style!css!less' },
        { test: /\.css$/, loader: 'style!css' },
        {
@@ -16,10 +17,16 @@ module.exports = {
           loader: 'url?limit=10000&name=./img/[name].[hash:7].[ext]'
        },
        {
-         test: /\.(woff2?|eot|ttf|otf)(\?.*)?$/,
+         test: /\.(woff2?|eot|ttf|otf|svg)(\?.*)?$/,
          loader: 'url?limit=10000&name=./fonts/[name].[hash:7].[ext]'
        }
     ]
+  },
+
+  htmlLoader: {
+    ignoreCustomFragments: [/\{\{.*?}}/],
+    root: path.resolve(__dirname, 'assets'),
+    attrs: ['img:src', 'link:href']
   },
   plugins: [
     // Injects bundles in your index.html instead of wiring all manually.
