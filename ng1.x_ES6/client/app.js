@@ -29,7 +29,7 @@ function config($locationProvider, $stateProvider, $urlRouterProvider, $httpProv
     $stateProvider
         .state('applicationForm', {
             url: '/application',
-            // abstract: true,     //　指定母版界面，所有的子界面都有这个统一的界面,　不能直接访问
+            // abstract: true,     //指定母版界面，所有的子界面都有这个统一的界面,不能直接访问
             template: indexHtml,
             controller: 'IndexCtrl',
             controllerAs: 'vm'

@@ -1,12 +1,12 @@
 import template from './modal.html';
 import modalStyle from './modal.less';
 
-let link = (scope, element, attrs) => {
+let link = (scope) => {
     scope.delay || (scope.delay = 3000);
     var timer = null;
-    scope.$watch('isShow', (newVal, oldVal) => {
+    scope.$watch('isShow', (newVal) => {
         if (newVal === true) {
-            timer && clearTimeout(timer);
+            timer && window.clearTimeout(timer);
             timer = window.setTimeout(function() {
                 scope.isShow = false;
                 scope.action && scope.action();

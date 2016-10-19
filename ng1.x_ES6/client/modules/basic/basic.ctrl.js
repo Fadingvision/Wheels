@@ -1,5 +1,4 @@
 import ValidatorFactory from '../../utils/util';
-import {localKey} from '../../consts/const.js';
 
 /**
  * 获取字符串长度，中文为２，英文和数字为１
@@ -17,7 +16,6 @@ class BasicCtrl{
     /* @ngInject */
     constructor(localStorageService, $scope, $rootScope, $state) {
         let localBasic = localStorageService.get('basic');
-        console.log($state)
         state = $state;
         localStorage = localStorageService;
         let basic = {
@@ -42,8 +40,7 @@ class BasicCtrl{
     showMsg(msg) {
         this.isShow = true;
         this.msg = msg;
-        console.log(msg);
-    };
+    }
 
 
     vertifyInputNum() {

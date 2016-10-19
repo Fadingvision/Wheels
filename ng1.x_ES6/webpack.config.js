@@ -1,12 +1,20 @@
 var path    = require('path');
 var webpack = require('webpack');
 var HtmlWebpackPlugin = require('html-webpack-plugin');
+var projectRoot = path.resolve(__dirname, './');
+
 
 module.exports = {
   // devtool: 'source-map',  // develop
   devtool: false, // production
   entry: {},
   module: {
+    preLoaders: [{
+      test: /\.js$/,
+      loader: 'eslint',
+      include: projectRoot,
+      exclude: /node_modules/
+    }],
     loaders: [
        { test: /\.js$/, exclude: [/app\/lib/, /node_modules/], loader: 'ng-annotate!babel' },
        { test: /\.html$/, loader: 'html-withimg-loader!raw' },
@@ -22,7 +30,9 @@ module.exports = {
        }
     ]
   },
-
+  eslint: {
+    formatter: require('eslint-friendly-formatter')
+  },
   htmlLoader: {
     ignoreCustomFragments: [/\{\{.*?}}/],
     root: path.resolve(__dirname, 'assets'),

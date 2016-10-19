@@ -25,7 +25,7 @@ function calculateMonthLoan(totalLoan) {
     var denominator = Math.pow(1 + monthEnsurance + monthManage + monthRate + monthService, stage) - 1;
     // 随心包改成+20 ---- 2016.9.30
     var res = Math.round(numerator / denominator) + packages;
-    if(res !== res || res === Infinity ||　res < 0) res = 0;
+    if(res !== res || res === Infinity || res < 0) res = 0;
     return res;
 }
 
@@ -94,8 +94,7 @@ class LoanCtrl{
     showMsg(msg) {
         this.isShow = true;
         this.msg = msg;
-        console.log(msg);
-    };
+    }
 
 
     vertifyInfo() {
@@ -115,7 +114,6 @@ class LoanCtrl{
         let res = validatorIns.startVal(this.showMsg.bind(this));
         let isEqual = (this.loan.accountName == basicInfo.name);
         if(res && !isEqual) this.showMsg('账户名与申请人姓名必须一致！');
-        console.log('success submit');
     }
 }
 

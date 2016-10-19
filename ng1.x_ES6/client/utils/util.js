@@ -109,9 +109,6 @@ var validmethods = {
      * @return {Boolean}     [description]
      */
     isNumber: function(val, errMsg) {
-        console.log(val)
-        console.log(!this.isEmpty(val, errMsg))
-        console.log(!/^[0-9]+$/.test(+val))
         if (this.isEmpty(val, errMsg)) return errMsg;
         if (!/^[0-9]+$/.test(val)) return errMsg;
     },
