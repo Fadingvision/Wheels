@@ -12,8 +12,7 @@ import angular from 'angular';
 
 // Built by the core Angular team for mocking dependencies
 import mocks from 'angular-mocks';
-import localStroageModule from 'angular-local-storage';
-import uiRouter from 'angular-ui-router';
+
 
 // We use the context method on `require` which Webpack created
 // in order to signify which files we actually want to require or import.
@@ -21,11 +20,13 @@ import uiRouter from 'angular-ui-router';
 // Using that regex, we scan within `client/app` and target
 // all files ending with `.spec.js` and trace its path.
 // By passing in true, we permit this process to occur recursively.
-let context = require.context('./client', true, /\.spec\.js/);
-
+let context = require.context('./client', true, /\.spec$/);
 console.log(context.keys())
-
 // Get all files, for each file, call the context function
 // that will require the file and load it here. Context will
 // loop and require those spec files here.
-// context.keys().forEach(context);
+context.keys().forEach(context);
+// const srcContext = require.context('./client', true, /^\.\/(?!app(\.js)?$)/);
+// srcContext.keys().forEach(srcContext);
+
+

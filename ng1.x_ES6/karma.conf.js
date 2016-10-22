@@ -1,3 +1,6 @@
+var path = require('path');
+var projectRoot = path.resolve(__dirname, './');
+
 module.exports = function(config) {
     config.set({
         // base path used to resolve all patterns
@@ -34,24 +37,32 @@ module.exports = function(config) {
         // preprocess matching files before serving them to the browser
         // available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
         // 将spec.bundle.js进行webpack打包
+        // 使用karma-coverage统计的代码覆盖率统计的是，编译打包后的代码，这个覆盖率直接没有了参考价值。
         preprocessors: {
-            'spec.bundle.js': ['webpack', 'coverage' ]
+            'spec.bundle.js': ['webpack', 'sourcemap']
         },
 
 
         // webpack　options
         webpack: {
-            // devtool: 'inline-source-map',
+            devtool: 'inline-source-map',
             module: {
+                // 处理代码测试覆盖率
+                preLoaders: [{
+                    test: /\.js$/,
+                    loader: 'isparta',
+                    include: path.resolve(projectRoot, 'client'),
+                    exclude: /\.spec$/,
+                }],
                 loaders: [{
                     test: /\.js/,
                     exclude: [/app\/lib/, /node_modules/],
                     loader: 'babel'
                 }, {
                     test: /\.html/,
-                    loader: 'html-withimg-loader!raw'
+                    loader: 'raw'
                 }, {
-                    test: /\.styl$/,
+                    test: /\.less$/,
                     loader: 'style!css!less'
                 }, {
                     test: /\.css$/,
@@ -72,7 +83,7 @@ module.exports = function(config) {
 
         // available reporters: https://npmjs.org/browse/keyword/karma-reporter
         reporters: ['mocha', 'coverage'],
-        // reporter options 
+        // reporter options
         mochaReporter: {
             colors: {
                 success: 'green',
