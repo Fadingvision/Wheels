@@ -10,9 +10,7 @@ describe('Basic', () => {
             orderNum: 'fake_order_num'
         }
     };
-    // fuck!!!!!!!!!!!!!!!!!!!!!!!!!
-    // 我的老哥，报错和这个依赖注入太坑爹了，
-    // 原来没有注入local和router的依赖，坑死爹了
+    // 注入localStroageModule和router的依赖
     beforeEach(window.module(localStroageModule));
     beforeEach(window.module(uiRouter));
     beforeEach(window.module(appModule));

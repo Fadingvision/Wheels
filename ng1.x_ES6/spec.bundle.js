@@ -21,12 +21,9 @@ import mocks from 'angular-mocks';
 // all files ending with `.spec.js` and trace its path.
 // By passing in true, we permit this process to occur recursively.
 let context = require.context('./client', true, /\.spec$/);
-console.log(context.keys())
 // Get all files, for each file, call the context function
 // that will require the file and load it here. Context will
 // loop and require those spec files here.
 context.keys().forEach(context);
 // const srcContext = require.context('./client', true, /^\.\/(?!app(\.js)?$)/);
 // srcContext.keys().forEach(srcContext);
-
-
