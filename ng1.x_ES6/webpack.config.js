@@ -18,7 +18,8 @@ module.exports = {
     loaders: [
        { test: /\.js$/, exclude: [/app\/lib/, /node_modules/], loader: 'ng-annotate!babel' },
        { test: /\.html$/, loader: 'html-withimg-loader!raw' },
-       { test: /\.less$/, loader: 'style!css!less' },
+       { test: /\.less$/, exclude: /\.module\.less$/, loader: 'style!css-loader!less-loader' },
+       { test: /\.module\.less$/, loader: 'style!css-loader?modules&importLoaders=1&localIdentName=[name]__[local]___[hash:base64:5]!less-loader' },
        { test: /\.css$/, loader: 'style!css' },
        { test: /\.(png|jpe?g|gif|svg)(\?.*)?$/, loader: 'url?limit=10000&name=./img/[name].[hash:7].[ext]' },
        { test: /\.(woff2?|eot|ttf|otf|svg)(\?.*)?$/, loader: 'url?limit=10000&name=./fonts/[name].[hash:7].[ext]' }

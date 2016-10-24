@@ -1,5 +1,5 @@
 import ValidatorFactory from '../../utils/util';
-
+import style from './basic.module.less';
 /**
  * 获取字符串长度，中文为２，英文和数字为１
  * @param  {[type]} str [description]
@@ -13,6 +13,9 @@ const getLen = function(str) {
 class BasicCtrl{
     /* @ngInject */
     constructor(localStorageService, $scope, $rootScope, $state) {
+        // local Css
+        this.style = style;
+
         let localBasic = localStorageService.get('basic');
         let basic = {
             name: '',
