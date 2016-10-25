@@ -28,6 +28,15 @@ module.exports = {
   eslint: {
     formatter: require('eslint-friendly-formatter')
   },
+
+  resolve: {
+    extensions: [],
+    // 指定别名，优化webpack的查找速度
+    alias: {
+      'angular': path.join(__dirname, './node_modules', '/angular/angular')
+      // 'angular': path.join(__dirname, './node_modules', '/angular/angular.min') // production
+    }
+  },
   htmlLoader: {
     ignoreCustomFragments: [/\{\{.*?}}/],
     root: path.resolve(__dirname, 'assets'),

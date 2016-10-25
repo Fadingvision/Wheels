@@ -12,7 +12,7 @@ import {productCat} from '../../consts/const.js';
  * @param  {[type]} totalLoan [description]
  * @return {[type]}           [description]
  */
-const calculateMonthLoan = (totalLoan) => {
+const calculateMonthLoan = function(totalLoan){
     totalLoan = parseInt(totalLoan, 10);
     var monthService = 0,
         monthRate = 0.015,

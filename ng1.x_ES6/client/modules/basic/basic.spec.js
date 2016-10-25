@@ -23,16 +23,14 @@ describe('Basic', () => {
 
         spyOn(localStorageService, 'set');
         spyOn($state, 'go');
-        spyOn(localStorageService, 'get').and.callFake(function(key) {
-            return undefined;
-        });
+        spyOn(localStorageService, 'get').and.callFake( () => undefined);
 
         vm = $controller('BasicCtrl', {
             $scope: $rootScope.$new()
         });
     }));
 
-    it('should forbid the submit when input is invalid', function() {
+    it('should forbid the submit when input is invalid', () => {
         vm.basic = {
             name: 'asd',
             phone: '15708483717',
