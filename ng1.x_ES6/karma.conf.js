@@ -37,7 +37,7 @@ module.exports = function(config) {
         // preprocess matching files before serving them to the browser
         // available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
         // 将spec.bundle.js进行webpack打包
-        // 使用karma-coverage统计的代码覆盖率统计的是，编译打包后的代码，这个覆盖率直接没有了参考价值。
+        // 使用karma-coverage统计的代码覆盖率统计的是，编译打包后的代码，这个覆盖率没有参考价值。
         preprocessors: {
             'spec.bundle.js': ['webpack', 'sourcemap']
         },

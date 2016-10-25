@@ -6,7 +6,7 @@ var projectRoot = path.resolve(__dirname, './');
 
 module.exports = {
   devtool: 'source-map',  // development
-  // devtool: false, // production
+  // devtool: 'cheap-module-source-map',  // development
   entry: {},
   module: {
     preLoaders: [{

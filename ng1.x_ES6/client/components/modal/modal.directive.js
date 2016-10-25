@@ -7,7 +7,7 @@ let link = (scope) => {
     scope.$watch('isShow', (newVal) => {
         if (newVal === true) {
             timer && window.clearTimeout(timer);
-            timer = window.setTimeout(function() {
+            timer = window.setTimeout(() => {
                 scope.isShow = false;
                 scope.action && scope.action();
                 scope.$apply();
@@ -15,23 +15,21 @@ let link = (scope) => {
         }
     })
 };
-
-const ddo = {
-    restrict: 'E',
-    link,
-    template,
-    // replace: true,
-    scope: {
-        // 必须传
-        msg: '=',
-        isShow: '=',
-        // 选传
-        action: '&',
-        delay: '@'
-    },
-};
-
-let alertDirec = function() {
+let alertDirec = () => {
+    const ddo = {
+        restrict: 'E',
+        link,
+        template,
+        // replace: true,
+        scope: {
+            // 必须传
+            msg: '=',
+            isShow: '=',
+            // 选传
+            action: '&',
+            delay: '@'
+        },
+    };
     return ddo;
 }
 

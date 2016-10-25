@@ -18,6 +18,7 @@ import colorsSupported from 'supports-color';
 import historyApiFallback from 'connect-history-api-fallback';
 
 let root = 'client';
+let proRoot = 'dist';
 
 // helper method for resolving paths
 let resolveToApp = (glob = '') => {
@@ -25,7 +26,7 @@ let resolveToApp = (glob = '') => {
 };
 
 let resolveToComponents = (glob = '') => {
-    return path.join(root, './modules', glob); // app/components/{glob}
+    return path.join(root, './modules', glob); // app/modules/{glob}
 };
 
 // map of all paths
@@ -41,49 +42,66 @@ let paths = {
         path.join(__dirname, root, './app.js')
     ],
     output: root,
-    blankTemplates: path.join(__dirname, 'generator', 'component/**/*.**'),
+    blankTemplates: path.join(__dirname, 'generator', 'templateModule/**/*.**'),
     dest: path.join(__dirname, 'dist')
 };
 
-// use webpack.config.js to build modules
-gulp.task('webpack', ['clean'], (cb) => {
+// 生产环境编译
+gulp.task('build', ['clean'], (cb) => {
     const config = require('./webpack.dist.config');
     config.entry.app = paths.entry;
 
+    // run webpack
     webpack(config, (err, stats) => {
         if (err) {
             throw new gutil.PluginError("webpack", err);
         }
 
         gutil.log("[webpack]", stats.toString({
+            // output options
             colors: colorsSupported,
             chunks: false,
             errorDetails: true
         }));
 
+        // 启动一个服务来查看build的资源
+        serve({
+            port: process.env.PORT || 8801,
+            open: true,
+            server: {
+                baseDir: proRoot
+            },
+            middleware: [
+                // 用于匹配资源，将所有路由重定向到index.htm
+                historyApiFallback()
+            ]
+        });
+
         cb();
     });
 });
-
+// 启动开发环境
 gulp.task('serve', () => {
     const config = require('./webpack.dev.config');
     config.entry.app = [
-        // this modules required to make HRM working
-        // it responsible for all this webpack magic
+        // This allows you to add hot reloading into an existing server without webpack-dev-server
         'webpack-hot-middleware/client?reload=true',
         // application entry point
     ].concat(paths.entry);
 
+    console.log(config.entry)
     var compiler = webpack(config);
 
     serve({
         port: process.env.PORT || 3000,
-        open: true,
+        open: false,
         server: {
             baseDir: root
         },
         middleware: [
+            // 用于匹配资源，将所有路由重定向到index.htm
             historyApiFallback(),
+            // No files are written to disk, it handle the files in memory
             webpackDevMiddleware(compiler, {
                 stats: {
                     colors: colorsSupported,
@@ -92,6 +110,7 @@ gulp.task('serve', () => {
                 },
                 publicPath: config.output.publicPath
             }),
+            // This allows you to add hot reloading into an existing server without webpack-dev-server
             webpackHotMiddleware(compiler)
         ]
     });
@@ -99,12 +118,20 @@ gulp.task('serve', () => {
 
 gulp.task('watch', ['serve']);
 
-gulp.task('component', () => {
+
+// 自动生成新的文件模板
+// 包括*.ctrl.js, *.html, *.spec.js, *.less
+// usage: gulp module --name 'moduleName' --parent 'parentPath'
+gulp.task('module', () => {
+    // 首字母大写
     const cap = (val) => {
         return val.charAt(0).toUpperCase() + val.slice(1);
     };
+
+    // yargs用于获取启动参数
     const name = yargs.argv.name;
     const parentPath = yargs.argv.parent || '';
+    console.log(name, parentPath);
     const destPath = path.join(resolveToComponents(), parentPath, name);
 
     return gulp.src(paths.blankTemplates)
@@ -118,6 +145,7 @@ gulp.task('component', () => {
         .pipe(gulp.dest(destPath));
 });
 
+// 每次bulid之前清除之前的dist目录
 gulp.task('clean', (cb) => {
     del([paths.dest]).then(function(paths) {
         gutil.log("[clean]", paths);

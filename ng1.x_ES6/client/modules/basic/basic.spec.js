@@ -10,11 +10,9 @@ describe('Basic', () => {
             orderNum: 'fake_order_num'
         }
     };
-    // ×¢ÈëlocalStroageModuleºÍrouterµÄÒÀÀµ
     beforeEach(window.module(localStroageModule));
     beforeEach(window.module(uiRouter));
     beforeEach(window.module(appModule));
-
 
 
     beforeEach(inject((_$rootScope_, _$controller_, _localStorageService_, _$state_) => {
@@ -34,32 +32,6 @@ describe('Basic', () => {
         });
     }));
 
-    // beforeEach(inject(($injector) => {
-    //     // let $q = $injector.get('$q');
-
-    //     localStorage = $injector.get('localStorageService');
-
-    //     spyOn(localStorage, 'set');
-    //     spyOn($state, 'go');
-    //     spyOn(localStorage, 'get').and.callFake(function(key) {
-    //         return undefined;
-    //     });
-
-    //     // spyOn(applicationCustomerFactory, 'saveBasicInfo').and.callFake(function() {
-    //     //     let deferred = $q.defer();
-    //     //     deferred.resolve(result);
-    //     //     return deferred.promise;
-    //     // });
-
-    //     vm = $controller('BasicCtrl', {
-    //         $scope: $rootScope.$new()
-    //     });
-
-
-    // }));
-
-
-
     it('should forbid the submit when input is invalid', function() {
         vm.basic = {
             name: 'asd',
@@ -72,22 +44,6 @@ describe('Basic', () => {
         vm.vertifyInfo();
         expect(localStorageService.set).not.toHaveBeenCalled();
         expect($state.go).not.toHaveBeenCalled();
-        // expect(0).toEqual(0);
     });
-
-
-    // it('should allow the submit when input is valid', function() {
-    //     vm.basic = {
-    //         name: 'asd',
-    //         phone: 15708483717,
-    //         idNum: '512924196912231506',
-    //         qq: '541606115',
-    //         email: '541606115@qq.com',
-    //         isStudent: '0'
-    //     };
-    //     vm.vertifyInfo();
-    //     expect(localStorage.set).toHaveBeenCalled();
-    //     expect($state.go).toHaveBeenCalled();
-    // });
 
 })
