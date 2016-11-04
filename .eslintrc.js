@@ -3,7 +3,7 @@ module.exports = {
   extends: ['eslint:recommended'],  // 配置代码检查风格
   // extends: ['eslint:recommended', 'angular'],  // 配置代码检查风格
   // extends: ['airbnb-base', 'angular'],
-  // extends: 'airbnb-base',
+  extends: 'airbnb-base',
   'rules': {
     // add your custom rules here
 
@@ -130,6 +130,6 @@ module.exports = {
     "phantomjs": true,
     "protractor": true,
     "jasmine": true,  // 添加所有的 Jasmine 版本 1.3 和 2.0 的测试全局变量。
-    "es6": true  // 支持除了modules所有 ECMAScript 6 特性。
+    "es6": false  // 支持除了modules所有 ECMAScript 6 特性。
   },
 }
