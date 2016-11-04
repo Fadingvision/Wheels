@@ -28,50 +28,51 @@ module.exports = function(config) {
 
     // preprocess matching files before serving them to the browser
     // available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
-    
+
     // 配置预处理器
     // 为添加的文件添加覆盖率打点
     // preprocessors: {},
     preprocessors : {'ES5-shims/src/es5-shim.js': 'coverage'},
 
-    
+
 
 
     // test results reporter to use
     // possible values: 'dots', 'progress'
     // available reporters: https://npmjs.org/browse/keyword/karma-reporter
-    
+
     // reporters: ['progress'],
     // 报告器
     // 新增spec报告器，仿mocha格式
     reporters: ['spec', 'coverage'],
     specReporter: {
-        // When test faild - report it at the end of all tests  
+        // When test faild - report it at the end of all tests
         lateReport:      true,
 
-        // Max Error log lines to display 
+        // Max Error log lines to display
         maxLogLines:     5,
 
-        // Don't show faild tests 
+        // Don't show faild tests
         suppressFaild:   false,
 
-        // Don't show successful tests 
+        // Don't show successful tests
         suppressSuccess: false,
 
-        // Don't show skipped tests 
+        // Don't show skipped tests
         suppressSkipped: false,
 
-        // Every test that is more slower than the slowest test is mark as slow 
+        // Every test that is more slower than the slowest test is mark as slow
         slowTestTime: 40,
         fastTestTime: 20
 
     },
-    // plugins: ["karma-spec-reporter-2", 'karma-coverage'],
+    plugins: [
+        require("karma-spec-reporter-2"),
+        require('karma-coverage'),
+        require("karma-jasmine"),
+        require("karma-phantomjs-launcher")
+    ],
 
-    // coverageReporter: {
-    //     type : 'html',
-    //     dir : 'coverage/'
-    // },
 
     // 覆盖率报告格式
     coverageReporter: {
@@ -114,7 +115,7 @@ module.exports = function(config) {
     // start these browsers
     // available browser launchers: https://npmjs.org/browse/keyword/karma-launcher
     // browsers: ['PhantomJS', 'Chrome'],
-    
+
     // 需要测试的浏览器
     browsers: ['PhantomJS'],
 

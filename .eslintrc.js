@@ -1,5 +1,10 @@
 module.exports = {
   root: true,  // ESLint 一旦发现配置文件中有 "root": true，它就会停止在父级目录中寻找配置文件。
+  parser: 'babel-eslint',
+  parserOptions: {
+    // 设置为 "script" (默认) 或 "module"（如果你的代码是 ECMAScript 模块)
+    sourceType: 'module'
+  },
   extends: ['eslint:recommended'],  // 配置代码检查风格
   // extends: ['eslint:recommended', 'angular'],  // 配置代码检查风格
   // extends: ['airbnb-base', 'angular'],
@@ -23,8 +28,8 @@ module.exports = {
     'eol-last': 0, // 强制文件末尾至少保留一行空行
     'consistent-this': 0,  // 当获取当前执行环境的上下文时，强制使用一致的命名
     'func-names': 0, // 强制使用命名的 function 表达式
-
-
+    'no-multiple-empty-lines': 0, // 不允许多个空行
+    'keyword-spacing': 0,
     /////////////
     // warning //
     /////////////
@@ -42,11 +47,11 @@ module.exports = {
     'no-shadow': 1, // 禁止 var 声明 与外层作用域的变量同名
     'no-undef-init': 1 , // 禁止将变量初始化为 undefined
     'no-use-before-define': 1, // 不允许在变量定义之前使用它们(更好的与let和const接轨)
-    'brace-style': ["error", { "allowSingleLine": true }], // one true brace style 大括号风格要求
+    'brace-style': ["error", "1tbs",  { "allowSingleLine": true }], // one true brace style 大括号风格要求
     'comma-spacing': 1, // 强制在逗号前后使用一致的空格
     'comma-style': 1, // 强制使用一致的逗号风格
-    'id-length': [1, {'min': 4, 'max': 15}],  // 强制标识符的最新和最大长度
-    'indent': 1, // 强制使用一致的缩进 (默认为4个空格)
+    'id-length': [1, {'min': 2, 'max': 15}],  // 强制标识符的最新和最大长度
+    'indent': [1, 4], // 强制使用一致的缩进 (默认为4个空格)
     'new-parens': 1, // 要求调用无参构造函数时有圆括号
     'newline-per-chained-call': 1, // 要求方法链中每个调用都有一个换行符
     'no-array-constructor': 1, // 禁止使用 Array 构造函数
@@ -75,7 +80,7 @@ module.exports = {
     'no-caller': 2, // 禁用 arguments.caller 或 arguments.callee
     'no-case-declarations': 2, // 不允许在 case 子句中使用词法声明
     'no-else-return': 2, // 禁止 if 语句中有 return 之后有 else
-    'no-empty-function': 2 // 禁止出现空函数
+    'no-empty-function': 2, // 禁止出现空函数
     'no-eq-null': 2, // 禁止在没有类型检查操作符的情况下与 null 进行比较
     'no-eval': 2,
     'no-extra-bind': 2, // 禁止不必要的 .bind() 调用
@@ -119,8 +124,8 @@ module.exports = {
     'max-statements': ["error", { "max": 30 }], // 强制 function 块最多允许的的语句数量
     'new-cap': 2, // 要求构造函数首字母大写
     'no-bitwise': 2, // 禁用按位运算符
-    'no-unneeded-ternary': 2 // 禁止可以在有更简单的可替代的表达式时使用三元操作符
-    'operator-assignment': 2 // 要求或禁止在可能的情况下要求使用简化的赋值操作符(默认为要求)
+    'no-unneeded-ternary': 2, // 禁止可以在有更简单的可替代的表达式时使用三元操作符
+    'operator-assignment': 2, // 要求或禁止在可能的情况下要求使用简化的赋值操作符(默认为要求)
 
   },
 
@@ -130,6 +135,6 @@ module.exports = {
     "phantomjs": true,
     "protractor": true,
     "jasmine": true,  // 添加所有的 Jasmine 版本 1.3 和 2.0 的测试全局变量。
-    "es6": false  // 支持除了modules所有 ECMAScript 6 特性。
+    "es6": true  // 支持除了modules所有 ECMAScript 6 特性。
   },
 }
