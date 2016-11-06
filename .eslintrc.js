@@ -8,7 +8,7 @@ module.exports = {
   extends: ['eslint:recommended'],  // 配置代码检查风格
   // extends: ['eslint:recommended', 'angular'],  // 配置代码检查风格
   // extends: ['airbnb-base', 'angular'],
-  extends: 'airbnb-base',
+  // extends: 'airbnb-base',
   'rules': {
     // add your custom rules here
 
@@ -50,7 +50,7 @@ module.exports = {
     'brace-style': ["error", "1tbs",  { "allowSingleLine": true }], // one true brace style 大括号风格要求
     'comma-spacing': 1, // 强制在逗号前后使用一致的空格
     'comma-style': 1, // 强制使用一致的逗号风格
-    'id-length': [1, {'min': 2, 'max': 15}],  // 强制标识符的最新和最大长度
+    'id-length': [1, {'min': 2, 'max': 20}],  // 强制标识符的最新和最大长度
     'indent': [1, 4], // 强制使用一致的缩进 (默认为4个空格)
     'new-parens': 1, // 要求调用无参构造函数时有圆括号
     'newline-per-chained-call': 1, // 要求方法链中每个调用都有一个换行符
@@ -62,6 +62,7 @@ module.exports = {
     'no-spaced-func': 1, // 禁止 function 标识符和括号之间出现空格
     'require-jsdoc': 1, // 要求使用 JSDoc 注释
     'space-infix-ops': 1, // 要求操作符周围有空格
+    'consistent-return': [1, {"treatUndefinedAsUnspecified": true}], // 要求 return 语句要么总是指定返回的值，要么不指定
 
 
     //////////////
@@ -73,7 +74,6 @@ module.exports = {
     'array-callback-return': 2, // 强制数组方法的回调函数中有 return 语句
     'block-scoped-var': 2, // 强制把变量的使用限制在其定义的作用域范围内(当移植到es6时，则可以直接用let全局替换var)
     "complexity": ["error", { "max": 10 }],  // 指定程序中允许的最大环路复杂度
-    'consistent-return': 2, // 要求 return 语句要么总是指定返回的值，要么不指定
     'default-case': 2, // 要求 switch 语句中有 default 分支
     'dot-notation': 2, // 强制在任何允许的时候使用点号
     'eqeqeq': 2, // 要求使用 === 和 !==
@@ -116,7 +116,7 @@ module.exports = {
     // 代码风格指南
     'camelcase': 2, // 强制使用骆驼拼写法命名约定
     'max-depth': 2, // 强制可嵌套的块的最大深度(4)
-    'max-len': 2, // 强制一行的最大长度(80)
+    'max-len': [2, {"ignoreComments": true}], // 强制一行的最大长度(80)
     'max-nested-callbacks': ["error", { "max": 3 }], // 强制回调函数最大嵌套深度
     'valid-typeof': 2, // 强制 typeof 表达式与有效的字符串进行比较
     'no-floating-decimal': 2, // 禁止数字字面量中使用前导和末尾小数点
