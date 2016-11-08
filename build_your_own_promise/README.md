@@ -1,73 +1,318 @@
 ## about Promise
 
 #### Issues
-1. è§£å†³çš„é—®é¢˜ï¼Œå®ç°çš„åŸç†
-1. ä¸åŒpromiseçš„å®ç°ä¹‹é—´çš„äº¤äº’ï¼ˆresolvePromiseå‡½æ•°çš„å®ç°å’Œç”¨æ³•ï¼‰--- ä¸å¤ªæ˜ç™½
-2. åŸåˆ™ä¸Šï¼Œpromise.then(onResolved, onRejected)é‡Œçš„è¿™ä¸¤ç›¸å‡½æ•°éœ€è¦å¼‚æ­¥è°ƒç”¨,è®©thençš„å‚æ•°å¼‚æ­¥æ‰§è¡Œ
-    ï¼ˆsetTimeout(fn, 0)çš„å«ä¹‰å’Œç”¨æ³•ï¼‰ --- ä¸å¤ªæ˜ç™½
-3. promiseæ ‡å‡†çš„æµ‹è¯•ï¼Œeslintçš„è¯­æ³•é”™è¯¯ä¿®å¤
-5. promiseé“¾çš„é”™è¯¯å¤„ç†
-6. promise.race, .all, ç­‰å…¶ä»–ç›¸å…³æ–¹æ³•çš„å®ç°ï¼ˆåŸºäºthenæ–¹æ³•ï¼‰
-7. å’Œå…¶ä»–ç‰›é€¼çš„å®ç°ï¼ˆq, bluebird, $q, $.deferï¼‰çš„å¯¹æ¯”å’Œå­¦ä¹ 
-
-#### ä¸€ã€è§£å†³çš„é—®é¢˜ï¼Œå®ç°çš„åŸç†
-
-
+1. ½â¾öµÄÎÊÌâ£¬ÊµÏÖµÄÔ­Àí
+2. ²»Í¬promiseµÄÊµÏÖÖ®¼äµÄ½»»¥£¨resolvePromiseº¯ÊıµÄÊµÏÖºÍÓÃ·¨£©--- ²»Ì«Ã÷°×
+3. Ô­ÔòÉÏ£¬promise.then(onResolved, onRejected)ÀïµÄÕâÁ½Ïàº¯ÊıĞèÒªÒì²½µ÷ÓÃ,ÈÃthenµÄ²ÎÊıÒì²½Ö´ĞĞ
+    £¨setTimeout(fn, 0)µÄº¬ÒåºÍÓÃ·¨£© --- ²»Ì«Ã÷°×
+4. promise±ê×¼µÄ²âÊÔ£¬eslintµÄÓï·¨´íÎóĞŞ¸´
+5. promiseÁ´µÄ´íÎó´¦Àí
+6. promise.race, .all, µÈÆäËûÏà¹Ø·½·¨µÄÊµÏÖ£¨»ùÓÚthen·½·¨£©
+7. ºÍÆäËûÅ£±ÆµÄÊµÏÖ£¨q, bluebird, $q, $.defer£©µÄ¶Ô±ÈºÍÑ§Ï°
+8. promise µÄ·´Ä£Ê½
+----------------
 
 
-#### äºŒã€ä¸åŒpromiseä¹‹é—´çš„è§£å†³è¿‡ç¨‹ï¼ˆä¸ºäº†å…¼å®¹ä¸åŒçš„promiseæ ‡å‡†å®ç°æˆ–è€…å…¼å®¹ä¸€äº›épromiseçš„é”™è¯¯ç”¨æ³•ã€‚ï¼‰
+#### Ò»¡¢½â¾öµÄÎÊÌâ£¬ÊµÏÖµÄÔ­Àí
+
+¼ÙÉèÄãÕıÔÚ±àĞ´Ò»¸öº¯Êı£¬µ«ÊÇÄã²»ÄÜÂíÉÏ·µ»ØÖµ£¬×îÃ÷ÏÔµÄ·½·¨¾ÍÊÇ½«·µ»ØµÄÖµ´«ÈëÒ»¸ö»Øµ÷º¯Êı×÷Îª²ÎÊı£¬¶ø²»ÊÇ½«Æäreturn»ØÀ´¡£
+
+```javascript
+var oneOneSecondLater = function (callback) {
+    setTimeout(function () {
+        callback(1);
+    }, 1000);
+};
+```
+ÕâÊÇÒ»¸öºÜ¼òµ¥µÄ½â¾ö·½°¸£¬µ«ÊÇ´æÔÚºÜ¶àÎÊÌâ¡£
+
+Ò»¸ö¸üÆÕÍ¨µÄ°ì·¨ÊÇ´«ÈëÒ»¸ö»Øµ÷º¯ÊıÒÔ¼°Ò»¸ö´íÎó´¦Àíº¯ÊıÀ´¶Ô·µ»ØµÄÖµÒÔ¼°¿ÉÄÜ³öÏÖµÄ´íÎó½øĞĞ´¦Àí¡£
+```js
+var maybeOneOneSecondLater = function (callback, errback) {
+    setTimeout(function () {
+        if (Math.random() < .5) {
+            callback(1);
+        } else {
+            errback(new Error("Can't provide one."));
+        }
+    }, 1000);
+};
+```
+
+È»¶ø,ÕâĞ©·½·¨Êµ¼ÊÄ£ĞÍÅ×³öÒì³£¡£Òì³£ºÍtry / catch¿éµÄÄ¿µÄÊÇÍÆ³ÙÏÔÊ½´¦ÀíµÄÒì³£,Ö±µ½³ÌĞò·µ»ØÒ»¸öÖµ£¬ÊÔÍ¼»Ö¸´ÊÇÓĞÒâÒåµÄ¡£ĞèÒªÓĞÒ»Ğ©ÒşÊ½´«²¥Òì³£µÄ»úÖÆÀ´³ö´«²¥Ã»ÓĞ±»´¦ÀíµÄÒì³££¬Õâ¾ÍÊÇPormise.
+
+
+```javascript
+var maybeOneOneSecondLater = function () {
+    var callback;
+    setTimeout(function () {
+        callback(1);
+    }, 1000);
+    return {
+        then: function (_callback) {
+            callback = _callback;
+        }
+    };
+};
+
+maybeOneOneSecondLater().then(callback);
+```
+ÎÒÃÇÄ£ÄâÒ»¸öÓĞthen·½·¨µÄ¶ÔÏóÀ´Ä£Äâpromise,Ä¿µÄÊÇÎªÁËÍÆ³Ù»Øµ÷º¯ÊıµÄ×¢²á£¬µ«ÊÇÕâÀï´æÔÚÁ½¸öÎÊÌâ£º
+
+1¡¢ Ö»ÄÜ×îºóÓĞÒ»¸öcallbackÈ¥½ÓÊÜ·µ»ØµÄvalue, Èç¹ûÓĞ¸ü¶àµÄcallback¿ÉÒÔÈ¥½ÓÊÜÕâ¸öÖµ£¬ÄÇÃ´Õâ¸ö¶ÔÏó½«»á¸üÓĞÓÃ¡£
+2¡¢Èç¹ûÕâ¸ö»Øµ÷º¯ÊıµÄ×¢²áÊ±¼ä³¬¹ıÁË1Ãë£¬ÄÇÃ´Õâ¸öPromise½«ÊÇÊ§°ÜµÄ£¬ÒòÎªcallback½«²»»áÖ´ĞĞ¡£
+
+Ò»¸ö¸üÆÕ±éµÄ½â¾ö°ì·¨»á½ÓÊÜÈÎºÎÊıÁ¿µÄ»Øµ÷²¢ÔÊĞíËûÃÇ×¢²áÖ®Ç°»òÖ®ºó³¬Ê±,»òÕßÒ»°ãÀ´Ëµ,½â¾öÊÂ¼ş¡£ÎÒÃÇ¿ÉÒÔÍ¨¹ı½«Promise±ä³ÉÒ»¸öÓµÓĞÁ½¸ö×´Ì¬µÄ¶ÔÏóÀ´ÊµÏÖÕâÒ»µã¡£
+
+```js
+var maybeOneOneSecondLater = function () {
+    var pending = [], value;
+    setTimeout(function () {
+        value = 1;
+        for (var i = 0, ii = pending.length; i < ii; i++) {
+            var callback = pending[i];
+            callback(value);
+        }
+        pending = undefined;
+    }, 1000);
+    return {
+        then: function (callback) {
+            if (pending) {
+                pending.push(callback);
+            } else {
+                callback(value);
+            }
+        }
+    };
+};
+
+```
+½«ÉÏÃæµÄº¯ÊıÉÔ×÷¸Ä±ä£¬°ÑpromiseµÄÂß¼­ºÍÕæÕıµÄÒì²½´¦Àíº¯ÊıµÄÂß¼­·Ö¿ª£¬´Ó¶øÂß¼­¿ÉÒÔ»®·ÖµÄ¸üÇåÎú£¬Í¬Ê±defer¶ÔÏóÒ²¿ÉÒÔ½øĞĞ¸´ÓÃ£¬µÃµ½ÏÂÃæµÄÒ»¸öÍ¨ÓÃµÄdefer¶ÔÏó£¬¿ÉÒÔÓÃthenÀ´Ìí¼Ó»Øµ÷º¯Êı£¬ÓÃresolve·½·¨À´½«±£´æµÄ»Øµ÷º¯ÊıÖ´ĞĞ£¬²¢´«ÈëÏàÓ¦µÄÎÒÃÇĞèÒª»Øµ÷º¯Êı½ÓÊÜµÄ²ÎÊıvalueÖµ¡£
+
+```js
+var defer = function () {
+    var pending = [], value;
+    return {
+        resolve: function (_value) {
+            value = _value;
+            for (var i = 0, ii = pending.length; i < ii; i++) {
+                var callback = pending[i];
+                callback(value);
+            }
+            pending = undefined;
+        },
+        then: function (callback) {
+            if (pending) {
+                pending.push(callback);
+            } else {
+                callback(value);
+            }
+        }
+    }
+};
+// ÈçºÎÊ¹ÓÃdefer¶ÔÏó
+var oneOneSecondLater = function () {
+    var result = defer();
+    setTimeout(function () {
+        result.resolve(1);
+    }, 1000);
+    return result;
+};
+
+oneOneSecondLater().then(callback);
+
+```
+ÕâÀïµÄresolveº¯ÊıÓĞµãÈ±Ïİ£¬ÔÚÓÚÆä¿ÉÒÔÖ´ĞĞ¶à´Î²¢¸Ä±äpromiseµÄ×´Ì¬¡£ĞŞ¸´Ò»ÏÂ, µ±µÚ¶ş´Îµ÷ÓÃresolveµÄÊ±ºòÅ×³öÒ»¸ö´íÎó¡£
+
+```js
+if (pending) {
+    value = _value;
+    for (var i = 0, ii = pending.length; i < ii; i++) {
+        var callback = pending[i];
+        callback(value);
+    }
+    pending = undefined;
+} else {
+    throw new Error("A promise can only be resolved once.");
+}
+```
+
+½«promise´ÓresolveÖĞ·ÖÀë³öÀ´ÓĞÖúÓÚÎÒÃÇ×ñÑ­µ¥Ò»Ö°ÔğµÄ±à³ÌÔ­Ôò£¬promiseÖ»¸ºÔğ¼à¿Ø½á¹ûµÄ×´Ì¬£¬¶øresolveº¯Êı¸ºÔğÕæÕıµÄÖ´ĞĞ¡£
+ÕâÖÖ·ÖÀë±ØÈ»»á¼ÓÖØÀ¬»ø»ØÊÕ»úÖÆµÄ¸ºµ£¡£
+
+```js
+var Promise = function () {
+};
+
+var isPromise = function (value) {
+    return value instanceof Promise;
+};
+
+var defer = function () {
+    var pending = [], value;
+    var promise = new Promise();
+    promise.then = function (callback) {
+        if (pending) {
+            pending.push(callback);
+        } else {
+            callback(value);
+        }
+    };
+    return {
+        resolve: function (_value) {
+            if (pending) {
+                value = _value;
+                for (var i = 0, ii = pending.length; i < ii; i++) {
+                    var callback = pending[i];
+                    callback(value);
+                }
+                pending = undefined;
+            }
+        },
+        promise: promise
+    };
+};
+```
+ÏÂÒ»²½ÊÇ½â¾öÁ¬Ğøpromiseµ÷ÓÃµÄÎÊÌâ£¬¼ÙÉèÒ»ÏÂ£¬ÓĞ¸öº¯ÊıµÄÖ´ĞĞÒÀÀµÁíÍâÁ½¸öÒì²½º¯ÊıµÄ·µ»ØÖµ£¬ÓÃ»Øµ÷º¯ÊıÊÇÕâÑùµÄÊµÏÖ£º
+
+```js
+var twoOneSecondLater = function (callback) {
+    var a, b;
+    var consider = function () {
+        if (a === undefined || b === undefined)
+            return;
+        callback(a + b);
+    };
+    oneOneSecondLater(function (_a) {
+        a = _a;
+        consider();
+    });
+    oneOneSecondLater(function (_b) {
+        b = _b;
+        consider();
+    });
+};
+
+twoOneSecondLater(function (c) {
+    // c === 2
+});
+```
+ÕâÖÖ·½Ê½ÓĞÃ÷ÏÔµÄÈ±µã£ºconsiderº¯ÊıĞèÒªÔÚÆä±»Ê¹ÓÃÖ®Ç°ÏÔÊ½µÄÉùÃ÷¡£
+
+¶øÔÚpromiseµÄÊµÏÖÏÂ£¬ÎÒÃÇÖ»ĞèÒª¼¸ĞĞ´úÂë¾Í¿ÉÒÔÇáËÉµÄÊµÏÖÕâ¸öĞ§¹û£º
+
+```js
+
+var a = oneOneSecondLater();
+var b = oneOneSecondLater();
+var c = a.then(function (a) {
+    return b.then(function (b) {
+        var c = a + b;
+        return c;
+    });
+});
+```
+ÎªÁËÉÏÃæµÄ´úÂëÄÜ¹»Õı³£µÄ¹¤×÷£¬ÎÒÃÇĞèÒª×öÒ»ÏÂ¼¸¼şÊÂ£º
+1. then·½·¨±ØĞë·µ»ØÒ»¸öPromise£¬
+2. ·µ»ØµÄpromise±ØĞëÄÜ¹»±»»Øµ÷º¯ÊıµÄ·µ»ØÖµresolve
+3. »Øµ÷º¯ÊıµÄ·µ»ØÖµ±ØĞëÊÇÒ»¸ö½â¾öµÄ³£Á¿Öµ»òÕßÊÇÒ»¸öpormise¶ÔÏó¡£
+
+#### ¶ş¡¢²»Í¬promiseÖ®¼äµÄ½â¾ö¹ı³Ì£¨ÎªÁË¼æÈİ²»Í¬µÄpromise±ê×¼ÊµÏÖ»òÕß¼æÈİÒ»Ğ©·ÇpromiseµÄ´íÎóÓÃ·¨¡££©
 
 
 
 
 
-Promise è§£å†³è¿‡ç¨‹
+Promise ½â¾ö¹ı³Ì
 
-Promise è§£å†³è¿‡ç¨‹æ˜¯ä¸€ä¸ªæŠ½è±¡çš„æ“ä½œï¼Œå…¶éœ€è¾“å…¥ä¸€ä¸ª promise å’Œä¸€ä¸ªå€¼ï¼Œæˆ‘ä»¬è¡¨ç¤ºä¸º [[Resolve]](promise, x)ï¼Œå¦‚æœ x æœ‰ then æ–¹æ³•ä¸”çœ‹ä¸Šå»åƒä¸€ä¸ª Promise ï¼Œè§£å†³ç¨‹åºå³å°è¯•ä½¿ promise æ¥å— x çš„çŠ¶æ€ï¼›å¦åˆ™å…¶ç”¨ x çš„å€¼æ¥æ‰§è¡Œ promise ã€‚
+Promise ½â¾ö¹ı³ÌÊÇÒ»¸ö³éÏóµÄ²Ù×÷£¬ÆäĞèÊäÈëÒ»¸ö promise ºÍÒ»¸öÖµ£¬ÎÒÃÇ±íÊ¾Îª [[Resolve]](promise, x)£¬Èç¹û x ÓĞ then ·½·¨ÇÒ¿´ÉÏÈ¥ÏñÒ»¸ö Promise £¬½â¾ö³ÌĞò¼´³¢ÊÔÊ¹ promise ½ÓÊÜ x µÄ×´Ì¬£»·ñÔòÆäÓÃ x µÄÖµÀ´Ö´ĞĞ promise ¡£
 
-è¿™ç§ thenable çš„ç‰¹æ€§ä½¿å¾— Promise çš„å®ç°æ›´å…·æœ‰é€šç”¨æ€§ï¼šåªè¦å…¶æš´éœ²å‡ºä¸€ä¸ªéµå¾ª Promise/A+ åè®®çš„ then æ–¹æ³•å³å¯ï¼›è¿™åŒæ—¶ä¹Ÿä½¿éµå¾ª Promise/A+ è§„èŒƒçš„å®ç°å¯ä»¥ä¸é‚£äº›ä¸å¤ªè§„èŒƒä½†å¯ç”¨çš„å®ç°èƒ½è‰¯å¥½å…±å­˜ã€‚
+ÕâÖÖ thenable µÄÌØĞÔÊ¹µÃ Promise µÄÊµÏÖ¸ü¾ßÓĞÍ¨ÓÃĞÔ£ºÖ»ÒªÆä±©Â¶³öÒ»¸ö×ñÑ­ Promise/A+ Ğ­ÒéµÄ then ·½·¨¼´¿É£»ÕâÍ¬Ê±Ò²Ê¹×ñÑ­ Promise/A+ ¹æ·¶µÄÊµÏÖ¿ÉÒÔÓëÄÇĞ©²»Ì«¹æ·¶µ«¿ÉÓÃµÄÊµÏÖÄÜÁ¼ºÃ¹²´æ¡£
 
-è¿è¡Œ [[Resolve]](promise, x) éœ€éµå¾ªä»¥ä¸‹æ­¥éª¤ï¼š
+ÔËĞĞ [[Resolve]](promise, x) Ğè×ñÑ­ÒÔÏÂ²½Öè£º
 
-x ä¸ promise ç›¸ç­‰
+x Óë promise ÏàµÈ
 
-å¦‚æœ promise å’Œ x æŒ‡å‘åŒä¸€å¯¹è±¡ï¼Œä»¥ TypeError ä¸ºæ®å› æ‹’ç»æ‰§è¡Œ promise
+Èç¹û promise ºÍ x Ö¸ÏòÍ¬Ò»¶ÔÏó£¬ÒÔ TypeError Îª¾İÒò¾Ü¾øÖ´ĞĞ promise
 
-x ä¸º Promise
+x Îª Promise
 
-å¦‚æœ x ä¸º Promise ï¼Œåˆ™ä½¿ promise æ¥å— x çš„çŠ¶æ€ æ³¨4ï¼š
+Èç¹û x Îª Promise £¬ÔòÊ¹ promise ½ÓÊÜ x µÄ×´Ì¬ ×¢4£º
 
-å¦‚æœ x å¤„äºç­‰å¾…æ€ï¼Œ promise éœ€ä¿æŒä¸ºç­‰å¾…æ€ç›´è‡³ x è¢«æ‰§è¡Œæˆ–æ‹’ç»
-å¦‚æœ x å¤„äºæ‰§è¡Œæ€ï¼Œç”¨ç›¸åŒçš„å€¼æ‰§è¡Œ promise
-å¦‚æœ x å¤„äºæ‹’ç»æ€ï¼Œç”¨ç›¸åŒçš„æ®å› æ‹’ç» promise
-x ä¸ºå¯¹è±¡æˆ–å‡½æ•°
+Èç¹û x ´¦ÓÚµÈ´ıÌ¬£¬ promise Ğè±£³ÖÎªµÈ´ıÌ¬Ö±ÖÁ x ±»Ö´ĞĞ»ò¾Ü¾ø
+Èç¹û x ´¦ÓÚÖ´ĞĞÌ¬£¬ÓÃÏàÍ¬µÄÖµÖ´ĞĞ promise
+Èç¹û x ´¦ÓÚ¾Ü¾øÌ¬£¬ÓÃÏàÍ¬µÄ¾İÒò¾Ü¾ø promise
+x Îª¶ÔÏó»òº¯Êı
 
-å¦‚æœ x ä¸ºå¯¹è±¡æˆ–è€…å‡½æ•°ï¼š
+Èç¹û x Îª¶ÔÏó»òÕßº¯Êı£º
 
-æŠŠ x.then èµ‹å€¼ç»™ then æ³¨5
-å¦‚æœå– x.then çš„å€¼æ—¶æŠ›å‡ºé”™è¯¯ e ï¼Œåˆ™ä»¥ e ä¸ºæ®å› æ‹’ç» promise
+°Ñ x.then ¸³Öµ¸ø then ×¢5
+Èç¹ûÈ¡ x.then µÄÖµÊ±Å×³ö´íÎó e £¬ÔòÒÔ e Îª¾İÒò¾Ü¾ø promise
 
-å¦‚æœ then æ˜¯å‡½æ•°ï¼Œå°† x ä½œä¸ºå‡½æ•°çš„ä½œç”¨åŸŸ this è°ƒç”¨ä¹‹ã€‚ä¼ é€’ä¸¤ä¸ªå›è°ƒå‡½æ•°ä½œä¸ºå‚æ•°ï¼Œç¬¬ä¸€ä¸ªå‚æ•°å«åš resolvePromise ï¼Œç¬¬äºŒä¸ªå‚æ•°å«åš rejectPromise:
+Èç¹û then ÊÇº¯Êı£¬½« x ×÷Îªº¯ÊıµÄ×÷ÓÃÓò this µ÷ÓÃÖ®¡£´«µİÁ½¸ö»Øµ÷º¯Êı×÷Îª²ÎÊı£¬µÚÒ»¸ö²ÎÊı½Ğ×ö resolvePromise £¬µÚ¶ş¸ö²ÎÊı½Ğ×ö rejectPromise:
 
-å¦‚æœ resolvePromise ä»¥å€¼ y ä¸ºå‚æ•°è¢«è°ƒç”¨ï¼Œåˆ™è¿è¡Œ [[Resolve]](promise, y)
+Èç¹û resolvePromise ÒÔÖµ y Îª²ÎÊı±»µ÷ÓÃ£¬ÔòÔËĞĞ [[Resolve]](promise, y)
 
-å¦‚æœ rejectPromise ä»¥æ®å›  r ä¸ºå‚æ•°è¢«è°ƒç”¨ï¼Œåˆ™ä»¥æ®å›  r æ‹’ç» promise
+Èç¹û rejectPromise ÒÔ¾İÒò r Îª²ÎÊı±»µ÷ÓÃ£¬ÔòÒÔ¾İÒò r ¾Ü¾ø promise
 
-å¦‚æœ resolvePromise å’Œ rejectPromise å‡è¢«è°ƒç”¨ï¼Œæˆ–è€…è¢«åŒä¸€å‚æ•°è°ƒç”¨äº†å¤šæ¬¡ï¼Œåˆ™ä¼˜å…ˆé‡‡ç”¨é¦–æ¬¡è°ƒç”¨å¹¶å¿½ç•¥å‰©ä¸‹çš„è°ƒç”¨
+Èç¹û resolvePromise ºÍ rejectPromise ¾ù±»µ÷ÓÃ£¬»òÕß±»Í¬Ò»²ÎÊıµ÷ÓÃÁË¶à´Î£¬ÔòÓÅÏÈ²ÉÓÃÊ×´Îµ÷ÓÃ²¢ºöÂÔÊ£ÏÂµÄµ÷ÓÃ
 
-å¦‚æœè°ƒç”¨ then æ–¹æ³•æŠ›å‡ºäº†å¼‚å¸¸ eï¼š
+Èç¹ûµ÷ÓÃ then ·½·¨Å×³öÁËÒì³£ e£º
 
-å¦‚æœ resolvePromise æˆ– rejectPromise å·²ç»è¢«è°ƒç”¨ï¼Œåˆ™å¿½ç•¥ä¹‹
-å¦åˆ™ä»¥ e ä¸ºæ®å› æ‹’ç» promise
+Èç¹û resolvePromise »ò rejectPromise ÒÑ¾­±»µ÷ÓÃ£¬ÔòºöÂÔÖ®
+·ñÔòÒÔ e Îª¾İÒò¾Ü¾ø promise
 
-å¦‚æœ then ä¸æ˜¯å‡½æ•°ï¼Œä»¥ x ä¸ºå‚æ•°æ‰§è¡Œ promise
-å¦‚æœ x ä¸ä¸ºå¯¹è±¡æˆ–è€…å‡½æ•°ï¼Œä»¥ x ä¸ºå‚æ•°æ‰§è¡Œ promise
+Èç¹û then ²»ÊÇº¯Êı£¬ÒÔ x Îª²ÎÊıÖ´ĞĞ promise
+Èç¹û x ²»Îª¶ÔÏó»òÕßº¯Êı£¬ÒÔ x Îª²ÎÊıÖ´ĞĞ promise
 
-å¦‚æœä¸€ä¸ª promise è¢«ä¸€ä¸ªå¾ªç¯çš„ thenable é“¾ä¸­çš„å¯¹è±¡è§£å†³ï¼Œè€Œ [[Resolve]](promise, thenable) çš„é€’å½’æ€§è´¨åˆä½¿å¾—å…¶è¢«å†æ¬¡è°ƒç”¨ï¼Œæ ¹æ®ä¸Šè¿°çš„ç®—æ³•å°†ä¼šé™·å…¥æ— é™é€’å½’ä¹‹ä¸­ã€‚ç®—æ³•è™½ä¸å¼ºåˆ¶è¦æ±‚ï¼Œä½†ä¹Ÿé¼“åŠ±æ–½è€…æ£€æµ‹è¿™æ ·çš„é€’å½’æ˜¯å¦å­˜åœ¨ï¼Œè‹¥æ£€æµ‹åˆ°å­˜åœ¨åˆ™ä»¥ä¸€ä¸ªå¯è¯†åˆ«çš„ TypeError ä¸ºæ®å› æ¥æ‹’ç» promise æ³¨6ã€‚
+Èç¹ûÒ»¸ö promise ±»Ò»¸öÑ­»·µÄ thenable Á´ÖĞµÄ¶ÔÏó½â¾ö£¬¶ø [[Resolve]](promise, thenable) µÄµİ¹éĞÔÖÊÓÖÊ¹µÃÆä±»ÔÙ´Îµ÷ÓÃ£¬¸ù¾İÉÏÊöµÄËã·¨½«»áÏİÈëÎŞÏŞµİ¹éÖ®ÖĞ¡£Ëã·¨Ëä²»Ç¿ÖÆÒªÇó£¬µ«Ò²¹ÄÀøÊ©Õß¼ì²âÕâÑùµÄµİ¹éÊÇ·ñ´æÔÚ£¬Èô¼ì²âµ½´æÔÚÔòÒÔÒ»¸ö¿ÉÊ¶±ğµÄ TypeError Îª¾İÒòÀ´¾Ü¾ø promise ×¢6¡£
 
 
-**referenceï¼š**
+**reference£º**
 
-[Promises/A+è§„èŒƒ(ä¸­æ–‡)](http://example.com/)
+[Promises/A+¹æ·¶(ÖĞÎÄ)](http://example.com/)
 
-[Promises/A+è§„èŒƒ(è‹±æ–‡)](https://promisesaplus.com/)
+[Promises/A+¹æ·¶(Ó¢ÎÄ)](https://promisesaplus.com/)
+
+
+#### setTimeout(fn, 0)µÄ×÷ÓÃ
+
+È·±£»Øµ÷º¯Êı°´ÕÕËûÃÇ×¢²áµÄÊ±¼äË³ĞòÈ¥Ö´ĞĞ£¬Õâ´ó´ó¼õÉÙÁË¿ØÖÆÁ÷Òì²½±à³ÌµÄ¹ÌÓĞÎ£ÏÕÊıÁ¿¡£¿¼ÂÇÒ»¸ö¼òµ¥µÄÀı×Ó:
+
+```js
+var blah = function () {
+    var result = foob().then(function () {
+        return barf();
+    });
+    var barf = function () {
+        return 10;
+    };
+    return result;
+};
+```
+
+¸Ãº¯Êı½«Å×³öÒ»¸öÒì³£»ò·µ»ØÒ»¸ö±»10½â¾öµÄpromise, ËüÈ¡¾öÓÚfoob()½â¾öÔÚÍ¬Ò»µÄÊÂ¼şÑ­»·(·¢ĞĞÆäÁ¢¼´»Øµ÷ÔÚÍ¬Ò»¶ÑÕ»)»òÔÚÎ´À´¡£Èç¹û»Øµ÷ÊÇÍÆ³Ùµ½Î´À´,Ëü»áÒ»Ö±³É¹¦¡£
+
+#### ¹ØÓÚsetTimeout(fn, 0);
+
+jsÔËĞĞÊÇ»ùÓÚµ¥Ïß³ÌµÄ£¬ÒâÎ¶×ÅÒ»¶Î´úÂëÖ´ĞĞÊ±£¬ÆäËû´úÂë½«½øÈë¶ÓÁĞµÈ´ı£¬Ò»µ©Ïß³ÌÓĞ¿ÕÏĞ¾ÍÖ´ĞĞºóĞø´úÂë¡£Èç¹û´úÂëÖĞÉè¶¨ÁËÒ»¸ösetTimeout£¬ÄÇÃ´ä¯ÀÀÆ÷±ã»áÔÚºÏÊÊµÄÊ±¼ä£¬½«´úÂë²åÈëÈÎÎñ¶ÓÁĞ£¬Èç¹ûÕâ¸öÊ±¼äÉèÎª 0£¬¾Í´ú±íÁ¢¼´²åÈë¶ÓÁĞ£¬µ«²¢²»ÊÇÁ¢¼´Ö´ĞĞ£¬ÈÔÈ»ÒªµÈ´ıÇ°Ãæ´úÂëÖ´ĞĞÍê±Ï£¨ÆäÊµÓĞ¸öÑÓÊ±£¬¾ßÌåÊÇ16ms»¹ÊÇ4msÈ¡¾öÓÚä¯ÀÀÆ÷£©¡£ËùÒÔsetTimeout ²¢²»ÄÜ±£Ö¤Ö´ĞĞµÄÊ±¼ä£¬ÊÇ·ñ¼°Ê±Ö´ĞĞÈ¡¾öÓÚ JavaScript Ïß³ÌÊÇÓµ¼·»¹ÊÇ¿ÕÏĞ¡£
+
+
+```html
+<input type="text" ng-model="name" ng-keydown="showName()">
+<span ng-bind="name"></span>
+```
+
+```js
+var app = angular.module('App', []);
+app.controller('myContrl', function($scope, $window) {
+    $scope.name = '123';
+    $scope.showName = function() {
+        $window.setTimeout(function() {
+            console.log($scope.name);
+        }, 0);
+    };
+})
+```
+ÀıÈçÔÚkeydownÊÂ¼şÖĞ£¬jsÒıÇæĞèÒªÏÈÈ¥Ö´ĞĞkeydownµÄÊÂ¼ş£¬È»ºóÔÙÈ¥¸üĞÂinputÖĞµÄvalueÖµ£¬
+Õâ¾Íµ¼ÖÂÎÒÃÇÎŞ·¨¼°Ê±µÄÈ¡µ½ÊäÈë¿òÖĞ¡°×¼È·¡±µÄvalueÖµ£¬ËùÒÔÀûÓÃsetTimeout(fn, 0)½«È¡ÖµµÄ²Ù×÷¼ÓÈëµ½µ±Ç°Ö´ĞĞ¶ÓÁĞµÄ×îºó£¬µÈ´ıvalueµÄÖµ¸üĞÂÖ®ºóÎÒÃÇÔÙÈ¥½øĞĞÈ¡ÖµµÄ²Ù×÷£¬¾Í¿ÉÒÔÈ¡µ½×¼È·µÄÖµÁË¡£

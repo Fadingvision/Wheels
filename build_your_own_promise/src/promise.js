@@ -331,4 +331,5 @@
     } else {
         global.Promise = Promise;
     }
+/* eslint-disable no-invalid-this */
 }(this));
