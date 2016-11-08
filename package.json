@@ -1,49 +1,51 @@
 {
-  "name": "wheels",
-  "version": "1.0.0",
-  "description": "Only for doing some exercise",
-  "main": "index.js",
-  "scripts": {
-    "test": "karma start karma.conf.js",
-    "lint": "eslint ./ES5-shims/src/es5-shim.js"
-  },
-  "babel": {
-    "presets": [
-      "es2015"
-    ]
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/blackLearning/Wheels.git"
-  },
-  "author": "fuyigekua@foxmail.com",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/blackLearning/Wheels/issues"
-  },
-  "homepage": "https://github.com/blackLearning/Wheels#readme",
-  "devDependencies": {
-    "babel": "^6.5.2",
-    "babel-core": "^6.18.2",
-    "babel-eslint": "^7.0.0",
-    "babel-preset-es2015": "^6.18.0",
-    "babel-register": "^6.18.0",
-    "eslint": "^3.8.1",
-    "eslint-config-airbnb": "^11.1.0",
-    "eslint-config-airbnb-base": "^7.2.0",
-    "eslint-friendly-formatter": "^2.0.6",
-    "eslint-loader": "^1.6.0",
-    "eslint-plugin-html": "^1.5.3",
-    "eslint-plugin-import": "^1.16.0",
-    "gulp": "^3.9.1",
-    "gulp-eslint": "^3.0.1",
-    "jasmine": "^2.5.2",
-    "jasmine-core": "^2.5.2",
-    "karma": "^1.3.0",
-    "karma-chrome-launcher": "^2.0.0",
-    "karma-coverage": "^1.1.1",
-    "karma-jasmine": "^1.0.2",
-    "karma-phantomjs-launcher": "^1.0.2",
-    "karma-spec-reporter-2": "^0.2.0"
-  }
+    "name": "wheels",
+    "version": "1.0.0",
+    "description": "Only for doing some exercise",
+    "main": "index.js",
+    "scripts": {
+        "test": "karma start karma.conf.js",
+        "lint": "eslint ./ES5-shims/src/es5-shim.js",
+        "test_promise": "promises-aplus-tests build_your_own_promise/src/promise"
+    },
+    "babel": {
+        "presets": [
+            "es2015"
+        ]
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/blackLearning/Wheels.git"
+    },
+    "author": "fuyigekua@foxmail.com",
+    "license": "ISC",
+    "bugs": {
+        "url": "https://github.com/blackLearning/Wheels/issues"
+    },
+    "homepage": "https://github.com/blackLearning/Wheels#readme",
+    "devDependencies": {
+        "babel": "^6.5.2",
+        "babel-core": "^6.18.2",
+        "babel-eslint": "^7.0.0",
+        "babel-preset-es2015": "^6.18.0",
+        "babel-register": "^6.18.0",
+        "eslint": "^3.8.1",
+        "eslint-config-airbnb": "^11.1.0",
+        "eslint-config-airbnb-base": "^7.2.0",
+        "eslint-friendly-formatter": "^2.0.6",
+        "eslint-loader": "^1.6.0",
+        "eslint-plugin-html": "^1.5.3",
+        "eslint-plugin-import": "^1.16.0",
+        "gulp": "^3.9.1",
+        "gulp-eslint": "^3.0.1",
+        "jasmine": "^2.5.2",
+        "jasmine-core": "^2.5.2",
+        "karma": "^1.3.0",
+        "karma-chrome-launcher": "^2.0.0",
+        "karma-coverage": "^1.1.1",
+        "karma-jasmine": "^1.0.2",
+        "karma-phantomjs-launcher": "^1.0.2",
+        "karma-spec-reporter-2": "^0.2.0",
+        "promises-aplus-tests": "^2.1.2"
+    }
 }

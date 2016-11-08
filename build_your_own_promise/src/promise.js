@@ -1,7 +1,7 @@
-(function() {
+(function(global) {
     /**
      * 注意细节：
-     * 1. 每个then方法返回的是一个新的promise对象，而是原来的this值。
+     * 1. 每个then方法返回的是一个新的promise对象，而不是原来的this值。
      * 2. 每个then中的回调函数执行后的返回值是下一个回调函数的参数
      * 3. 一旦resolve，就会执行所有毁掉函数，并把Data传入到第一个回调函数的参数中去
      * 3. bind函数会返回一个新的函数变量
@@ -35,8 +35,6 @@
 
 
 
-
-
     /*
     关于不同Promise间的交互，
     其实标准里是有说明的，其中详细指定了如何通过then的实参返回的值来决定promise2的状态，
@@ -55,7 +53,8 @@
         var thenCalledOrThrow = false
 
         if (promise2 === x) { // 对应标准2.3.1节
-            return reject(new TypeError('Chaining cycle detected for promise!'))
+            return reject(new TypeError(
+                'Chaining cycle detected for promise!'))
         }
 
         /* eslint-disable no-use-before-define*/
@@ -64,7 +63,8 @@
             // 所以这里需要做一下处理，而不能一概的以为它会被一个“正常”的值resolve
             if (x.status === 'pending') {
                 x.then(function(value) {
-                    resolvePromise(promise2, value, resolve, reject)
+                    resolvePromise(promise2, value, resolve,
+                        reject)
                 }, reject)
             } else { // 但如果这个Promise的状态已经确定了，那么它肯定有一个“正常”的值，而不是一个thenable，所以这里直接取它的状态
                 x.then(resolve, reject)
@@ -74,18 +74,20 @@
 
         // 兼容其他的promise实现
         /* eslint-disable max-len */
-        let isObject = (x !== null) && ((typeof x === 'object') || (typeof x === 'function')); // 2.3.3
+        let isObject = (x !== null) && ((typeof x === 'object') || (
+            typeof x === 'function')); // 2.3.3
         if (isObject) {
             try {
 
                 // 2.3.3.1 因为x.then有可能是一个getter，这种情况下多次读取就有可能产生副作用
                 // 即要判断它的类型，又要调用它，这就是两次读取
-                then = x.then
+                then = x.then;
                 if (typeof then === 'function') { // 2.3.3.3
                     then.call(x, function rs(y) { // 2.3.3.3.1
                         if (thenCalledOrThrow) return undefined; // 2.3.3.3.3 即这三处谁选执行就以谁的结果为准
                         thenCalledOrThrow = true;
-                        return resolvePromise(promise2, y, resolve, reject); // 2.3.3.3.1
+                        return resolvePromise(promise2, y,
+                            resolve, reject); // 2.3.3.3.1
                     }, function rj(r) { // 2.3.3.3.2
                         if (thenCalledOrThrow) return undefined; // 2.3.3.3.3 即这三处谁选执行就以谁的结果为准
                         thenCalledOrThrow = true;
@@ -96,8 +98,8 @@
                 }
             } catch (e) { // 2.3.3.2
                 if (thenCalledOrThrow) return undefined; // 2.3.3.3.3 即这三处谁选执行就以谁的结果为准
-                thenCalledOrThrow = true
-                return reject(e)
+                thenCalledOrThrow = true;
+                return reject(e);
             }
         } else { // 2.3.4
             resolve(x)
@@ -133,6 +135,7 @@
                         this.onResolvedCb.forEach((cb) => {
                             // 这里每个函数都是传入的data
                             // 不是应该传入上一个回调函数的返回值？？？
+                            // --- 错啦，这里是一个promise里面的then,他们用的都是resolve里面的data;
                             cb(data);
                         })
                     }
@@ -184,12 +187,14 @@
              * 下一个promise的resolve方法必然是接收不到值得。
              * 2. 所以给的默认函数需要把接收到的参数return 回去给下一个promise的resolve函数接受
              */
-            resolvedCb = typeof resolvedCb === 'function' ? resolvedCb : function(value) {
-                return value
-            };
-            rejectedCb = typeof rejectedCb === 'function' ? rejectedCb : function(reason) {
-                throw reason
-            };
+            resolvedCb = typeof resolvedCb === 'function' ?
+                resolvedCb : function(value) {
+                    return value
+                };
+            rejectedCb = typeof rejectedCb === 'function' ?
+                rejectedCb : function(reason) {
+                    throw reason
+                };
 
 
             /**
@@ -207,9 +212,10 @@
                 promise2 = new Promise(function(resolve, reject) {
                     setTimeout(() => {
                         try {
-                            const x = resolvedCb(self.data);
+                            const x = resolvedCb(
+                                self.data);
 
-                            // // 如果onResolved的返回值是一个Promise对象，
+                            // 如果onResolved的返回值是一个Promise对象，
                             // 直接取它的结果做为promise2的结果
                             // 这里有点难以理解 ???
                             // if (x instanceof Promise) {
@@ -219,7 +225,9 @@
                             // 第一个promise的resolvedCb执行后返回的参数
                             // resolve(x);
 
-                            resolvePromise(promise2, x, resolve, reject);
+                            resolvePromise(promise2,
+                                x, resolve,
+                                reject);
                         } catch (err) {
                             reject(err);
                         }
@@ -232,9 +240,12 @@
                 promise2 = new Promise(function(resolve, reject) {
                     setTimeout(() => {
                         try {
-                            const x = rejectedCb(self.data);
+                            const x = rejectedCb(
+                                self.data);
 
-                            resolvePromise(promise2, x, resolve, reject);
+                            resolvePromise(promise2,
+                                x, resolve,
+                                reject);
                         } catch (err) {
                             reject(err);
                         }
@@ -251,8 +262,11 @@
 
                     self.onResolvedCb.push(function() {
                         try {
-                            const x = resolvedCb(self.data);
-                            resolvePromise(promise2, x, resolve, reject);
+                            const x = resolvedCb(
+                                self.data);
+                            resolvePromise(promise2,
+                                x, resolve,
+                                reject);
                         } catch (err) {
                             reject(err);
                         }
@@ -261,8 +275,11 @@
 
                     self.onRejectedCb.push(function() {
                         try {
-                            const x = rejectedCb(self.data);
-                            resolvePromise(promise2, x, resolve, reject);
+                            const x = rejectedCb(
+                                self.data);
+                            resolvePromise(promise2,
+                                x, resolve,
+                                reject);
                         } catch (err) {
                             reject(err);
                         }
@@ -272,52 +289,46 @@
             }
 
             return promise2;
-        }
-
-
-        catch (rejected) {
+        } catch (rejected) {
             return this.then(null, rejected);
         }
 
-    }
 
 
+        // 关于类似于angular的$q的两种用法，这里再次封装一种用法
+        static deferred() {
+            let defer = {};
+            defer.promise = new Promise(function(resolve, reject) {
+                defer.resolve = resolve;
+                defer.reject = reject;
+            });
+            return defer;
+        }
 
-    // 关于类似于angular的$q的两种用法，这里再次封装一种用法
-    Promise.deferred = Promise.defer = function() {
-        var defer = {};
-        defer.promise = new Promise(function(resolve, reject) {
-            defer.resolve = resolve;
-            defer.reject = reject;
-        });
+        static all() {
 
-        return defer;
-    }
+        }
 
-    Promise.all = function() {
+        static race() {
 
-    }
+        }
 
-    Promise.race = function() {
+        static resolve() {
 
-    }
+        }
 
-    Promise.resolve = function() {
+        static reject() {
 
-    }
-
-
-    Promise.reject = function() {
-
+        }
     }
 
     // if(typeof export !== 'undefined') {
-        // export default Promise;
+    // export default Promise;
     // }else
-    if(typeof module === 'object' && typeof module.export === 'function'){
-        module.export = Promise;
-    }else {
-        window.Promise = Promise;
+    if (typeof module === 'object' && typeof module.exports ===
+        'function') {
+        module.exports = Promise;
+    } else {
+        global.Promise = Promise;
     }
-}());
-
+}(this));
