@@ -6,7 +6,7 @@
   "scripts": {
     "test": "karma start karma.conf.js",
     "lint": "eslint ./ES5-shims/src/es5-shim.js",
-    "test_promise": "promises-aplus-tests build_your_own_promise/src/promise.js"
+    "test_promise": "promises-aplus-tests promise/src/promise.js"
   },
   "babel": {
     "presets": [
