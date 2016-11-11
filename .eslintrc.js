@@ -63,7 +63,7 @@ module.exports = {
     'require-jsdoc': 1, // 要求使用 JSDoc 注释
     'space-infix-ops': 1, // 要求操作符周围有空格
     'consistent-return': [1, {"treatUndefinedAsUnspecified": true}], // 要求 return 语句要么总是指定返回的值，要么不指定
-
+    'no-irregular-whitespace': 1,
 
     //////////////
     // disabled //

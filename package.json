@@ -6,7 +6,7 @@
   "scripts": {
     "test": "karma start karma.conf.js",
     "lint": "eslint ./ES5-shims/src/es5-shim.js",
-    "test_promise": "promises-aplus-tests build_your_own_promise/src/promise"
+    "test_promise": "promises-aplus-tests build_your_own_promise/src/promise.js"
   },
   "babel": {
     "presets": [
@@ -38,6 +38,7 @@
     "eslint-plugin-import": "^1.16.0",
     "gulp": "^3.9.1",
     "gulp-eslint": "^3.0.1",
+    "gulp-if": "^2.0.2",
     "jasmine": "^2.5.2",
     "jasmine-core": "^2.5.2",
     "karma": "^1.3.0",

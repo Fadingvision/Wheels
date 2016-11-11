@@ -10,17 +10,17 @@
 
     /**
      * #Issues
-     * 1. 不同promise的实现之间的交互（resolvePromise函数的实现和用法） 
+     * 1. 不同promise的实现之间的交互（resolvePromise函数的实现和用法） -- done
      * 2. 原则上，promise.then(onResolved, onRejected)里的这两相函数需要异步调用,让then的参数异步执行
-     *     （setTimeout(fn, 0)的含义和用法） 
-     * 3. promise标准的测试，eslint的语法错误修复
-     * 5. promise链的错误处理
-     * 6. promise.race, .all, 等其他相关方法的实现（基于then方法）
-     * 7. 和其他牛逼的实现（q, bluebird, $q, $.defer）的对比和学习
-     * 8. what's diffrence bettwen these usages?(promise的反模式)
+     *     （setTimeout(fn, 0)的含义和用法） -- done
+     * 3. promise链的错误处理 -- done
+     * 4. promise.race, .all, 等其他相关方法的实现（基于then方法）-- done
+     * 5. promise标准的测试，eslint的语法错误修复 -- done
+     * 6. 和其他牛逼的实现（q, bluebird, es6-promise, $q, $.defer）的对比和学习
+     * 7. what's diffrence bettwen these usages?(promise的反模式)
             doSomething().then(function() {
                 return doSomethingElse();
-            })；
+            });
 
             doSomethin().then(functiuoin() {
                 doSomethingElse();
@@ -30,7 +30,6 @@
 
             doSomething().then(doSomethingElse);
      */
-    
 
 
 
@@ -47,22 +46,22 @@
     `resolve`和`reject`实际上是`promise2`的`executor`的两个实参，因为很难挂在其它的地方，所以一并传进来。
     */
     function resolvePromise(promise2, x, resolve, reject) {
-        var then
-        var thenCalledOrThrow = false
+        var then;
+        var thenCalledOrThrow = false;
 
         if (promise2 === x) { // 对应标准2.3.1节
-            return reject(new TypeError(
-                'Chaining cycle detected for promise!'))
+            return reject(new TypeError('Chaining cycle detected for promise!'))
         }
 
-        /* eslint-disable no-use-before-define*/
+        // 如果是Promise对象，直接根据其状态来决定新的promise的状态
+        /* eslint-disable no-use-before-define */
         if (x instanceof Promise) { // 对应标准2.3.2节
-            // 如果x的状态还没有确定，那么它是有可能被一个thenable决定最终状态和值的
+            // 如果x的状态还没有确定，那么它仍然可能返回一个promise,如果仍然是一个promise对象，则需要继续对其进行resolvePromise执行。
             // 所以这里需要做一下处理，而不能一概的以为它会被一个“正常”的值resolve
             if (x.status === 'pending') {
+                // ???
                 x.then(function(value) {
-                    resolvePromise(promise2, value, resolve,
-                        reject)
+                    resolvePromise(promise2, value, resolve, 　reject);
                 }, reject)
             } else { // 但如果这个Promise的状态已经确定了，那么它肯定有一个“正常”的值，而不是一个thenable，所以这里直接取它的状态
                 x.then(resolve, reject)
@@ -80,17 +79,21 @@
                 // 2.3.3.1 因为x.then有可能是一个getter，这种情况下多次读取
                 // 即要判断它的类型，又要调用它，这就是两次读取,就有可能产生副作用,这里保存一个它的引用
                 then = x.then;
+
+                // 如果是一个thenable方法
+                // ???
                 if (typeof then === 'function') { // 2.3.3.3
                     then.call(x, function rs(y) { // 2.3.3.3.1
                         if (thenCalledOrThrow) return undefined; // 2.3.3.3.3 即这三处谁先执行就以谁的结果为准
                         thenCalledOrThrow = true;
-                        return resolvePromise(promise2, y,
-                            resolve, reject); // 2.3.3.3.1
+                        return resolvePromise(promise2, y, resolve, reject); // 2.3.3.3.1
                     }, function rj(r) { // 2.3.3.3.2
                         if (thenCalledOrThrow) return undefined; // 2.3.3.3.3 即这三处谁先执行就以谁的结果为准
                         thenCalledOrThrow = true;
                         return reject(r);
                     })
+
+                    // 如果没有then方法，则直接用该值resolve掉新的promise
                 } else { // 2.3.3.4
                     resolve(x);
                 }
@@ -99,6 +102,9 @@
                 thenCalledOrThrow = true;
                 return reject(e);
             }
+
+
+            // 如果是原始值，直接用该值resolve掉新的promise
         } else { // 2.3.4
             resolve(x)
         }
@@ -113,6 +119,11 @@
          * @return {[type]}          [description]
          */
         constructor(executor) {
+            var executorType = typeof executor;
+            if (executorType !== 'function') {
+                throw new Error(`Promise resolver ${executorType} is not a function`);
+            }
+
             this.status = 'pending'; // promise的状态
             this.data = undefined; // promise的值
             this.onResolvedCb = []; // promise resolve时的回调函数集合
@@ -174,8 +185,8 @@
          * 注册promise改变之后的回调函数
          * @param  {[type]} resolvedCb [description]
          * @param  {[type]} rejectedCb [description]
-         * @return {[type]}            一个新的promise对象
-         * 因为then每次返回的promise状态不是一致的。
+         * @return {[type]}            一个新的promise对象（not this）
+         * 因为then每次返回的promise状态不是一致的.所以不是传统的链试调用
          */
         then(resolvedCb, rejectedCb) {
             let promise2;
@@ -210,10 +221,10 @@
                 // 如果第一个promise的状态已经是resolved了，
                 // 那么第二个promise的立即执行resolve
                 promise2 = new Promise(function(resolve, reject) {
+                    // ???
                     setTimeout(() => {
                         try {
-                            const x = resolvedCb(
-                                self.data);
+                            const x = resolvedCb(self.data);
 
                             // 如果onResolved的返回值是一个Promise对象，
                             // 直接取它的结果做为promise2的结果
@@ -225,9 +236,7 @@
                             // 第一个promise的resolvedCb执行后返回的参数
                             // resolve(x);
 
-                            resolvePromise(promise2,
-                                x, resolve,
-                                reject);
+                            resolvePromise(promise2, x, resolve, reject);
                         } catch (err) {
                             reject(err);
                         }
@@ -262,11 +271,8 @@
 
                     self.onResolvedCb.push(function() {
                         try {
-                            const x = resolvedCb(
-                                self.data);
-                            resolvePromise(promise2,
-                                x, resolve,
-                                reject);
+                            const x = resolvedCb(　self.data);
+                            resolvePromise(promise2, 　x, resolve, 　reject);
                         } catch (err) {
                             reject(err);
                         }
@@ -275,11 +281,8 @@
 
                     self.onRejectedCb.push(function() {
                         try {
-                            const x = rejectedCb(
-                                self.data);
-                            resolvePromise(promise2,
-                                x, resolve,
-                                reject);
+                            const x = rejectedCb(　self.data);
+                            resolvePromise(promise2, 　x, resolve, 　reject);
                         } catch (err) {
                             reject(err);
                         }
@@ -324,9 +327,10 @@
                 var resolvedValues = new Array(promiseNum);
                 for (var i = 0; i < promises.length; i++) {
                     // 由于promise的解析过程是异步的，所以用闭包来保存i的值，保证每个promise的值的解析正确
+                    /* eslint-disable */
                     (function(i) {
                         // 用Promise.resolve来确定每个promise的状态
-                        Promise.resolve(promise[i]).then(function(value) {
+                        Promise.resolve(promises[i]).then(function(value) {
                             resolvedValues[i] = value;
                             resolveCounter++;
 
@@ -352,12 +356,7 @@
             return new Promise(function(resolve, reject) {
                 for (var i = 0; i < promises.length; i++) {
                     // 用Promise.resolve来确定每个promise的状态
-                    Promise.resolve(promise[i]).then(function(value) {
-                        return resolve(value);
-                    }, function(reason) {
-                        // 如果有某个promise被reject掉，则直接以该被reject的reason将新的promise对象进行reject掉。
-                        return reject(reason);
-                    })
+                    Promise.resolve(promises[i]).then(resolve, reject);
                 }
             })
         }
@@ -370,9 +369,13 @@
          * @param  {[type]} value [description]
          * @return {[type]}       [description]
          */
+
+        // BUGFIX TODO...
         static resolve(value) {
             let resolvedPromise = new Promise(function(resolve, reject) {
                 resolvePromise(resolvedPromise, value, resolve, reject);
+                // ??? 这里不用判断value值是不是promise对象或者thenable对象吗?
+                // resolve(value);
             });
             return resolvedPromise;
         }
@@ -385,14 +388,11 @@
         }
     }
 
-    // if(typeof export !== 'undefined') {
-    // export default Promise;
-    // }else
-    if (typeof module === 'object' && typeof module.exports ===
-        'function') {
+    // AMD
+    if (typeof exports === "object" && typeof module === "object") {
         module.exports = Promise;
     } else {
-        global.Promise = Promise;
+        global.adapter = Promise;
     }
     /* eslint-disable no-invalid-this */
 }(this));

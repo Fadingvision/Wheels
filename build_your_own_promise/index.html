@@ -8,20 +8,20 @@
     <script src='./src/promise.js'></script>
 
     <script>
-        var pro = new Promise(function(resolve, reject){
-            var a = 123;
-            setTimeout(function() {
-                a = 456;
-                console.log('a has been changed');
-                resolve(a);
-            }, 2000);
-        });
-        pro.then(function(a){
-            console.log('I got the changed a');
-            return '123';
-        }).then(function(b) {
-            console.log(`i got ${b} too`)
-        })
+        // var pro = new Promise(function(resolve, reject){
+        //     var a = 123;
+        //     setTimeout(function() {
+        //         a = 456;
+        //         console.log('a has been changed');
+        //         resolve(a);
+        //     }, 2000);
+        // });
+        // pro.then(function(a){
+        //     console.log('I got the changed a');
+        //     return '123';
+        // }).then(function(b) {
+        //     console.log(`i got ${b} too`)
+        // })
 
     </script>
 </body>
