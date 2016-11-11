@@ -18,8 +18,9 @@
         });
         pro.then(function(a){
             console.log('I got the changed a');
-        }).then(function() {
-            console.log('I got too')
+            return '123';
+        }).then(function(b) {
+            console.log(`i got ${b} too`)
         })
 
     </script>
