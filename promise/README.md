@@ -1,17 +1,16 @@
 ## about Promise
 
-test: 'npm run test_promise';
+---------
+test: npm run test_promise
 
 #### Issues
 1. 解决的问题，实现的原理
-2. 不同promise的实现之间的交互（resolvePromise函数的实现和用法）--- 不太明白
+2. 不同promise的实现之间的交互（resolvePromise函数的实现和用法）
 3. 原则上，promise.then(onResolved, onRejected)里的这两相函数需要异步调用,让then的参数异步执行
-    （setTimeout(fn, 0)的含义和用法） --- 不太明白
-4. promise标准的测试，eslint的语法错误修复
-5. promise链的错误处理
-6. promise.race, .all, 等其他相关方法的实现（基于then方法）
-7. 和其他牛逼的实现（q, bluebird, $q, $.defer）的对比和学习
-8. promise 的反模式
+    （setTimeout(fn, 0)的含义和用法）
+4. promise链的错误处理
+5. promise 的反模式
+6. 和其他实现（q, bluebird, $q, $.defer）的对比和学习
 ----------------
 
 
@@ -219,10 +218,15 @@ var c = a.then(function (a) {
 2. 返回的promise必须能够被回调函数的返回值resolve
 3. 回调函数的返回值必须是一个解决的常量值或者是一个pormise对象。
 
+
+**reference：**
+
+[q](https://github.com/kriskowal/q)
+
 #### 二、不同promise之间的解决过程（为了兼容不同的promise标准实现或者兼容一些非promise的错误用法。）
 
 
-
+**下面是promise/A+的标准文档，里面提到了我们应该如何去处理一个传进resolve的值。**
 
 
 Promise 解决过程
@@ -277,7 +281,7 @@ x 为对象或函数
 [Promises/A+规范(英文)](https://promisesaplus.com/)
 
 
-#### setTimeout(fn, 0)的作用
+#### 三、setTimeout(fn, 0)的作用
 
 确保回调函数按照他们注册的时间顺序去执行，这大大减少了控制流异步编程的固有危险数量。考虑一个简单的例子:
 
@@ -297,8 +301,12 @@ var blah = function () {
 
 #### 关于setTimeout(fn, 0);
 
-js运行是基于单线程的，意味着一段代码执行时，其他代码将进入队列等待，一旦线程有空闲就执行后续代码。如果代码中设定了一个setTimeout，那么浏览器便会在合适的时间，将代码插入任务队列，如果这个时间设为 0，就代表立即插入队列，但并不是立即执行，仍然要等待前面代码执行完毕（其实有个延时，具体是16ms还是4ms取决于浏览器）。所以setTimeout 并不能保证执行的时间，是否及时执行取决于 JavaScript 线程是拥挤还是空闲。
+js运行是基于单线程的，意味着一段代码执行时，其他代码将进入队列等待，一旦线程有空闲就执行后续代码。如果代码中设定了一个setTimeout，那么浏览器便会在合适的时间，将代码插入任务队列，如果这个时间设为 0，就代表立即插入队列，但并不是立即执行，仍然要等待前面代码执行完毕（其实有个延时，具体是16ms还是4ms取决于浏览器）。
+这种方法常常被用在一些库和框架中，叫做nextTick();
+所以setTimeout 并不能保证执行的时间，是否及时执行取决于 JavaScript 线程是拥挤还是空闲。
 
+
+这里只考虑了浏览器的情况，由于在node中是没有window对象的，而是用process.nextTick()方法代替。
 
 ```html
 <input type="text" ng-model="name" ng-keydown="showName()">
@@ -318,3 +326,158 @@ app.controller('myContrl', function($scope, $window) {
 ```
 例如在keydown事件中，js引擎需要先去执行keydown的事件，然后再去更新input中的value值，
 这就导致我们无法及时的取到输入框中“准确”的value值，所以利用setTimeout(fn, 0)将取值的操作加入到当前执行队列的最后，等待value的值更新之后我们再去进行取值的操作，就可以取到准确的值了。
+
+#### 四、 promise错误链的处理
+
+每当我们进行到有可能出现错误的步骤时，都有try/catch语法对代码进行包装，捕获所有可能出现的错误，将其抛给reject函数，
+这样我们就能在外层通过then方法将其捕获并进行处理，
+因此catch方法其实就是then方法包装后的语法糖而已。
+
+```javascript
+catch(err){
+    return this.then(null, function(err) {
+        // Do something with the error ..
+    })
+}
+
+```
+-------
+
+#### 五、 promise 的反模式
+
+
+##### **怎样用 forEach() 处理promise**
+
+```js
+// I want to remove() all docs
+db.allDocs({include_docs: true}).then(function (result) {
+    result.rows.forEach(function (row) {
+        db.remove(row.doc);
+    });
+}).then(function () {
+    // I naively believe all docs have been removed() now!
+});
+```
+
+这段代码的问题在于第一个回调函数实际上返回的是 undefined ，也就意味着第二个函数并不是在所有的 db.remove() 执行结束之后才执行。事实上，第二个函数的执行不会有任何延时，它执行的时候被删除的doc数量可能为任意整数。
+
+```js
+db.allDocs({include_docs: true}).then(function (result) {
+    return Promise.all(result.rows.map(function (row) {
+        return db.remove(row.doc);
+    }));
+}).then(function (arrayObject) {
+    // All docs have really been removed() now!
+})
+```
+
+这时候promise.all就能够很好的解决问题，它会在所有的promise的状态变为resolved的时候才会执行回调函数。
+并且还会将计算结果以数组的形式传递给下一个函数，这一点十分有用。
+
+##### **使用“deferred”**
+
+在早些时候，jQuery和Angular都在使用’deferred’类型的promise。而在最新的ES6的Promise标准中，这种实现方式已经被替代了，同时，一些Promise的库，比如Q，bluebid，lie也是参照ES6的标准来实现的。
+
+因此我们应该使用将非promise API包装成promise API,
+
+```js
+new Promise(function (resolve, reject) {
+    fs.readFile('myfile.txt', function (err, file) {
+        if (err) {
+            return reject(err);
+        }
+        resolve(file);
+    });
+}).then(...)
+```
+
+##### 不显式调用return
+
+```js
+somePromise().then(function () {
+    return getUserAccountById();
+}).then(function (UserAccount) {
+    // Gee, I hope getUserAccountById() has resolved
+    // Spoiler alert: it hasn't
+});
+```
+
+这段代码的问题在哪儿呢？如果你在then的回调函数参数中不显式的调用return,根据js的语言规范来说，
+它会默认返回undefined,这回导致代码不会按照你想要的结果执行，例如上面的例子，第二个then方法会紧接着
+第一个then方法执行，而不会在someOtherPromise()返回结果之后再去执行。
+
+这是因为第一个then方法返回的promise的状态会根据他内部函数的返回值来决定，如果你返回的不是一个promise,那么该
+then方法返回的promise将会立即变化为resolved,则第二个then方法会立即执行，并且不能接收到上一个promise的返回的参数。
+
+##### 忘记添加catch()方法
+
+很多程序员对他们代码中的promise调用十分自信，觉得代码永远不会抛出一个 error ，也可能他们只是简单的忘了加 catch() 方法。
+
+不幸的是，不加 catch() 方法会让回调函数中抛出的异常被吞噬，
+在你的控制台是看不到相应的错误的，这对调试来说是非常痛苦的。
+
+忘记添加catch方法的时候会导致难以追踪错误发生的地方和原因，例如以前在用thinkjs写服务端的时候会去代理客户端访问第三方的接口，这时候如果对方返回的是一个非法的json数据，这时候这边的JSON.parse会报错，而这时由于异常被回调函数所吞噬，导致控制台不会显示任何错误，即如果不添加catch方法捕获该错误，会导致客服端存在pending假卡死的状态，另错误难以发觉。
+
+-------
+
+#### 进阶错误
+##### 不了解Promise.resolve()和promise.reject()
+
+```js
+new Promise(function (resolve, reject) {
+  resolve(someSynchronousValue);
+}).then(...);
+```
+
+这是很多程序员在包装一个promise常用的方法，但是我们可以用promise.resolve()来对上面的代码进行精简，
+
+```js
+Promise.resolve(someSynchronousValue).then(...);
+```
+
+##### catch和then(null, (err) => {})并不完全相同
+
+```js
+somePromise().then(function () {
+  return someOtherPromise();
+}).catch(function (err) {
+  // handle error
+});
+
+somePromise().then(function () {
+  return someOtherPromise();
+}, function (err) {
+  // handle error
+});
+```
+
+考虑当someOtherPromise抛出错误时会发生什么，答案是catch方法能够捕捉到这个错误，
+而当使用 then(resolveHandler, rejectHandler) ， rejectHandler 不会捕获在 resolveHandler 中抛出的错误。
+
+如果你的then的第二个函数只用来处理错误，那么
+一个好的处理方法是从不使用then方法的第二个参数，转而使用 catch() 方法。
+
+#### 六、 对比和学习其他优秀的实现
+
+本来想看看q和bluebird的，但是感觉他们的api比较多，
+在标准的promise规范上面又加了很多其他的api，这样的话读起来就有点感到难以把握核心功能代码的实现
+（看来读源码的能力还得加强啊，不然什么时候才能看懂angular,vue这类框架的源码）。
+所以看看[es6-promise](https://github.com/stefanpenner/es6-promise)吧，3000+star,基本只兼容了ES6 Promise的API，应该还能hold住。
+
+
+看到这些框架和库的时候以前都往往喜欢直接去读一个大而全的代码，
+而这些库和框架的代码其实也是一个个小的模块拼接起来的，
+这种方法不仅有助于写出逻辑分明，功能划分明确，耦合度低，易读易debug的代码，而在es6模块化逐渐普及的今天也是非常符合时代潮流的趋势的，因此有必要多多学习这些拆分代码的方法和思想。
+
+##### 1. util.js(封装一些常用的工具方法，便于代码复用)
+
+而我们的实现中，没有将判断thenable, 是否是函数或对象的功能方法拆分出来，
+而是过程式的和逻辑代码揉在了一起，造成阅读起来不太美观和优雅，而且也不太利于代码的抽离和复用。
+
+
+
+
+
+
+
+
