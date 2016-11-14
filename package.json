@@ -37,6 +37,7 @@
     "eslint-plugin-html": "^1.5.3",
     "eslint-plugin-import": "^1.16.0",
     "gulp": "^3.9.1",
+    "gulp-6to5": "^3.0.0",
     "gulp-eslint": "^3.0.1",
     "gulp-if": "^2.0.2",
     "jasmine": "^2.5.2",

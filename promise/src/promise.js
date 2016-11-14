@@ -1,3 +1,10 @@
+import {isThenable} from './promises/util';
+
+
+function needstoBeFunction(executorType) {
+    throw new Error(`Promise resolver ${executorType} is not a function`);
+}
+
 /**
  * Notice：
  * 1. 每个then方法返回的是一个新的promise对象，而不是原来的this值。
@@ -21,8 +28,7 @@ function resolvePromise(promise2, x, resolve, reject) {
     let then;
     let thenCalledOrThrow = false;
     /* eslint-disable max-len */
-    let isObject = (x !== null) && ((typeof x === 'object') || (
-        typeof x === 'function')); // 2.3.3
+    let isObject = isThenable(x); // 2.3.3
 
     if (promise2 === x) { // 对应标准2.3.1节
         return reject(new TypeError('Chaining cycle detected for promise!'))
@@ -99,11 +105,7 @@ class Promise {
      */
     constructor(executor) {
         var executorType = typeof executor;
-        if (executorType !== 'function') {
-            throw new Error(`Promise resolver ${executorType} is not a function`);
-        }
-
-
+        if (executorType !== 'function') needstoBeFunction(executorType);
 
         this.status = 'pending'; // promise的状态
         this.data = undefined; // promise的值
