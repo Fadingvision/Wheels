@@ -1,5 +1,12 @@
-import {isThenable} from './promises/util';
+import {
+    isThenable,
+    assp
+} from './promises/util';
 
+import {
+    resolve,
+    reject
+} from './promises/internal';
 
 function needstoBeFunction(executorType) {
     throw new Error(`Promise resolver ${executorType} is not a function`);
@@ -56,7 +63,9 @@ function resolvePromise(promise2, x, resolve, reject) {
 
             // 2.3.3.1 因为x.then有可能是一个getter，这种情况下多次读取
             // 即要判断它的类型，又要调用它，这就是两次读取,就有可能产生副作用,这里保存一个它的引用
-            let {then} = x;
+            let {
+                then
+            } = x;
 
             // 如果是一个thenable方法
             // ???
@@ -104,58 +113,23 @@ class Promise {
      */
     constructor(executor) {
         var executorType = typeof executor;
-        executorType !== 'function'　&& needstoBeFunction(executorType);
+        executorType !== 'function'　 && needstoBeFunction(executorType);
 
+        /* 初始化promise的一些基本参数和状态值 */
         this.status = 'pending'; // promise的状态
         this.data = undefined; // promise的值
         this.onResolvedCb = []; // promise resolve时的回调函数集合
         this.onRejectedCb = []; // promise reject时的回调函数集合
-        this.asynchronousTime = 0;
-        /**
-         * resolve函数
-         * 这里不强制执行resolve函数只能执行一次，
-         * 因为在promise的状态改变之后，再也无法执行这个函数了
-         * @param  {[type]} data [description]
-         * @return {[type]}      [description]
-         */
-        const resolve = (data) => {
-            // 改变promise的状态，将外部的数据保存到promise实例上
-            setTimeout(() => {
-                if (this.status === 'pending') {
-                    this.status = 'resolved';
-                    this.data = data;
-
-                    this.onResolvedCb.forEach((cb) => {
-                        // 这里每个函数都是传入的data
-                        // 不是应该传入上一个回调函数的返回值？？？
-                        // --- 错啦，这里是一个promise里面的then,他们用的都是resolve里面的data;
-                        cb(data);
-                    })
-                }
-            }, this.asynchronousTime);
-        }
-
-        /**
-         * reject
-         * @param  {[type]} reason [description]
-         * @return {[type]}      [description]
-         */
-        const reject = (reason) => {
-            setTimeout(() => {
-                if (this.status === 'pending') {
-                    this.status = 'rejected';
-                    this.data = reason;
-                    this.onRejectedCb.forEach((cb) => cb(reason));
-                }
-            }, this.asynchronousTime);
-        }
-
         // 考虑到执行executor的过程中有可能出错，所以我们用try/catch块给包起来，并且在出错后以catch到的值reject掉这个Promise
         try {
             // executor立即执行
-            executor(resolve, reject);
+            executor((data) => {
+                resolve(this, data);
+            }, (reason) => {
+                reject(this, reason);
+            });
         } catch (err) {
-            reject(err);
+            reject(this, err);
         }
     }
 
@@ -201,7 +175,7 @@ class Promise {
             // 那么第二个promise的立即执行resolve
             promise2 = new Promise(function(resolve, reject) {
                 // ???
-                setTimeout(() => {
+                assp(() => {
                     try {
                         const x = resolvedCb(self.data);
 
@@ -219,14 +193,14 @@ class Promise {
                     } catch (err) {
                         reject(err);
                     }
-                }, self.asynchronousTime);
+                });
 
             })
         }
 
         if (this.status === 'rejected') {
             promise2 = new Promise(function(resolve, reject) {
-                setTimeout(() => {
+                assp(() => {
                     try {
                         const x = rejectedCb(
                             self.data);
@@ -238,7 +212,7 @@ class Promise {
                         reject(err);
                     }
 
-                }, self.asynchronousTime);
+                });
             })
         }
 

@@ -469,8 +469,9 @@ somePromise().then(function () {
 而这些库和框架的代码其实也是一个个小的模块拼接起来的，
 这种方法不仅有助于写出逻辑分明，功能划分明确，耦合度低，易读易debug的代码，而在es6模块化逐渐普及的今天也是非常符合js这门语言发展的趋势的，因此有必要多多学习这些拆分代码的方法和思想。
 
-##### 1. util.js(封装一些常用的工具方法，便于代码复用)
+##### 1. util.js
 
+这个模块主要负责**封装一些常用的工具方法，便于代码复用**
 而我们的实现中，没有将判断thenable, 是否是函数或对象的功能方法拆分出来，
 而是过程式的和逻辑代码揉在了一起，造成阅读起来不太美观和优雅，而且也不太利于代码的抽离和复用。
 
@@ -487,13 +488,23 @@ import Reject from './promise/reject';
 import then from './then';
 ```
 
-这里只保留了promise的核心代码，而将所有其他的由核心代码衍生出来的代码都分离出来通过import进来，代码结构十分清晰，函数粒度划分很小。
+这个模块只保留了promise的核心代码，而将所有其他的由核心代码衍生出来的代码都分离出来通过import进来，代码结构十分清晰，函数粒度划分很小。
 
 将所有的抛出错误通过函数的方式提取出来，而不是和逻辑代码混在一起，符合函数式编程的思想，代码看起来也更优雅。
 
+这个模块负责初始化promise的状态和值，并且判断executor的值的类型的正确性。将真正初始化promise的逻辑放在initializePromise这个函数中，而且为了代码的划分，这些函数基本都是将promise作为了自己的参数，从而方便调用promise的方法和改变promise的值和状态。
+
+##### 3. asap.js
+
+该模块主要编写负责代码的异步执行的asap函数。
 
 
+##### 4. -internal.js
 
+该模块主要进行一些内部私有函数的编写,如resolve、reject函数，处理thenable对象的handleOwnThenable、handleMaybeThenable函数，解决promise的函数fulfill，生成promise的id的自增函数，以及一些定义promise的状态的数字常量标识。
 
+##### 5. then, all, resolve, reject, race.js
 
+这些模块对应编写promise原型上的一些共享方法或者挂载在构造函数的一些静态方法，
+将其和主promise的模块的代码独立分开，方便逻辑清晰的划分。
 
