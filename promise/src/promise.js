@@ -25,7 +25,6 @@ x为`promise2 = promise1.then(onResolved, onRejected)`里`onResolved/onRejected`
 `resolve`和`reject`实际上是`promise2`的`executor`的两个实参，因为很难挂在其它的地方，所以一并传进来。
 */
 function resolvePromise(promise2, x, resolve, reject) {
-    let then;
     let thenCalledOrThrow = false;
     /* eslint-disable max-len */
     let isObject = isThenable(x); // 2.3.3
@@ -57,7 +56,7 @@ function resolvePromise(promise2, x, resolve, reject) {
 
             // 2.3.3.1 因为x.then有可能是一个getter，这种情况下多次读取
             // 即要判断它的类型，又要调用它，这就是两次读取,就有可能产生副作用,这里保存一个它的引用
-            then = x.then;
+            let {then} = x;
 
             // 如果是一个thenable方法
             // ???
@@ -105,7 +104,7 @@ class Promise {
      */
     constructor(executor) {
         var executorType = typeof executor;
-        if (executorType !== 'function') needstoBeFunction(executorType);
+        executorType !== 'function'　&& needstoBeFunction(executorType);
 
         this.status = 'pending'; // promise的状态
         this.data = undefined; // promise的值

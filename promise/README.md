@@ -477,7 +477,7 @@ somePromise().then(function () {
 
 ##### 2. promise.js
 
-promise代表了异步执行的最终结果，主要影响promise的方法是通过它的then方法。then方法注册了回调函数用来接受promise被执行的最终值或者是未被执行的原因。;了
+promise代表了异步执行的最终结果，主要影响promise的方法是通过它的then方法。then方法注册了回调函数用来接受promise被执行的最终值或者是未被执行的原因。
 
 ```js
 import all from './promise/all';
@@ -487,7 +487,7 @@ import Reject from './promise/reject';
 import then from './then';
 ```
 
-这里只保留了promise的核心代码，而将所有其他的由核心代码衍生出来的代码都分离出来通过import进来，代码结构十分清晰，函数粒度划分的十分小巧精美。
+这里只保留了promise的核心代码，而将所有其他的由核心代码衍生出来的代码都分离出来通过import进来，代码结构十分清晰，函数粒度划分很小。
 
 将所有的抛出错误通过函数的方式提取出来，而不是和逻辑代码混在一起，符合函数式编程的思想，代码看起来也更优雅。
 
