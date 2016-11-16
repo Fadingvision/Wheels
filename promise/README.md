@@ -458,11 +458,7 @@ somePromise().then(function () {
 一个好的处理方法是从不使用then方法的第二个参数，转而使用 catch() 方法。
 
 #### 六、 对比和学习其他优秀的实现
-
-本来想看看q和bluebird的，但是感觉他们的api比较多，
-在标准的promise规范上面又加了很多其他的api，这样的话读起来就有点感到难以把握核心功能代码的实现
-（看来读源码的能力还得加强啊，不然什么时候才能看懂angular,vue这类框架的源码）。
-所以看看[es6-promise](https://github.com/stefanpenner/es6-promise)吧，3000+star,基本只兼容了ES6 Promise的API，应该还能hold住。
+[es6-promise](https://github.com/stefanpenner/es6-promise)
 
 
 看到这些框架和库的时候以前都往往喜欢直接去读一个大而全的代码，
