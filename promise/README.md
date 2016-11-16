@@ -11,6 +11,7 @@ test: npm run test_promise
 4. promise链的错误处理
 5. promise 的反模式
 6. 和其他实现（q, bluebird, $q, $.defer）的对比和学习
+
 ----------------
 
 
