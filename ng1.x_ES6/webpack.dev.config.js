@@ -16,7 +16,7 @@ config.plugins = config.plugins.concat([
   new webpack.HotModuleReplacementPlugin(),
   new webpack.optimize.OccurenceOrderPlugin(),
   // 让webpack在出现错误时仍然保持运行
-  new webpack.noErrorsPlugin()
+  // new webpack.optimize.noErrorsPlugin()
 ]);
 
 module.exports = config;

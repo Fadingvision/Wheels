@@ -16,6 +16,9 @@ import webpackDevMiddleware from 'webpack-dev-middleware';
 import webpackHotMiddleware from 'webpack-hot-middleware';
 import colorsSupported from 'supports-color';
 import historyApiFallback from 'connect-history-api-fallback';
+// require('shelljs/global');
+// let ora = require('ora');
+
 
 let root = 'client';
 let proRoot = 'dist';
@@ -51,8 +54,17 @@ gulp.task('build', ['clean'], (cb) => {
     const config = require('./webpack.dist.config');
     config.entry.app = paths.entry;
 
+    // var spinner = ora('building app for production...')
+    // spinner.start()
+
+    // var assetsPath = path.join(__dirname, 'dist/static')
+    // rm('-rf', assetsPath)
+    // mkdir('-p', assetsPath)
+    // cp('-R', 'static/*', assetsPath)
+
     // run webpack
     webpack(config, (err, stats) => {
+        // spinner.stop();
         if (err) {
             throw new gutil.PluginError("webpack", err);
         }
@@ -67,7 +79,7 @@ gulp.task('build', ['clean'], (cb) => {
         // 启动一个服务来查看build的资源
         serve({
             port: process.env.PORT || 8801,
-            open: true,
+            open: false,
             server: {
                 baseDir: proRoot
             },

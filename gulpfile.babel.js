@@ -9,8 +9,8 @@ import path from 'path';
 import to5 from 'gulp-6to5';
 
 const filePath = {
-    srcPath: path.join(__dirname, './promise/src/promise.js'),
-    distPath: path.join(__dirname, './promise/dist'),
+    srcPath: path.join(__dirname, './fetch/src/*.js'),
+    distPath: path.join(__dirname, './fetch/dist'),
 }
 
 gulp.task('lint', () => {

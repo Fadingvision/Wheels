@@ -5,8 +5,8 @@ var projectRoot = path.resolve(__dirname, './');
 
 
 module.exports = {
-  devtool: 'source-map',  // development
-  // devtool: 'cheap-module-source-map',  // development
+  // devtool: 'source-map',  // production
+  devtool: '#eval-source-map', // eval-source-map is faster for development
   entry: {},
   module: {
     preLoaders: [{
