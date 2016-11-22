@@ -29,6 +29,7 @@ module.exports = {
     'consistent-this': 0,  // 当获取当前执行环境的上下文时，强制使用一致的命名
     'func-names': 0, // 强制使用命名的 function 表达式
     'no-multiple-empty-lines': 0, // 不允许多个空行
+    'max-len': [0, {"ignoreComments": true}], // 强制一行的最大长度(80)
     'keyword-spacing': 0,
     /////////////
     // warning //
@@ -116,7 +117,6 @@ module.exports = {
     // 代码风格指南
     'camelcase': 2, // 强制使用骆驼拼写法命名约定
     'max-depth': 2, // 强制可嵌套的块的最大深度(4)
-    'max-len': [2, {"ignoreComments": true}], // 强制一行的最大长度(80)
     'max-nested-callbacks': ["error", { "max": 3 }], // 强制回调函数最大嵌套深度
     'valid-typeof': 2, // 强制 typeof 表达式与有效的字符串进行比较
     'no-floating-decimal': 2, // 禁止数字字面量中使用前导和末尾小数点

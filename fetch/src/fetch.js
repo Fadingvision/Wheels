@@ -1,69 +1,71 @@
-
 import Request from　'./fetch/request';
-
-;((self) => {
-
-	function argumentIsNeeded() {
-		throw new　 TypeError('Failed to execute \'fetch\' on \'Window\': 1 argument required, but only 0 present');
-	}
-
-	// const DefaultOpts = {
-	// 	method: 'GET',
-	// 	body: JSON.strigify({}),
-	// 	headers: {},
-	// 	credentials: 'omit', // don't include authentication credentials (e.g. cookies) in the request
-	// 	async: true,
-	// }
-
-	self.fetch = function(url = argumentIsNeeded(), options) {
-		// let opts = object.assign(DefaultOpts, options);
-		return new Promise((resolve, reject) => {
-
-            var request = new Request(input, options);
-			let xhr = new XMLHttpRequest();
-
-			// onload事件只会在请求成功之后触发
-			xhr.onload = function(e) {
-				// set the respenseType
-				var xhr = e.target;
-				if (xhr.responeseType = 'json') {
-					var data = xhr.response;
-				} else {
-					var data = JSON.parse(xhr.responseText);
-				}
-			};
-
-			// onerror事件只会在请求失败(即是网络错误等原因，而不是非2xx状态的错误)之后触发
-			xhr.onerror = function() {
-                reject(new TypeError('Network request failed'))
-            }
-
-            xhr.ontimeout = function() {
-                reject(new TypeError('Network request failed'))
-            }
+import Response from　'./fetch/response';
+import Headers from　'./fetch/headers';
 
 
-			// true表示异步
-			if (request.cache) {
-				xhr.open(request.method, request.url, request.async);
-			} else {
-				// 对 Ajax 请求进行缓存的浏览器特性都快被我们忘记了。例如，IE 就默认是这样。
-				// aviod the cache(jQuery 默认清除浏览器缓存。);
-				var bustCache = '?' + new Date().getTime();
-				xhr.open(request.type, request.url + bustCache, true);
+
+function argumentIsNeeded() {
+	throw new　TypeError('Failed to execute \'fetch\' on \'Window\': 1 argument required, but only 0 present'); 
+}
+
+function parseHeaders(rawHeaders) {
+	let headers = new Headers();
+
+	return headers; 
+}
+
+
+function fetch(url = argumentIsNeeded(), options) {
+	return new Promise((resolve, reject) => {
+
+		let request = new Request(url, options);
+		let xhr = new XMLHttpRequest();
+
+		// diffrience between $.ajax and fetch : 
+		// onload事件只会在请求成功之后触发，无论状态码是多少，只要该次请求成功就会resolve
+		xhr.onload = function() {
+			let responseOpts = {
+				status: xhr.status,
+				statusText: xhr.statusText,
+				headers: parseHeaders(xhr.getAllResponseHeaders() || ''),
 			}
+			responseOpts.url = 'responseURL' in xhr ? xhr.responseURL : responseOpts.headers.get('X-Request-URL')
+			let body = 'response' in xhr ? xhr.response : xhr.responseText;
 
-			if(request.credentials === 'omit') {
-				xhr.withCredentials = true;
-			}
+			resolve(new Response(body, responseOpts));
+		};
 
-			xhr.send(request.data);
-			// set the headers
-			xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
-			xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded; charset=UTF-8');
+		// onerror事件只会在请求失败(即是网络错误等原因，而不是非2xx状态的错误)之后触发
+		xhr.onerror = function() {
+			reject(new TypeError('Network request failed'))
+		}
 
+		xhr.ontimeout = function() {
+			reject(new TypeError('Network request failed'))
+		}
+
+
+		// true表示异步
+		if (request.cache) {
+			xhr.open(request.method, request.url, request.async);
+		} else {
+			// aviod the cache(jQuery 默认清除浏览器缓存。);
+			let bustCache = '?' + new Date().getTime();
+			xhr.open(request.method, request.url + bustCache, request.async);
+		}
+
+		if (request.credentials === 'include') {
+			xhr.withCredentials = true; // notice: 这不会影响同站(same-site)请求.
+		}
+
+
+		// set the headers
+		request.headers.forEach((value, name) => {
+			xhr.setRequestHeader(name, value);
 		})
-	};
 
+		xhr.send(typeof request._bodyInit === 'undefined' ? null : request._bodyInit);
+	})
+};
 
-}(typeof self !== 'undefined' ? self : this));
+export default fetch;
