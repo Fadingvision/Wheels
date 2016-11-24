@@ -5,13 +5,13 @@ import Headers from　'./fetch/headers';
 
 
 function argumentIsNeeded() {
-	throw new　TypeError('Failed to execute \'fetch\' on \'Window\': 1 argument required, but only 0 present'); 
+	throw new　TypeError('Failed to execute \'fetch\' on \'Window\': 1 argument required, but only 0 present');
 }
 
 function parseHeaders(rawHeaders) {
 	let headers = new Headers();
 
-	return headers; 
+	return headers;
 }
 
 
@@ -21,7 +21,7 @@ function fetch(url = argumentIsNeeded(), options) {
 		let request = new Request(url, options);
 		let xhr = new XMLHttpRequest();
 
-		// diffrience between $.ajax and fetch : 
+		// diffrience between $.ajax and fetch :
 		// onload事件只会在请求成功之后触发，无论状态码是多少，只要该次请求成功就会resolve
 		xhr.onload = function() {
 			let responseOpts = {
@@ -60,7 +60,7 @@ function fetch(url = argumentIsNeeded(), options) {
 
 
 		// set the headers
-		request.headers.forEach((value, name) => {
+		request.headers.forEach((name, value) => {
 			xhr.setRequestHeader(name, value);
 		})
 

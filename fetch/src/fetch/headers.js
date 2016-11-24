@@ -15,8 +15,8 @@ export default class Headers {
 		return this.map.delete(key);
 	}
 
-	entries() {
-		return this.map.entries();
+	set(key, value) {
+		return this.map.set(key, value);
 	}
 
 	/**
@@ -36,7 +36,8 @@ export default class Headers {
 	}
 
 	getAll(key = argumentIsNeeded()) {
-		return this.map.get(key);
+		let value = this.map.get(key);
+		return Array.isArray(value) ? value : [value];
 	}
 
 	has(key = argumentIsNeeded()) {
@@ -47,8 +48,10 @@ export default class Headers {
 		return this.map.keys();
 	}
 
-	set(key, value) {
-		return this.map.set(key, value);
+
+
+	entries() {
+		return this.map.entries();
 	}
 
 	values() {
