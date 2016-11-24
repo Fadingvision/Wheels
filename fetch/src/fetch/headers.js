@@ -1,3 +1,8 @@
+
+function argumentIsNeeded() {
+	throw new　TypeError('Failed to execute \'Request\': 1 argument required, but only 0 present');
+}
+
 export default class Headers {
 
 	constructor() {
@@ -6,23 +11,47 @@ export default class Headers {
 
 	append() {}
 
-	delete() {}
+	delete(key = argumentIsNeeded()) {
+		return this.map.delete(key);
+	}
 
-	entries() {}
+	entries() {
+		return this.map.entries();
+	}
 
-	forEach() {}
+	/**
+	 * 对headers对象进行遍历
+	 * @param  {Function} cb [description]
+	 * @return {[type]}      [description]
+	 */
+	forEach(cb = argumentIsNeeded()) {
+		for (let item of this.map.entries()) {
+		  	cb(item[0], item[1], this);
+		}
+	}
 
-	get() {}
+	get(key = argumentIsNeeded()) {
+		let value = this.map.get(key);
+		return Array.isArray(value) ? value[0] : value;
+	}
 
-	getAll() {}
+	getAll(key = argumentIsNeeded()) {
+		return this.map.get(key);
+	}
 
-	has() {}
+	has(key = argumentIsNeeded()) {
+		return this.map.has(key);
+	}
 
-	keys() {}
+	keys() {
+		return this.map.keys();
+	}
 
-	set() {}
+	set(key, value) {
+		return this.map.set(key, value);
+	}
 
-	values() {}
-
-
+	values() {
+		return this.map.values();
+	}
 }
