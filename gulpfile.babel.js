@@ -9,7 +9,7 @@ import path from 'path';
 import to5 from 'gulp-6to5';
 
 const filePath = {
-    srcPath: path.join(__dirname, './fetch/src/*.js'),
+    srcPath: path.join(__dirname, './fetch/src/**/*.js'),
     distPath: path.join(__dirname, './fetch/dist'),
 }
 

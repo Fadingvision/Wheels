@@ -4,6 +4,10 @@ function argumentIsNeeded() {
 	throw new　TypeError('Failed to execute \'Request\': 1 argument required, but only 0 present');
 }
 
+function newIsNeeded() {
+	throw new　TypeError('this function must be called with new keyword');
+}
+
 const DefaultOpts = {
 	method: 'GET',
 	body: JSON.strigify({}),
@@ -21,6 +25,10 @@ export default class Request extends Body {
 	 * @return {[type]}      request实例对象
 	 */
 	constructor(input = argumentIsNeeded(), options = {}) {
+		if(new.target === undefined) newIsNeeded();
+		
+		super();
+
 		if(typeof input === 'string') options.url = input;
 
 		let opts = typeof input === 'object' ? Object.assign(DefaultOpts, input, options) : 
