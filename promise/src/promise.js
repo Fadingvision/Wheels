@@ -178,7 +178,6 @@ class Promise {
                 assp(() => {
                     try {
                         const x = resolvedCb(self.data);
-
                         // 如果onResolved的返回值是一个Promise对象，
                         // 直接取它的结果做为promise2的结果
                         // 这里有点难以理解 ???
@@ -202,12 +201,8 @@ class Promise {
             promise2 = new Promise(function(resolve, reject) {
                 assp(() => {
                     try {
-                        const x = rejectedCb(
-                            self.data);
-
-                        resolvePromise(promise2,
-                            x, resolve,
-                            reject);
+                        const x = rejectedCb(self.data);
+                        resolvePromise(promise2, x, resolve, reject);
                     } catch (err) {
                         reject(err);
                     }
@@ -225,7 +220,7 @@ class Promise {
                 self.onResolvedCb.push(function() {
                     try {
                         const x = resolvedCb(　self.data);
-                        resolvePromise(promise2, 　x, resolve, 　reject);
+                        resolvePromise(promise2, x, resolve, reject);
                     } catch (err) {
                         reject(err);
                     }
