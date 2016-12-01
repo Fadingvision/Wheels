@@ -10,10 +10,10 @@ const support = {
         try {
             new Blob()
             return true
-        } catch {
+        } catch (e) {
             return false
         }
-    }()),
+    })(),
     formData: 'FormData' in self,
     searchParams: 'URLSearchParams' in self,
     arrayBuffer: 'ArrayBuffer' in self
