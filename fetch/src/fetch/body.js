@@ -61,21 +61,66 @@ function consumed(body) {
     return undefined;
 }
 
-function fileReaderReady() {
+function fileReaderReady(reader) {
+    return new Promise((resolve, reject) {
+        reader.onload = () => {
+            resolve(reader.result)
+        };
+        reader.onerror = () => {
+            reject(reader.error)
+        };
+    })
+}
+
+function readBlobAsArrayBuffer(blob) {
+    var reader = new FileReader();
+    var promise = fileReaderReady(reader);
+
+    reader.readAsArraybuffer(blob);
+    return promise;
 
 }
 
-function readBlobAsArrayBuffer () {
+function readBlobAsText() {
+    var reader = new FileReader();
+    var promise = fileReaderReady(reader);
+
+    reader.readAsText(blob);
+    return promise;
 
 }
-function readBlobAsText () {
 
+/**
+ * 将ArrayBuffer对象读成文字字符串的格式
+ * @return {[type]} [description]
+ */
+function readArrayBufferAsText(buffer) {
+    var view = new Uint8Array(buffer);
+    var chars = new Array(view.length);
+
+    for (var i = 0; i < view.length; i++) {
+        chars[i] = String.fromCharCode(view[i]);
+    }
+
+    return chars.join('');
 }
-function readArrayBufferAsText () {
 
-}
-function decode () {
 
+/**
+ * 将字符串解析成arrayBuffer的格式
+ * @return {[type]} [description]
+ */
+function decode(body) {
+    var form = new FormData();
+    body.trim().split('&').forEach(function(bytes) {
+        if (bytes) {
+            var split = bytes.split('=')
+            var name = split.shift().replace(/\+/g, ' ')
+            var value = split.join('=').replace(/\+/g, ' ')
+            form.append(decodeURIComponent(name), decodeURIComponent(value))
+        }
+    })
+    return form
 }
 
 export default class Body {
