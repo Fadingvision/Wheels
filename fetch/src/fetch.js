@@ -1,11 +1,11 @@
-import Request from　'./fetch/request';
-import Response from　'./fetch/response';
-import Headers from　'./fetch/headers';
+import Request from　 './fetch/request';
+import Response from　 './fetch/response';
+import Headers from　 './fetch/headers';
 
 
 
 function argumentIsNeeded() {
-	throw new　TypeError('Failed to execute \'fetch\' on \'Window\': 1 argument required, but only 0 present');
+	throw new TypeError('Failed to execute \'fetch\' on \'Window\': 1 argument required, but only 0 present');
 }
 
 function parseHeaders(rawHeaders) {

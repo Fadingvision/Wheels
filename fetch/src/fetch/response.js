@@ -1,5 +1,4 @@
-
-import Body　from './body';
+import Body　 from './body';
 
 export default class Response extends Body {
 

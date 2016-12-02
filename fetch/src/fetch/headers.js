@@ -1,6 +1,5 @@
-
 function argumentIsNeeded() {
-	throw new　TypeError('Failed to execute \'Request\': 1 argument required, but only 0 present');
+	throw new　 TypeError('Failed to execute \'Request\': 1 argument required, but only 0 present');
 }
 
 export default class Headers {
@@ -12,8 +11,8 @@ export default class Headers {
 	append(key, value) {
 		let oldValue = this.get(key);
 		let newValue;
-		if(this.has(key)) {
-			if( Array.isArray(oldValue) ){
+		if (this.has(key)) {
+			if (Array.isArray(oldValue)) {
 				newValue = oldValue;
 				newValue.push(value);
 			} else {
@@ -22,7 +21,7 @@ export default class Headers {
 				newValue.push(value);
 			}
 			this.set(key, newValue);
-		}else {
+		} else {
 			this.set(key, value);
 		}
 	}
@@ -42,7 +41,8 @@ export default class Headers {
 	 */
 	forEach(cb = argumentIsNeeded()) {
 		for (let item of this.map.entries()) {
-		  	cb(item[0], item[1], this);
+			/* eslint-disable */
+			cb(item[0], item[1], this);
 		}
 	}
 
