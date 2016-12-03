@@ -22,7 +22,7 @@ function parseHeaders(rawHeaders) {
 }
 
 
-function fetch(url = argumentIsNeeded(), options) {
+function fetchs(url = argumentIsNeeded(), options) {
 	return new Promise((resolve, reject) => {
 
 		let request = new Request(url, options);
@@ -75,4 +75,4 @@ function fetch(url = argumentIsNeeded(), options) {
 	})
 };
 
-export default fetch;
+export default fetchs;

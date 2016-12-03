@@ -1,6 +1,4 @@
 import Body from './body';
-import Body from './body';
-
 
 export default class Response extends Body {
 
@@ -9,9 +7,9 @@ export default class Response extends Body {
 
         this.url = responseOpts.url || '';
         this.type = 'default';
-        this.status = 'status' in responseOpts ? responseOpts.status : 200;
+        this.status = 'status' in responseOpts ? responseOpts.status : 200; // eslint-disable-line
         this.statusText = 'statusText' in responseOpts ? responseOpts.statusText : 'OK';
-        this.ok = responseOpts.status >= 200 && responseOpts.status <= 299;
+        this.ok = responseOpts.status >= 200 && responseOpts.status <= 299; // eslint-disable-line
         this.headers = responseOpts.headers;
         this._initBody(body);
     }
@@ -34,8 +32,9 @@ export default class Response extends Body {
         return response
     }
 
-    redirect() {
-        if (redirectStatuses.indexOf(status) === -1) {
+    redirect(url, status) {
+        let redirectStatuses = [301, 302, 303, 307, 308] // eslint-disable-line
+        if (redirectStatuses.indexOf(status) === -1) { // eslint-disable-line
             throw new RangeError('Invalid status code')
         }
 

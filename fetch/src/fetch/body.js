@@ -1,14 +1,14 @@
 /**
- * bodyä»£è¡¨äº†request/responseçš„ä¼ è¾“å†…å®¹ä½“,
- * å®ƒç”¨äºå£°æ˜ä¼ è¾“çš„content type, å’Œå®ƒåº”è¯¥æ€ä¹ˆè¢«å¤„ç†ã€‚
- * è¯¥ç±»ä¸èƒ½ç›´æ¥å®ä¾‹åŒ–ä½¿ç”¨ï¼Œä¸€èˆ¬ä½œä¸ºrequestå’Œresponseå¯¹è±¡å†…éƒ¨ç»§æ‰¿çš„åŸºç±»
+ * body´ú±íÁËrequest/responseµÄ´«ÊäÄÚÈİÌå,
+ * ËüÓÃÓÚÉùÃ÷´«ÊäµÄcontent type, ºÍËüÓ¦¸ÃÔõÃ´±»´¦Àí¡£
+ * ¸ÃÀà²»ÄÜÖ±½ÓÊµÀı»¯Ê¹ÓÃ£¬Ò»°ã×÷ÎªrequestºÍresponse¶ÔÏóÄÚ²¿¼Ì³ĞµÄ»ùÀà
  */
 
 const support = {
-    // ä»Blobä¸­è¯»å–å†…å®¹çš„å”¯ä¸€æ–¹æ³•æ˜¯ä½¿ç”¨ FileReaderã€‚
+    // ´ÓBlobÖĞ¶ÁÈ¡ÄÚÈİµÄÎ¨Ò»·½·¨ÊÇÊ¹ÓÃ FileReader¡£
     blob: 'FileReader' in self && 'Blob' in self && (() => {
         try {
-            new Blob()
+            new Blob(); // eslint-disable-line
             return true
         } catch (e) {
             return false
@@ -19,6 +19,7 @@ const support = {
     arrayBuffer: 'ArrayBuffer' in self
 }
 
+let isDataView, isArrayBufferView;
 if (support.arrayBuffer) {
     var viewClasses = [
         '[object Int8Array]',
@@ -32,24 +33,23 @@ if (support.arrayBuffer) {
         '[object Float64Array]'
     ]
 
-    var isDataView = function(obj) {
+    isDataView = function(obj) {
         return obj && DataView.prototype.isPrototypeOf(obj)
     }
 
-    var isArrayBufferView = ArrayBuffer.isView || function(obj) {
-        return obj && viewClasses.indexOf(Object.prototype.toString.call(obj)) > -1
+    isArrayBufferView = ArrayBuffer.isView || function(obj) {
+        return obj && viewClasses.indexOf(Object.prototype.toString.call(obj)) > -1 // eslint-disable-line
     }
 }
 
 
 function bufferClone(buf) {
     if (buf.slice) {
-        return buf.slice(0)
-    } else {
-        var view = new Uint8Array(buf.byteLength)
-        view.set(new Uint8Array(buf))
-        return view.buffer
+        return buf.slice(0) // eslint-disable-line
     }
+    var view = new Uint8Array(buf.byteLength)
+    view.set(new Uint8Array(buf))
+    return view.buffer
 }
 
 
@@ -62,7 +62,7 @@ function consumed(body) {
 }
 
 function fileReaderReady(reader) {
-    return new Promise((resolve, reject) {
+    return new Promise((resolve, reject) => {
         reader.onload = () => {
             resolve(reader.result)
         };
@@ -81,7 +81,7 @@ function readBlobAsArrayBuffer(blob) {
 
 }
 
-function readBlobAsText() {
+function readBlobAsText(blob) {
     var reader = new FileReader();
     var promise = fileReaderReady(reader);
 
@@ -91,7 +91,7 @@ function readBlobAsText() {
 }
 
 /**
- * å°†ArrayBufferå¯¹è±¡è¯»æˆæ–‡å­—å­—ç¬¦ä¸²çš„æ ¼å¼
+ * ½«ArrayBuffer¶ÔÏó¶Á³ÉÎÄ×Ö×Ö·û´®µÄ¸ñÊ½
  * @return {[type]} [description]
  */
 function readArrayBufferAsText(buffer) {
@@ -107,7 +107,7 @@ function readArrayBufferAsText(buffer) {
 
 
 /**
- * å°†å­—ç¬¦ä¸²è§£ææˆarrayBufferçš„æ ¼å¼
+ * ½«×Ö·û´®½âÎö³ÉarrayBufferµÄ¸ñÊ½
  * @return {[type]} [description]
  */
 function decode(body) {
@@ -125,14 +125,14 @@ function decode(body) {
 
 export default class Body {
     constructor() {
-        if (new.target === Body) throw new Error('this function can\'t be instanced');
+        // if (new.target === Body) throw new Error('this function can\'t be instanced');
         this.bodyUsed = false;
     }
 
 
     /**
-     * bodyå¯ä»¥æ¥å—çš„ç±»å‹ï¼š
-     * string(æ‰€æœ‰éå­—ç¬¦ä¸²ç±»å‹çš„å€¼éƒ½åº”è¯¥é€šè¿‡JSON.stringify()åºåˆ—åŒ–ä¹‹ååœ¨ä¼ å…¥Bodyå¤„ç†)
+     * body¿ÉÒÔ½ÓÊÜµÄÀàĞÍ£º
+     * string(ËùÓĞ·Ç×Ö·û´®ÀàĞÍµÄÖµ¶¼Ó¦¸ÃÍ¨¹ıJSON.stringify()ĞòÁĞ»¯Ö®ºóÔÚ´«ÈëBody´¦Àí)
      * blob, file;
      * FormData;
      * ArrayBuffer;
@@ -140,8 +140,8 @@ export default class Body {
 
 
     /**
-     * åˆå§‹åŒ–bodyå†…å®¹ä½“(ç”¨äºrequestä¸­å¤„ç†ä¼ å…¥çš„å†…å®¹ä½“)
-     * @param  {[type]} body ä¼ å…¥çš„å†…å®¹ä½“
+     * ³õÊ¼»¯bodyÄÚÈİÌå(ÓÃÓÚrequestÖĞ´¦Àí´«ÈëµÄÄÚÈİÌå)
+     * @param  {[type]} body ´«ÈëµÄÄÚÈİÌå
      * @return {[type]}      [description]
      */
     _initBody(body) {
@@ -157,19 +157,19 @@ export default class Body {
             this._bodyBlob = body;
 
             // formData
-        } else if (support.formData && body instaceof FormData) {
-            // xhrå¯ä»¥ç›´æ¥send FormDataæ ¼å¼çš„æ•°æ®
+        } else if (support.formData && body instanceof FormData) {
+            // xhr¿ÉÒÔÖ±½Ósend FormData¸ñÊ½µÄÊı¾İ
             this._bodyFormData = body
         } else if (support.searchParams && URLSearchParams.prototype.isPrototypeOf(body)) {
-            // å¦‚æœæ˜¯URLSearchParamså¯¹è±¡ï¼Œåˆ™è½¬æˆstringè¿›è¡Œå¤„ç†
+            // Èç¹ûÊÇURLSearchParams¶ÔÏó£¬Ôò×ª³Éstring½øĞĞ´¦Àí
             this._bodyText = body.toString()
 
             // ArrayBuffer
-            // å¯¹äºarrayBufferçš„éƒ¨åˆ†ä¸æ˜¯å¾ˆç†è§£
+            // ¶ÔÓÚarrayBufferµÄ²¿·Ö²»ÊÇºÜÀí½â
         } else if (support.arrayBuffer && support.blob && isDataView(body)) {
             this._bodyArrayBuffer = bufferClone(body.buffer)
 
-            // IE 10-11 can't handle a DataView body.ï¼ˆå› æ­¤åŒ…è£…æˆblobå¯¹è±¡ï¼‰
+            // IE 10-11 can't handle a DataView body.£¨Òò´Ë°ü×°³Éblob¶ÔÏó£©
             this._bodyInit = new Blob([this._bodyArrayBuffer])
         } else if (support.arrayBuffer && (ArrayBuffer.prototype.isPrototypeOf(body) || isArrayBufferView(body))) {
             this._bodyArrayBuffer = bufferClone(body)
@@ -177,75 +177,77 @@ export default class Body {
             throw new Error('unsupported BodyInit Type')
         }
 
-        // æ¯”èµ·xhrHttpRequestæ¥ï¼Œè¿™äº›æ–¹æ³•è®©éæ–‡æœ¬çš„æ•°æ®ä½¿ç”¨èµ·æ¥æ›´åŠ ç®€å•
 
-        /*
-            blobå¯¹è±¡ä½¿ç”¨æ–¹æ³•
-            var aBlob = new Blob( array, options );
-            array æ˜¯ä¸€ä¸ªç”±ArrayBuffer, ArrayBufferView, Blob, DOMStringç­‰å¯¹è±¡æ„æˆçš„ Array ï¼Œ
-            æˆ–è€…å…¶ä»–ç±»ä¼¼å¯¹è±¡çš„æ··åˆä½“ï¼Œå®ƒå°†ä¼šè¢«æ”¾è¿› Blob.
-        */
+    }
 
-        /**
-         * ä½¿ç”¨ä¸€ä¸ªblobæ¥è¯»å–å“åº”æµä¸­çš„æ•°æ®ï¼ˆåªæœ‰blobå’ŒarrayBufferèƒ½è¢«è¯»æˆblobæ ¼å¼ï¼‰ï¼Œå¹¶å°†bodyUsedçŠ¶æ€æ”¹ä¸ºå·²ä½¿ç”¨ã€‚
-         * @return {promise}  It returns a promise that resolves with a Blob.
-         */
-        blob() {
-            let rejectedPromise = cosumed(this);
-            if (rejectedPromise) return rejectedPromise;
+    // ±ÈÆğxhrHttpRequestÀ´£¬ÕâĞ©·½·¨ÈÃ·ÇÎÄ±¾µÄÊı¾İÊ¹ÓÃÆğÀ´¸ü¼Ó¼òµ¥
 
-            if (this._bodyBlob) {
-                return Promise.resolve(this._bodyBlob);
-            } else if (this._bodyArrayBuffer) {
-                return Promise.resolve(new Blob([this._bodyArrayBuffer]))
-            } else if (this._bodyText) {
-                return Promise.resolve(new Blob([this._bodyText]))
-            } else if (this._bodyFormData) {
-                throw new Error('could not read FormData body as blob')
-            }
-        }
+    /*
+        blob¶ÔÏóÊ¹ÓÃ·½·¨
+        var aBlob = new Blob( array, options );
+        array ÊÇÒ»¸öÓÉArrayBuffer, ArrayBufferView, Blob, DOMStringµÈ¶ÔÏó¹¹³ÉµÄ Array £¬
+        »òÕßÆäËûÀàËÆ¶ÔÏóµÄ»ìºÏÌå£¬Ëü½«»á±»·Å½ø Blob.
+    */
 
+    /**
+     * Ê¹ÓÃÒ»¸öblobÀ´¶ÁÈ¡ÏìÓ¦Á÷ÖĞµÄÊı¾İ£¨Ö»ÓĞblobºÍarrayBufferÄÜ±»¶Á³Éblob¸ñÊ½£©£¬²¢½«bodyUsed×´Ì¬¸ÄÎªÒÑÊ¹ÓÃ¡£
+     * @return {promise}  It returns a promise that resolves with a Blob.
+     */
+    blob() {
+        let rejectedPromise = consumed(this);
+        if (rejectedPromise) return rejectedPromise;
 
-        /**
-         * ä½¿ç”¨ä¸€ä¸ªbufferæ•°ç»„æ¥è¯»å–å“åº”æµä¸­çš„æ•°æ®ï¼ˆåªæœ‰blobå’ŒarrayBufferèƒ½è¢«è¯»æˆbufferæ ¼å¼ï¼‰ï¼Œå¹¶å°†bodyUsedçŠ¶æ€æ”¹ä¸ºå·²ä½¿ç”¨ã€‚
-         * @return {promise}  It returns a promise that resolves with an ArrayBuffer.
-         */
-        arrayBuffer() {
-            if (this._bodyArrayBuffer) {
-                // å¦‚æœæ˜¯äºŒè¿›åˆ¶æ•°ç»„ï¼Œåˆ™ç›´æ¥è¿”å›
-                return cosumed(this) || Promise.resolve(this._body)
-            } else {
-                // å¦‚æœæ˜¯blobæˆ–è€…textï¼Œåˆ™å…ˆè½¬æˆblobå¯¹è±¡åœ¨é€šè¿‡fileReaderå¤„ç†æˆäºŒè¿›åˆ¶æ•°ç»„åå†è¿”å›
-                return this.blob().then(readBlobAsArrayBuffer);
-            }
-        }
-
-
-
-        text() {
-            let rejectedPromise = cosumed(this);
-            if (rejectedPromise) return rejectedPromise;
-
-            if (this._bodyBlob) {
-                // æŠŠblobå¯¹è±¡è¯»æˆtextæ ¼å¼
-                return readBlobAsText();
-            } else if (this._bodyArrayBuffer) {
-                // æŠŠ_bodyArrayBufferå¯¹è±¡è¯»æˆtextæ ¼å¼
-                return Promise.resolve(readArrayBufferAsText(this._bodyArrayBuffer))
-            } else if (this._bodyFormData) {
-                throw new Error('could not read FormData body as text')
-            } else {
-                return Promise.resolve(this._bodyText)
-            }
-        }
-
-        json() {
-            // å¦‚æœresponseç¡®å®šè¿”å›çš„æ˜¯jsonæ ¼å¼çš„å¯¹è±¡ï¼Œåˆ™æŠŠç”±textå¤„ç†åçš„å€¼ç›´æ¥è¿”å›ç”±json.parseå¤„ç†åçš„Promise
-            return this.text().then(JSON.parse);
-        }
-
-        formData() {
-            // å¦‚æœresponseç¡®å®šè¿”å›çš„æ˜¯formDataæ ¼å¼çš„å¯¹è±¡ï¼Œåˆ™æŠŠç”±textå¤„ç†åçš„å€¼ç›´æ¥è¿”å›ç”±decodeå¤„ç†åçš„Promise
-            return this.text().then(decode)
+        if (this._bodyBlob) {
+            return Promise.resolve(this._bodyBlob);
+        } else if (this._bodyArrayBuffer) {
+            return Promise.resolve(new Blob([this._bodyArrayBuffer]))
+        } else if (this._bodyText) {
+            return Promise.resolve(new Blob([this._bodyText]))
+        } else if (this._bodyFormData) {
+            throw new Error('could not read FormData body as blob')
         }
     }
+
+
+    /**
+     * Ê¹ÓÃÒ»¸öbufferÊı×éÀ´¶ÁÈ¡ÏìÓ¦Á÷ÖĞµÄÊı¾İ£¨Ö»ÓĞblobºÍarrayBufferÄÜ±»¶Á³Ébuffer¸ñÊ½£©£¬²¢½«bodyUsed×´Ì¬¸ÄÎªÒÑÊ¹ÓÃ¡£
+     * @return {promise}  It returns a promise that resolves with an ArrayBuffer.
+     */
+    arrayBuffer() {
+        if (this._bodyArrayBuffer) {
+            // Èç¹ûÊÇ¶ş½øÖÆÊı×é£¬ÔòÖ±½Ó·µ»Ø
+            return consumed(this) || Promise.resolve(this._body)
+        }
+        // Èç¹ûÊÇblob»òÕßtext£¬ÔòÏÈ×ª³Éblob¶ÔÏóÔÚÍ¨¹ıfileReader´¦Àí³É¶ş½øÖÆÊı×éºóÔÙ·µ»Ø
+        return this.blob().then(readBlobAsArrayBuffer);
+    }
+
+
+
+    text() {
+        let rejectedPromise = consumed(this);
+        if (rejectedPromise) return rejectedPromise;
+
+        if (this._bodyBlob) {
+            // °Ñblob¶ÔÏó¶Á³Étext¸ñÊ½
+            return readBlobAsText(this._bodyBlob);
+        } else if (this._bodyArrayBuffer) {
+            // °Ñ_bodyArrayBuffer¶ÔÏó¶Á³Étext¸ñÊ½
+            return Promise.resolve(readArrayBufferAsText(this._bodyArrayBuffer))
+        } else if (this._bodyFormData) {
+            throw new Error('could not read FormData body as text')
+        } else {
+            return Promise.resolve(this._bodyText)
+        }
+    }
+
+    json() {
+        // Èç¹ûresponseÈ·¶¨·µ»ØµÄÊÇjson¸ñÊ½µÄ¶ÔÏó£¬Ôò°ÑÓÉtext´¦ÀíºóµÄÖµÖ±½Ó·µ»ØÓÉjson.parse´¦ÀíºóµÄPromise
+        return this.text().then(JSON.parse);
+    }
+
+    formData() {
+        // Èç¹ûresponseÈ·¶¨·µ»ØµÄÊÇformData¸ñÊ½µÄ¶ÔÏó£¬Ôò°ÑÓÉtext´¦ÀíºóµÄÖµÖ±½Ó·µ»ØÓÉdecode´¦ÀíºóµÄPromise
+        return this.text().then(decode)
+    }
+}

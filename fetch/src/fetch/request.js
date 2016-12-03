@@ -8,10 +8,9 @@ function argumentIsNeeded() {
 function newIsNeeded() {
 	throw new　 TypeError('this function must be called with new keyword');
 }
-
 const DefaultOpts = {
 	method: 'GET',
-	body: JSON.strigify({}),
+	body: JSON.stringify({}),
 	headers: {},
 	credentials: 'omit', // don't include authentication credentials (e.g. cookies) in the request
 	async: true,
@@ -26,7 +25,7 @@ export default class Request extends Body {
 	 * @return {[type]}      request实例对象
 	 */
 	constructor(input = argumentIsNeeded(), options = {}) {
-		if (new.target === undefined) newIsNeeded();
+		// if (new.target === undefined) newIsNeeded();
 
 		super();
 

@@ -7,6 +7,9 @@ import eslint from 'gulp-eslint';
 import friendlyFormatter from 'eslint-friendly-formatter';
 import path from 'path';
 import to5 from 'gulp-6to5';
+import webpack from 'webpack';
+import gutil from 'gulp-util';
+import colorsSupported from 'supports-color';
 
 const filePath = {
     srcPath: path.join(__dirname, './fetch/src/**/*.js'),
@@ -29,7 +32,7 @@ gulp.task('lint', () => {
 });
 
 gulp.task('watch', () => {
-    var watcher = gulp.watch(filePath.srcPath, ['lint']);
+    var watcher = gulp.watch(filePath.srcPath, ['lint', 'webpack']);
     watcher.on('change', function(event) {
         console.log('File ' + event.path + ' was ' + event.type + ', running tasks...');
     });
@@ -43,6 +46,24 @@ gulp.task('to5', () => {
         .pipe(to5())
         .pipe(gulp.dest(filePath.distPath))
 });
+
+gulp.task('webpack', (cb) => {
+    const config = require('./webpack.config');
+    webpack(config, (err, stats) => {
+        // spinner.stop();
+        if (err) {
+            throw new gutil.PluginError("webpack", err);
+        }
+
+        gutil.log("[webpack]", stats.toString({
+            // output options
+            colors: colorsSupported,
+            chunks: false,
+            errorDetails: true
+        }));
+        cb();
+    });
+})
 
 gulp.task('default', ['lint', 'watch'], function() {
 
