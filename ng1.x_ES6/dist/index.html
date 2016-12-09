@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html ng-app="Application" ng-strict-di>
+<head>
+    <meta charset="utf-8" />
+    <title>欣颜分期申请表</title>
+    <meta name="description" content="欣颜分期申请表">
+    <meta name="keywords" content="欣颜分期申请表">
+    <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,minimum-scale=1,user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="aplus-touch" content="1">
+    <base href='/'>
+</head>
+<body ng-class="{'full-bg': $state.is('vertify') || $state.is('detail')|| $state.is('success'), 'full-image': !$state.is('vertify') && !$state.is('detail') && !$state.is('success') && !$state.is('agreement')}">
+    <div ui-view class="ng-main-view"></div>
+<script src="js/vendor.bundle.js?27a99d7bd1a6c82f73b8"></script><script src="js/app.bundle.js?27a99d7bd1a6c82f73b8"></script></body>
+</html>
