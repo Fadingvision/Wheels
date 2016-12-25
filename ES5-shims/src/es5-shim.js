@@ -10,7 +10,7 @@
 
 })(this, function(ES5) {
 
-    // 常用方法安全引用 
+    // 常用方法安全引用
     var ArrayPrototype = Array.prototype;
     var ObjectPrototype = Object.prototype;
     var FunctionPrototype = Function.prototype;
@@ -27,7 +27,7 @@
     var call = FunctionPrototype.call;
     var apply = FunctionPrototype.apply;
 
-    var to_string = ObjectPrototype.toString; 
+    var to_string = ObjectPrototype.toString;
 
     var max = Math.max;
     var min = Math.min;
@@ -99,7 +99,7 @@
 
 
 
-    
+
     /**********************************/
     /*           Array                */
     /**********************************/
@@ -115,7 +115,7 @@
             // 用+号将字符串转为数字
             var i = +fromIndex || 0,
                 len = arr.length;
-            
+
             i = (i >= 0 && Math.min(i, len));
             i = i >= 0 ? i : max(0, length + i);
 
@@ -134,7 +134,7 @@
             for (var i = arr.length - 1; i >= 0; i--) {
                 if(value === arr[i]) return i;
             }
-        }, 
+        },
 
         every: function(arr, fn/*, context*/) {
             // 用void 0代替arr
@@ -208,7 +208,7 @@
             if (arr === void 0 || arr === null) throw new TypeError();
             if (typeof fn !== 'function') throw new TypeError();
 
-            
+
             var previousValue;
             var initialSet = initialValue ? true : false;
 
@@ -218,7 +218,7 @@
                     previousValue = fn.call(undefined, previousValue, arr[i], i, arr);
                 }else {
                     previousValue = arr[0];
-                    initialSet = true;  
+                    initialSet = true;
                 }
             }
 
@@ -228,7 +228,7 @@
         /**
          * * * * * * * * * * * * * * * * * * * * *
          * ES6-Array-shim
-         * * * * * * * * * * * * * * * * * * * * * 
+         * * * * * * * * * * * * * * * * * * * * *
          */
 
         /**
@@ -248,7 +248,7 @@
             var newArr = array_slice.call(arrlike);
             return mapFn ? newArr : this.map(newArr, mapFn, thisArg);
         },
-        
+
         of: function() {
             return array_slice.call(arguments);
         },
@@ -277,7 +277,7 @@
             !start && (start = 0);
             // start小于0时，不能超过数组第一位；start大于0时，不能超过数组长度
             var from = start < 0 ? Math.max(start + len, 0) : Math.min(start, len);
-            
+
             !end && (end = arr.length -1);
             // end小于0时，不能超过数组第一位；end大于0时，不能超过数组长度
             var final = end < 0 ? Math.max(end + len, 0) : Math.min(end, len);
@@ -292,7 +292,7 @@
 
             var direction = 1;
 
-            // 
+            //
             if(from < count && to < (from + count)) {
                 direction = -1;
                 from += count - 1;
@@ -404,7 +404,7 @@
             if (value === void 0 || value === null) throw new TypeError();
             var fromIndex = arguments.length > 2 ? arguments[2] : 0;
 
-            var curEl, 
+            var curEl,
                 list = Object(arr),
                 len = list.length >>> 0;
 
@@ -427,18 +427,18 @@
          * @param  {Function} fn [description]
          * @return {[type]}      [description]
          */
-        
+
         // 只实现了基本功能，没有完全完全按照规范实现。
         bind: function(thisArg/*, params*/) {
             if(typeof this !== 'function') throw new TypeError();
-            var bindArgs = array_slice.call(arguments, 1); 
+            var bindArgs = array_slice.call(arguments, 1);
             var bindFn = this;
             var fBound =  function() {
                 var args = array_slice.call(arguments);
                 // bind的参数在前，执行参数在后
                 actualArgs = bindArgs.concat(args);
 
-                /* 
+                /*
                  * 修复当做构造函数使用时，thisArg应该无效的bug.
                  * 这里采用严格模式，即当传入的thisArg为null和undefined时，不会自动指向全局对象.
                  * 同时值为原始值（数字，字符串，布尔值）的 thisArg，不会指向该原始值的自动包装对象.
@@ -460,17 +460,17 @@
             fNOP = function () {},
             fNOP.prototype = this.prototype;
             fBound.prototype = new fNOP();
-            
+
             // 这部分实现创建的绑定函数所有的 length 属性并不是同ECMA-262标准一致的：它的 length 是0，
             // 而在实际的实现中根据目标函数的 length 和预先指定的参数个数可能会返回非零的 length。
 
             /**
              * 修复length属性不正确的bug
              */
-            
+
             // error: 不能重写函数的length属性
             // fBound.length = Math.max(0, bindFn.length - bindArgs.length);
-            
+
             // es-shim中用eval+new Function()在构造函数时制造形式参数来强改length属性。
             return fBound;
         }
@@ -489,12 +489,12 @@
         /**
          * ES5--methods
          */
-        
+
         /**
          * [keys description]
          * @return {[type]} [description]
          */
-        
+
         // 1. object.keys　取得所有的自身可枚举属性
         // 2. for...in 取得所有的自身和原型链上的可枚举属性
         // 3. getOwnPropertyNames　取得所有的自身可枚举和不可枚举属性*(enumerable: false)
@@ -511,7 +511,7 @@
         /**
          * 创建一个拥有指定原型和若干个指定属性的对象。
          * @param  {[type]} proto 指定原型
-         * @param  {[type]} propertiesObject 
+         * @param  {[type]} propertiesObject
          * 该参数对象是一组属性与值，该对象的属性名称将是新创建的对象的属性名称，值是属性描述符
          * @return {[type]}     [description]
          */
@@ -524,7 +524,7 @@
             var hasOwn = Object.prototype.hasOwnProperty;
             var obj = new fn();
 
-            for(var prop in propertiesObject) { 
+            for(var prop in propertiesObject) {
                 hasOwn.call(propertiesObject, prop) && Object.defineProperty(obj, prop, propertiesObject[prop]);
             }
             return obj;
@@ -595,7 +595,7 @@
                 throw new TypeError('Object.isExtensible can only be called on Objects.');
             }
             var name = '';
-            while(Object.hasOwnProperty.call(object, name)) name += '?'; 
+            while(Object.hasOwnProperty.call(object, name)) name += '?';
             object[name] = true;
 
             var returnValue = Object.hasOwnProperty.call(object, name);
@@ -607,7 +607,7 @@
         /**
          * ES6--methods
          */
-        
+
         // 可以把任意多个的源对象自身的可枚举属性拷贝给目标对象，然后返回目标对象。
         assign: function(target /* ...sources */) {
 
@@ -626,11 +626,11 @@
         }
 
         // Trailing commas in object literals
-        // es5中允许对象最后出现逗号   
+        // es5中允许对象最后出现逗号
         ,
     });
 
-  
+
 
     /**********************************/
     /*           Date                 */
@@ -658,17 +658,17 @@
             ISOString = date.getFullYear() + '-'
                         + pad( date.getMonth() + 1 ) + '-'
                         + pad(date.getDate()) + 'T'
-                        + pad(date.getUTCHours()) + ':' 
-                        + pad(date.getUTCMinutes()) + ':' 
+                        + pad(date.getUTCHours()) + ':'
+                        + pad(date.getUTCMinutes()) + ':'
                         + pad(date.getUTCSeconds()) + '.'
                         + (this.getUTCMilliseconds() / 1000).toFixed(3).slice(2, 5) + 'Z';
-                        
+
             return ISOString;
         },
     })
 
 
-    
+
     /**********************************/
     /*           Number               */
     /**********************************/
@@ -682,7 +682,7 @@
         isFinite: function(num){
             return typeof num === 'number' && isFinite(value);
         },
- 
+
         isNaN: function(num) {
             return typeof num === 'number' && num !== num;
         },
@@ -708,9 +708,9 @@
         /**
          * ES5--methods
          */
-        // 1. ES5中允许用下标法取得字符串中对应位置的值
+        // 1. ES5中允许用下标法取得字符串中对应位置的值（因此可以对字符串进行for循环处理）
         // 'asd'[0] === 'a'
-        
+
 
         /**
          * 2. 新增trim方法去除前后空格
@@ -727,7 +727,7 @@
         includes: function(search, start) {
             if(typeof this !== 'string') throw new TypeError();
             if (typeof start !== 'number') start = 0;
-            
+
             if (start + search.length > this.length) {
                 return false;
             } else {
@@ -735,20 +735,45 @@
             }
         },
 
-        startsWith: function() {
-
+        startsWith: function(str, startPosition) {
+            startPosition = startPosition || 0;
+            var start_str = this.substr(startPosition, str.length);
+            return start_str === str;
         },
 
-        endsWith: function() {
-
+        endsWith: function(str, n) {
+            var end_str = this.substring(this.length - str.length);
+            return end_str === str;
         },
 
-        repeat: function() {
+        repeat: (function(n) {
+            var join = Array.prototype.join, obj = {};
+            return function(n) {
+                obj.length = n + 1;
+                return join.call(obj, this.toString());
+            }
+        }()),
 
-        },
 
-        padStart: function() {
+        /**
+         * 在字符串的前端补全字符串，常用的方法如日历在月份和秒数前面补0
+         * @param  {number} minLen 最小长度
+         * @param  {string} padStr 补的字符串片段
+         * @return {[type]}        补全后的字符串
+         */
+        padStart: function(minLen, padStr) {
+            // low low low
+            var rawStr = this.toString();
+            if(this.length >= minLen) return rawStr;
+            padStr = padStr || ' ';
 
+            while((padStr + rawStr).length < minLen) {
+                padStr += padStr;
+            }
+            if((padStr + rawStr).length > minLen) {
+                padStr = padStr.substr(0, padStr.length - (padStr + rawStr).length + minLen);
+            }
+            return padStr + rawStr;
         },
 
         padEnd: function() {
