@@ -12,6 +12,6 @@
 9. **Animate**
 10. **MVVM**
 11. **Router**
-12. **to Be continue**
+12. **to Be continue...**
 
 
