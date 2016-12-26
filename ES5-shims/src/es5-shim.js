@@ -502,6 +502,7 @@
             if(typeof obj !== 'object' || obj === null) throw TypeError('Object.keys called on a non-object');
 
             var keys = [], key;
+
             for(key in obj) {
                 if(obj.hasOwnProperty(key)) keys.push(key);
             }
@@ -509,7 +510,7 @@
         },
 
         /**
-         * 创建一个拥有指定原型和若干个指定属性的对象。
+         * 创建一个拥有指定原型和若干个指定属性的对象。(有了它，在实现继承的时候，创建子类可以更加方便)
          * @param  {[type]} proto 指定原型
          * @param  {[type]} propertiesObject
          * 该参数对象是一组属性与值，该对象的属性名称将是新创建的对象的属性名称，值是属性描述符
@@ -527,19 +528,35 @@
             for(var prop in propertiesObject) {
                 hasOwn.call(propertiesObject, prop) && Object.defineProperty(obj, prop, propertiesObject[prop]);
             }
+
+            // or
+            // Object.defineProperties(obj, descs);
+
             return obj;
         },
         /**
          * 定义一个对象的属性
-         * 由于不能模仿属性描述符，只能简单的赋值
+         * 由于不能模仿属性描述符，只能简单的勉强模拟
          * @param  {[type]} obj   [description]
          * @param  {[type]} key   [description]
          * @param  {[type]} value [description]
          * @return {[type]}       [description]
          */
-        defineProperty: function(obj, key, value) {
-            if(key in obj) return;
-            obj[key] = value;
+        defineProperty: function(obj, prop, desc) {
+            // 直接将value值作为属性值赋值给对象的对应键
+            if('value' in desc) {
+                obj[prop] = desc.value;
+            }
+            // 利用旧式浏览器的两个hack解决setter和getter的模拟，至于其他的描述符，就无能为力了
+            if('get' in desc) {
+                obj.__defineGetter__(prop, desc.get);
+            }
+
+            if('set' in desc) {
+                obj.__defineSetter__(prop, desc.set);
+            }
+
+            return obj;
         },
 
         defineProperties: function(object, properties) {
@@ -557,6 +574,7 @@
             return Object.keys(obj);
         },
 
+        // 不准删除已有的本地属性
         seal: function(object) {
             if (Object(object) !== object) {
                 throw new TypeError('Object.seal can only be called on Objects.');
@@ -564,6 +582,7 @@
             return object;
         },
 
+        // 不能修改和删除本地属性，只能访问
         freeze: function(object) {
             if (Object(object) !== object) {
                 throw new TypeError('Object.freeze can only be called on Objects.');
@@ -717,6 +736,7 @@
          * @return {[type]} [description]
          */
         trim: function() {
+            // 这是正则的实现，但由于浏览器对原生字符串操作方法的优化，速度比不上原生字符串。
             if(typeof this !== 'string') throw new TypeError();
             return this.replace(/^[\s\uFEFF\xA0]+|[\s\uFEFF\xA0]+$/g, '');
         },
