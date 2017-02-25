@@ -7,14 +7,13 @@ var projectRoot = path.resolve(__dirname, './');
 
 module.exports = {
     devtool: '#eval-source-map',
-    entry: [
-        'babel-polyfill',
-        path.join(__dirname, './index.js')
-    ],
+    entry: {
+        'observe': path.join(__dirname, './mvvm/src/index.js')
+    },
     output: {
         filename: '[name].bundle.js',
         publicPath: '',
-        path: path.join(__dirname, './fetch/dist')
+        path: path.join(__dirname, './mvvm/dist/')
     },
     module: {
         loaders: [{
