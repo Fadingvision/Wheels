@@ -41,7 +41,11 @@ export default class Observer {
           // watching the value and invoke the callback when it's changed.
           // for now we can only track the one depth expression
           this._watchers.forEach((watcher) => {
-            if(watcher.active && key === watcher.expression) {
+            if((watcher.active &&
+              key === watcher.expression) ||
+              (this.data[watcher.expression] &&
+              data === this.data[watcher.expression])
+            ) {
               watcher.cb(newVal, tempValue);
             }
           })
@@ -74,7 +78,7 @@ export default class Observer {
 
     // cancel the current watcher
     return () => {
-      for (var i = 0; i < this._watchers.length; i++) {
+      for (var i = 0, l = this._watchers.length; i < l; i++) {
         if(watcher.id === id) {
           this._watchers.splice(i, 1);
           return;
