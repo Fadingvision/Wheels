@@ -37,14 +37,20 @@ let app2 = new Observer({
     }
 });
 
+app1.$watch('name', function(newVal, oldVal) {
+    console.log(`我的名字变了，原来是${oldVal}，现在已经是：${newVal}了`)
+});
+
 app1.data.name = {
     lastName: 'liang',
     firstName: 'shaofeng'
 };
-app1.data.name.lastName;
+app1.data.name.lastName = 'hahaha';
 // 这里还需要输出 '你访问了 lastName '
 app1.data.name.firstName = 'lalala';
 // 这里还需要输出 '你设置了firstName, 新的值为 lalala'
+
+
 
 
 // 你需要实现 $watch 这个 API
