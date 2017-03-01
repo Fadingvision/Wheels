@@ -21,7 +21,7 @@ motion(target, properties, options);
 
 1. duration: number; (wait: function)
 2. delay: number;(wait: function)
-3. easing function: string;(wait: function)
+3. easing: string;(wait: function)
 4. loop: number;(可以重複動畫多少次)
 5. direction: 'reverse';(从后往前播放动画)
 6. autoPlay: false, (是否自动执行动画)
@@ -36,7 +36,7 @@ done: (动画结束的时候执行一次)
 
 #### **动画队列: sequence**　(参考jquery的queue或者ES6的generator)
 
-```javascript
+```
 var mySequence = motion.sequence({
     diretion: ',',
     loop: 3,
@@ -87,3 +87,42 @@ Penner's equations:
 | easeInBack | easeOutBack | easeInOutBack
 | easeInElastic | easeOutElastic | easeInOutElastic
 
+
+
+
+
+
+## anime.js学习分析
+
+
+
+
+
+## 动画引擎所需知识点
+
+### 1. 准确的获取元素的样式（包含普通样式，transform样式，颜色rgb值）
+
+### 2. 熟悉常用的缓动函数（easeIn, easeOut, easeInOut, linear;)
+
+- Sine表示由三角函数实现的缓动函数
+- Quad 是二次方
+- Cubic是三次方
+- Quart是四次方
+- Qunit是五次方
+- Circ使用开平方恨的Math.sqit
+- Expo使用开立方根
+- Elastic是结合三角函数与开立三方根的初级弹簧效果
+- Back是使用了一个1.70158的常数来计算的回退效果
+- Bounce是高级弹簧效果
+
+### 3. API设计
+
+* 队列（数组）（insertFrame, deleteFrame, enterFrame）
+* 补间动画
+* 回调函数
+* 分析关键帧(parseFrames)，每个关键帧包含样式名，缓动公式、开始值（默认计算）、结束值（用户传入）、单位和类型。
+类型通常又分为颜色值变换，滚动变换，以及默认变换。
+
+### 4. requestAnimationFrame
+
+### 5. css3的一些动画知识
