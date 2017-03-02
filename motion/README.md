@@ -95,6 +95,93 @@ Penner's equations:
 ## anime.js学习分析
 
 
+###  结构分析
+
+#### Default Config
+默认配置（实例，缓动函数，可以作为动画属性的transform属性）
+
+#### Util工具函數
+
+* includes,
+* is,
+* bezier_function,  
+* easing_function(['Quad', 'Cubic', 'Quart', 'Quint', 'Sine', 'Expo', 'Circ', 'Back', 'Elastic']),
+* string manipulate function
+* arrays manipulate function
+	- return array's length
+	- flateen array 
+	- nodelist to array
+	- array contains some element (using the es5 some function instead of array.indexOf) 
+* object manipulate function
+	- for in 
+	- shallow clone object 
+	- object.has
+
+* color => rgb (hex, hsl => rgb)
+
+* get property Unit (20px,em, deg => px, em, deg)
+
+* get property Unit (20px,em, deg => px, em, deg)
+
+
+* getAnimationType (normal css, transform, attribute(like scrollTop, scrollLeft))
+
+* getOriginalTargetValue()
+
+```javascript
+getOriginalTargetValue => {
+	case getAnimationType():
+		css: return getCssValue()
+		transform: return getTransformValue()
+		attribute: return getAttribute()
+}
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
