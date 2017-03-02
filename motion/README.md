@@ -1,13 +1,13 @@
 ## motion.js
 
 #### **(version: 0.1.0)**
-(çŸ¥è¯†ä½“ç³»ï¼š EventEmitter, Promise, queue, generatorç­‰)
-(è®¾è®¡æ¨¡å¼ï¼šè¿­ä»£å™¨æ¨¡å¼ã€å¤–è§‚æ¨¡å¼ã€ç­–ç•¥æ¨¡å¼ã€å‘½ä»¤æ¨¡å¼ç­‰)
+(ÖªÊ¶ÌåÏµ£º EventEmitter, Promise, queue, generatorµÈ)
+(Éè¼ÆÄ£Ê½£ºµü´úÆ÷Ä£Ê½¡¢Íâ¹ÛÄ£Ê½¡¢²ßÂÔÄ£Ê½¡¢ÃüÁîÄ£Ê½µÈ)
 
 ## API
 ----
 
-#### **1.ä¸»å‡½æ•°**
+#### **1.Ö÷º¯Êý**
 
 ```javascript
 motion(target, properties, options);
@@ -17,24 +17,24 @@ motion(target, properties, options);
 
 - target: css Selector, dom; (wait: NodeList, object, array)
 - properties: css property object(include transform property, color transform)(wait: SVG, DOM, OBject properties)
-- options:ã€€object
+- options:¡¡object
 
 1. duration: number; (wait: function)
 2. delay: number;(wait: function)
 3. easing: string;(wait: function)
-4. loop: number;(å¯ä»¥é‡è¤‡å‹•ç•«å¤šå°‘æ¬¡)
-5. direction: 'reverse';(ä»ŽåŽå¾€å‰æ’­æ”¾åŠ¨ç”»)
-6. autoPlay: false, (æ˜¯å¦è‡ªåŠ¨æ‰§è¡ŒåŠ¨ç”»)
+4. loop: number;(¿ÉÒÔÖØÑ}„Ó®‹¶àÉÙ´Î)
+5. direction: 'reverse';(´ÓºóÍùÇ°²¥·Å¶¯»­)
+6. autoPlay: false, (ÊÇ·ñ×Ô¶¯Ö´ÐÐ¶¯»­)
 
 7: callbacks:
 
-begin: (åŠ¨ç”»å¼€å§‹çš„æ—¶å€™æ‰§è¡Œ)
-run: (åŠ¨ç”»æ¯å¸§çš„æ—¶å€™æ‰§è¡Œä¸€æ¬¡)
-done: (åŠ¨ç”»ç»“æŸçš„æ—¶å€™æ‰§è¡Œä¸€æ¬¡)
+begin: (¶¯»­¿ªÊ¼µÄÊ±ºòÖ´ÐÐ)
+run: (¶¯»­Ã¿Ö¡µÄÊ±ºòÖ´ÐÐÒ»´Î)
+done: (¶¯»­½áÊøµÄÊ±ºòÖ´ÐÐÒ»´Î)
 
 
 
-#### **åŠ¨ç”»é˜Ÿåˆ—: sequence**ã€€(å‚è€ƒjqueryçš„queueæˆ–è€…ES6çš„generator)
+#### **¶¯»­¶ÓÁÐ: sequence**¡¡(²Î¿¼jqueryµÄqueue»òÕßES6µÄgenerator)
 
 ```
 var mySequence = motion.sequence({
@@ -92,29 +92,29 @@ Penner's equations:
 
 
 
-## anime.jså­¦ä¹ åˆ†æž
+## anime.jsÑ§Ï°·ÖÎö
 
 
-###  ç»“æž„åˆ†æž
+###  ½á¹¹·ÖÎö
 
 #### Default Config
-é»˜è®¤é…ç½®ï¼ˆå®žä¾‹ï¼Œç¼“åŠ¨å‡½æ•°ï¼Œå¯ä»¥ä½œä¸ºåŠ¨ç”»å±žæ€§çš„transformå±žæ€§ï¼‰
+Ä¬ÈÏÅäÖÃ£¨ÊµÀý£¬»º¶¯º¯Êý£¬¿ÉÒÔ×÷Îª¶¯»­ÊôÐÔµÄtransformÊôÐÔ£©
 
-#### Utilå·¥å…·å‡½æ•¸
+#### Util¹¤¾ßº¯”µ
 
 * includes,
 * is,
-* bezier_function,  
+* bezier_function,
 * easing_function(['Quad', 'Cubic', 'Quart', 'Quint', 'Sine', 'Expo', 'Circ', 'Back', 'Elastic']),
 * string manipulate function
 * arrays manipulate function
 	- return array's length
-	- flateen array 
+	- flateen array
 	- nodelist to array
-	- array contains some element (using the es5 some function instead of array.indexOf) 
+	- array contains some element (using the es5 some function instead of array.indexOf)
 * object manipulate function
-	- for in 
-	- shallow clone object 
+	- for in
+	- shallow clone object
 	- object.has
 
 * color => rgb (hex, hsl => rgb)
@@ -122,6 +122,9 @@ Penner's equations:
 * get property Unit (20px,em, deg => px, em, deg)
 
 * get property Unit (20px,em, deg => px, em, deg)
+
+
+#### »ñÈ¡ÔË¶¯ÔªËØµÄvalueÖµ
 
 
 * getAnimationType (normal css, transform, attribute(like scrollTop, scrollLeft))
@@ -136,6 +139,29 @@ getOriginalTargetValue => {
 		attribute: return getAttribute()
 }
 ```
+#### »ñÈ¡ÔË¶¯ÔªËØµÄËùÓÐ¿Î½øÐÐ¶¯»­µÄÊôÐÔ
+
+#### »ñÈ¡ÔË¶¯ÔªËØµÄÂ·¾¶
+
+
+#### »ñÈ¡ÔË¶¯ÔªËØ
+
+normalizeTweens()¸Ãº¯Êý½«ËùÓÐµÄ²ÎÊý½âÎö³ÉÒ»¸öÔË¶¯¶ÔÏóÅäÖÃ¡£
+
+
+
+#### ´´½¨ÊµÀý
+
+createNewInstance(params) => return config object;
+
+
+### **CORE MODULE**
+
+
+#### ¶¯»­ÒýÇæengine
+ÓÃÓÚ¶¨ÒårequestAnimationFrameÀ´ÕæÕýµÄÐÎ³É¶¯»­Ð§¹û¡£
+
+#### ¶¯»­ÊµÀýº¯Êý¶ÔÏó
 
 
 
@@ -170,46 +196,31 @@ getOriginalTargetValue => {
 
 
 
+## ¶¯»­ÒýÇæËùÐèÖªÊ¶µã
 
+### 1. ×¼È·µÄ»ñÈ¡ÔªËØµÄÑùÊ½£¨°üº¬ÆÕÍ¨ÑùÊ½£¬transformÑùÊ½£¬ÑÕÉ«rgbÖµ£©
 
+### 2. ÊìÏ¤³£ÓÃµÄ»º¶¯º¯Êý£¨easeIn, easeOut, easeInOut, linear;)
 
+- Sine±íÊ¾ÓÉÈý½Çº¯ÊýÊµÏÖµÄ»º¶¯º¯Êý
+- Quad ÊÇ¶þ´Î·½
+- CubicÊÇÈý´Î·½
+- QuartÊÇËÄ´Î·½
+- QunitÊÇÎå´Î·½
+- CircÊ¹ÓÃ¿ªÆ½·½ºÞµÄMath.sqit
+- ExpoÊ¹ÓÃ¿ªÁ¢·½¸ù
+- ElasticÊÇ½áºÏÈý½Çº¯ÊýÓë¿ªÁ¢Èý·½¸ùµÄ³õ¼¶µ¯»ÉÐ§¹û
+- BackÊÇÊ¹ÓÃÁËÒ»¸ö1.70158µÄ³£ÊýÀ´¼ÆËãµÄ»ØÍËÐ§¹û
+- BounceÊÇ¸ß¼¶µ¯»ÉÐ§¹û
 
+### 3. APIÉè¼Æ
 
-
-
-
-
-
-
-
-
-
-
-## åŠ¨ç”»å¼•æ“Žæ‰€éœ€çŸ¥è¯†ç‚¹
-
-### 1. å‡†ç¡®çš„èŽ·å–å…ƒç´ çš„æ ·å¼ï¼ˆåŒ…å«æ™®é€šæ ·å¼ï¼Œtransformæ ·å¼ï¼Œé¢œè‰²rgbå€¼ï¼‰
-
-### 2. ç†Ÿæ‚‰å¸¸ç”¨çš„ç¼“åŠ¨å‡½æ•°ï¼ˆeaseIn, easeOut, easeInOut, linear;)
-
-- Sineè¡¨ç¤ºç”±ä¸‰è§’å‡½æ•°å®žçŽ°çš„ç¼“åŠ¨å‡½æ•°
-- Quad æ˜¯äºŒæ¬¡æ–¹
-- Cubicæ˜¯ä¸‰æ¬¡æ–¹
-- Quartæ˜¯å››æ¬¡æ–¹
-- Qunitæ˜¯äº”æ¬¡æ–¹
-- Circä½¿ç”¨å¼€å¹³æ–¹æ¨çš„Math.sqit
-- Expoä½¿ç”¨å¼€ç«‹æ–¹æ ¹
-- Elasticæ˜¯ç»“åˆä¸‰è§’å‡½æ•°ä¸Žå¼€ç«‹ä¸‰æ–¹æ ¹çš„åˆçº§å¼¹ç°§æ•ˆæžœ
-- Backæ˜¯ä½¿ç”¨äº†ä¸€ä¸ª1.70158çš„å¸¸æ•°æ¥è®¡ç®—çš„å›žé€€æ•ˆæžœ
-- Bounceæ˜¯é«˜çº§å¼¹ç°§æ•ˆæžœ
-
-### 3. APIè®¾è®¡
-
-* é˜Ÿåˆ—ï¼ˆæ•°ç»„ï¼‰ï¼ˆinsertFrame, deleteFrame, enterFrameï¼‰
-* è¡¥é—´åŠ¨ç”»
-* å›žè°ƒå‡½æ•°
-* åˆ†æžå…³é”®å¸§(parseFrames)ï¼Œæ¯ä¸ªå…³é”®å¸§åŒ…å«æ ·å¼åï¼Œç¼“åŠ¨å…¬å¼ã€å¼€å§‹å€¼ï¼ˆé»˜è®¤è®¡ç®—ï¼‰ã€ç»“æŸå€¼ï¼ˆç”¨æˆ·ä¼ å…¥ï¼‰ã€å•ä½å’Œç±»åž‹ã€‚
-ç±»åž‹é€šå¸¸åˆåˆ†ä¸ºé¢œè‰²å€¼å˜æ¢ï¼Œæ»šåŠ¨å˜æ¢ï¼Œä»¥åŠé»˜è®¤å˜æ¢ã€‚
+* ¶ÓÁÐ£¨Êý×é£©£¨insertFrame, deleteFrame, enterFrame£©
+* ²¹¼ä¶¯»­
+* »Øµ÷º¯Êý
+* ·ÖÎö¹Ø¼üÖ¡(parseFrames)£¬Ã¿¸ö¹Ø¼üÖ¡°üº¬ÑùÊ½Ãû£¬»º¶¯¹«Ê½¡¢¿ªÊ¼Öµ£¨Ä¬ÈÏ¼ÆËã£©¡¢½áÊøÖµ£¨ÓÃ»§´«Èë£©¡¢µ¥Î»ºÍÀàÐÍ¡£
+ÀàÐÍÍ¨³£ÓÖ·ÖÎªÑÕÉ«Öµ±ä»»£¬¹ö¶¯±ä»»£¬ÒÔ¼°Ä¬ÈÏ±ä»»¡£
 
 ### 4. requestAnimationFrame
 
-### 5. css3çš„ä¸€äº›åŠ¨ç”»çŸ¥è¯†
+### 5. css3µÄÒ»Ð©¶¯»­ÖªÊ¶
