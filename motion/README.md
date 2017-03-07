@@ -165,6 +165,33 @@ createNewInstance(params) => return config object;
 
 
 
+## velocity.js分析学习
+
+### jQuery-shim
+
+### Helper Function
+
+* requestAnimationFrame shim
+* nodeList => slice.call() not working in IE < 9, so it can only use 'for' to traversal the NodeList to Array
+* Type check methods (variable.nodeType can check a variable is or isn't a Node)
+
+### Dependencies
+
+### Constant
+
+### Velocity State
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

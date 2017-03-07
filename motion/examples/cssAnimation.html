@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>CssAnimation</title>
+	<style>
+		#demo{
+			width: 100px;
+			height: 100px;
+			background-color: red;
+			position: absolute;
+			left: 0;
+			top: 0;
+		}
+	</style>
+</head>
+<body>
+	<div id="demo"></div>
+	<script src="../dist/motion.js"></script>
+	<script>
+		motion('#demo', {
+			left: '100px'
+		})	
+	</script>
+</body>
+</html>
