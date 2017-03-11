@@ -52,7 +52,7 @@ module.exports = {
     'brace-style': ["error", "1tbs",  { "allowSingleLine": true }], // one true brace style 大括号风格要求
     'comma-spacing': 1, // 强制在逗号前后使用一致的空格
     'comma-style': 1, // 强制使用一致的逗号风格
-    'id-length': [1, {'min': 2, 'max': 20}],  // 强制标识符的最新和最大长度
+    'id-length': [1, {'min': 1, 'max': 20}],  // 强制标识符的最新和最大长度
     'new-parens': 1, // 要求调用无参构造函数时有圆括号
     'newline-per-chained-call': 1, // 要求方法链中每个调用都有一个换行符
     'no-array-constructor': 1, // 禁止使用 Array 构造函数
