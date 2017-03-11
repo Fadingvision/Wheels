@@ -113,7 +113,7 @@ const tween = {
             if ((t /= d) == 1) return b + c;
             if (typeof p == "undefined") p = d * .3;
             if (!a || a < Math.abs(c)) {
-                a = c; 
+                a = c;
                 s = p / 4;
             } else {
                 s = p/(2*Math.PI) * Math.asin(c/a);
@@ -126,7 +126,7 @@ const tween = {
             if ((t /= d / 2) == 2) return b+c;
             if (typeof p == "undefined") p = d * (.3 * 1.5);
             if (!a || a < Math.abs(c)) {
-                a = c; 
+                a = c;
                 s = p / 4;
             } else {
                 s = p / (2  *Math.PI) * Math.asin(c / a);
@@ -145,7 +145,7 @@ const tween = {
             return c * ((t = t/d - 1) * t * ((s + 1) * t + s) + 1) + b;
         },
         easeInOut(t, b, c, d, s) {
-            if (typeof s == "undefined") s = 1.70158; 
+            if (typeof s == "undefined") s = 1.70158;
             if ((t /= d / 2) < 1) return c / 2 * (t * t * (((s *= (1.525)) + 1) * t - s)) + b;
             return c / 2*((t -= 2) * t * (((s *= (1.525)) + 1) * t + s) + 2) + b;
         }
