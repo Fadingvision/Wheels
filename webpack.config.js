@@ -7,13 +7,14 @@ var projectRoot = path.resolve(__dirname, './');
 
 module.exports = {
     devtool: '#eval-source-map',
-    entry: {
-        'observe': path.join(__dirname, './mvvm/src/index.js')
-    },
+    entry: path.join(__dirname, './motion/src/motion.js'),
     output: {
         filename: '[name].bundle.js',
         publicPath: '',
-        path: path.join(__dirname, './mvvm/dist/')
+        path: path.join(__dirname, './motion/dist/'),
+        libraryTarget: 'umd',
+        library: 'motion',
+        umdNamedDefine: true
     },
     module: {
         loaders: [{
@@ -30,8 +31,8 @@ module.exports = {
         }),
         new webpack.optimize.CommonsChunkPlugin({
             name: 'vendor',
-            minChunks: function(module, count) {
-                return module.resource && module.resource.indexOf(path.resolve(__dirname, 'fetch')) === -1;
+            minChunks: function(module) {
+                return module.resource && module.resource.indexOf(path.resolve(__dirname, 'motion')) === -1;
             }
         })
     ]
