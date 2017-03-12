@@ -14,7 +14,6 @@ export const toArray = arrayLike => [].slice.call(arrayLike);
 // dom manipulate
 export const select = str => document.querySelectorAll(str);
 
-
 // prop and values
 export const getCssValue = (node, propName) => {
     return window.getComputedStyle(node, null)[propName];
@@ -30,9 +29,9 @@ export const getOriginValue = (node, propName) => {
 }
 
 export const decomposeValue = value => {
-    value = parseInt(value);
+    let number = parseInt(value);
     return {
-        number: number,
+        number,
         string: 'px',
     }
 }

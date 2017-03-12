@@ -1,3 +1,3 @@
-export engine = function(animatables) {
+export function engine(animatables) {
 
 }
