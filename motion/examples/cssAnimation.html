@@ -4,23 +4,36 @@
 	<meta charset="UTF-8">
 	<title>CssAnimation</title>
 	<style>
-		#demo{
+		.demo{
 			width: 100px;
 			height: 100px;
 			background-color: red;
 			position: absolute;
-			left: 0;
+		}
+		.demo1 {
+			left: 10px;
 			top: 0;
+		}.demo2 {
+			left: 20px;
+			top: 200px;
+		}.demo3 {
+			left: 0;
+			top: 400px;
 		}
 	</style>
 </head>
 <body>
-	<div id="demo"></div>
+	<div class="demo demo1"></div>
+	<div class="demo demo2"></div>
+	<div class="demo demo3"></div>
 	<script src="../dist/vendor.bundle.js"></script>
 	<script src="../dist/main.bundle.js"></script>
 	<script>
-		motion('#demo', {
-			left: '100px'
+		motion('.demo', {
+			left: '100px',
+			top: '200px',
+		},{
+			duration: 1000,
 		});
 	</script>
 </body>
