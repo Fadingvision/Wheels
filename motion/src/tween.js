@@ -178,6 +178,11 @@
 // }
 
 
+/**
+ * **　策略模式　**
+ * 将缓动算法封装起来，解耦与动画具体逻辑的实现。
+ */
+
 let tween = {};
 let names = ['Quad', 'Cubic', 'Quart', 'Quint', 'Expo'];
 let functions = {
