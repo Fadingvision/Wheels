@@ -68,7 +68,7 @@ class Motion {
      */
     getCurrentValue(anim, currentTime) {
         const {setting} = this;
-        let runningTime = Math.max(currentTime - anim.delay, 0);
+        let runningTime = Math.max(currentTime - anim.delay, 0); // eslint-disable-line
         let passed = Math.min(runningTime, setting.duration);
         let percent = passed / setting.duration;
 
@@ -84,7 +84,7 @@ class Motion {
     setAnimationProgress(currentTime) {
 
         this.time = Math.min(currentTime, this.totalDuration); // 不能让动画时间超过定义的过渡时间
-        this.percent = (this.time / this.totalDuration) * 100;
+        this.percent = (this.time / this.totalDuration) * 100; // eslint-disable-line
         this.animatables.forEach((anim) => {
             anim.currentValue = this.getCurrentValue(anim, currentTime);
             let {currentValue} = anim;
@@ -128,15 +128,15 @@ class Motion {
         if(progress.current >= this.totalDuration) {
             this.stop();
             this.ended = true;
-            s.complete && s.conplete(this);
+            s.complete && s.complete(this); // eslint-disable-line
         } else { // 继续执行动画
             this.raf = window.requestAnimationFrame(() => this.tick());
         }
     }
 
     stop() {
-        this.running = false; // 暂停不代表结束
-        this.raf && window.cancelAnimationFrame(this.raf);
+        this.running = false; // 暂停不代表结束 
+        this.raf && window.cancelAnimationFrame(this.raf);  // eslint-disable-line
     }
 }
 
