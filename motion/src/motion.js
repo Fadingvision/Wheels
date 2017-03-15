@@ -37,7 +37,7 @@ class Motion {
     	} else if(is.nodeList(tarParam)){
     		tar = toArray(tarParam);
     	} else {
-    		throw new TypeError('the target type is not supported')
+    		throw new TypeError('the target type is not supported');
     	}
         return tar.map((target, id) => ({target, id}))
     }
@@ -98,7 +98,7 @@ class Motion {
 
         this.time = Math.min(currentTime, this.totalDuration); // 不能让动画时间超过定义的过渡时间
         this.percent = (this.time / this.totalDuration) * 100; // eslint-disable-line
-        this.animatables.forEach((anim) => {
+        this.animatables.forEach(anim => {
             anim.currentValue = this.getCurrentValue(anim, currentTime);
             let {currentValue} = anim;
 

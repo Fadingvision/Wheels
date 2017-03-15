@@ -9,6 +9,7 @@
 			height: 100px;
 			background-color: red;
 			position: absolute;
+			/*transform: translateX(50px);*/
 		}
 		.demo1 {
 			left: 10px;
@@ -23,15 +24,14 @@
 	</style>
 </head>
 <body>
-	<div class="demo demo1"></div>
+	<div class="demo demo1" style="transform: translateX(50px)"></div>
 	<div class="demo demo2"></div>
 	<div class="demo demo3"></div>
 	<script src="../dist/vendor.bundle.js"></script>
 	<script src="../dist/main.bundle.js"></script>
 	<script>
 		var ins = motion(document.querySelectorAll('.demo'), { // eslint-disable-line
-			left: '100px',
-			top: '200px',
+			transform: 'translateX(100px)',
 		}, {
 			duration: 3000,
 		});

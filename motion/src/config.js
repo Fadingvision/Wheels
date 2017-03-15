@@ -12,3 +12,5 @@ export const DEFAULT_ANI_CONFIG = {
 	direction: 'normal',
 	autoPlay: true,
 };
+
+export const validTransforms = ['translateX', 'translateY', 'translateZ', 'rotate', 'rotateX', 'rotateY', 'rotateZ', 'scale', 'scaleX', 'scaleY', 'scaleZ', 'skewX', 'skewY'];
