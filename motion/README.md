@@ -59,7 +59,7 @@ motion(target, properties, options);
 ```
 **explain:**
 
-- target: css Selector, dom; (wait: NodeList, object, array)
+- target: css Selector, dom, NodeList; (wait: object, array)
 - properties: css property object(include transform property, color transform)(wait: SVG, DOM, OBject properties)
 - options:　object
 

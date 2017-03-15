@@ -29,11 +29,11 @@
 	<script src="../dist/vendor.bundle.js"></script>
 	<script src="../dist/main.bundle.js"></script>
 	<script>
-		motion('.demo', {
+		var ins = motion(document.querySelectorAll('.demo'), { // eslint-disable-line
 			left: '100px',
 			top: '200px',
-		},{
-			duration: 1000,
+		}, {
+			duration: 3000,
 		});
 	</script>
 </body>

@@ -3,6 +3,7 @@ export const is = {
     string: s => typeof s === 'string',
     node: s => s.nodeType > 0, // eslint-disable-line
     array: s => Array.isArray(s),
+    nodeList: s => s instanceof NodeList || s instanceof HTMLCollection,
 }
 
 // Array methods

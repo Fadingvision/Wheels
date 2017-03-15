@@ -20,14 +20,25 @@ class Motion {
         this.percent = 0; // 运动进程百分比
         this.running = false; // 是否正在运动
         this.ended = false; // 运动是否已经结束
-
+        
         this.progress = {}; // 记录运动声明周期中的各种参数
     }
 
     // resolve targets from params
     getTargets(tarParam) {
-        let tar = is.string(tarParam) ? select(tarParam) : tarParam;
-        tar = toArray(tar);
+    	let tar;
+    	// selector
+    	if(is.string(tarParam)) {
+    		tar = toArray(select(tarParam));
+    	// node
+    	} else if(is.node(tarParam)) {
+    		tar = [tarParam];
+    	// nodeList
+    	} else if(is.nodeList(tarParam)){
+    		tar = toArray(tarParam);
+    	} else {
+    		throw new TypeError('the target type is not supported')
+    	}
         return tar.map((target, id) => ({target, id}))
     }
 
@@ -68,7 +79,9 @@ class Motion {
      */
     getCurrentValue(anim, currentTime) {
         const {setting} = this;
+        // the actually running time of target
         let runningTime = Math.max(currentTime - anim.delay, 0); // eslint-disable-line
+        // make sure that the runningTime is less than the duration
         let passed = Math.min(runningTime, setting.duration);
         let percent = passed / setting.duration;
 
@@ -76,7 +89,7 @@ class Motion {
 
         let start = anim.from.number;
         let end = anim.to.number;
-        let currentValue = start + eased * (end - start);
+        let currentValue = start + eased * (end - start); // eslint-disable-line
 
         return currentValue + anim.to.string;
     }
@@ -97,7 +110,7 @@ class Motion {
     // 启动动画声明周期
 	play() {
         const zero = 0;
-        this.stop();
+        this.pause();
         this.running = true;
 
         this.progress.start = Date.now();
@@ -126,7 +139,7 @@ class Motion {
         }
         // 如果动画持续时间已经大于过渡时间，则停止动画
         if(progress.current >= this.totalDuration) {
-            this.stop();
+            this.pause();
             this.ended = true;
             s.complete && s.complete(this); // eslint-disable-line
         } else { // 继续执行动画
@@ -134,7 +147,7 @@ class Motion {
         }
     }
 
-    stop() {
+    pause() {
         this.running = false; // 暂停不代表结束 
         this.raf && window.cancelAnimationFrame(this.raf);  // eslint-disable-line
     }
