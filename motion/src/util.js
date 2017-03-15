@@ -68,7 +68,8 @@ const value = {
 }
 
 function getAnimationType(node, prop) {
-    if(validTransforms.indexof(prop) > -1) return 'transform';
+    console.log(node, prop)
+    if(validTransforms.indexOf(prop) > -1) return 'transform';
     if(prop !== 'transform' && value.css(node, prop)) return 'css';
     if(node.getAttribute(prop)) return 'attribute';
     return 'object';
@@ -96,7 +97,8 @@ export const getOriginValue = (node, prop) => {
 }
 
 export const decomposeValue = prop => {
-    let number = parseInt(prop);
+    console.log(prop)
+    let number = parseInt(prop.value);
     return {
         number,
         unit: getUnit(prop),

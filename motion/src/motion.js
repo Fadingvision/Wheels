@@ -57,7 +57,7 @@ class Motion {
                 // TO_DO: 先只考虑普通css类型的运动
                 obj.target = target;
                 obj.from = getOriginValue(target, prop.name);
-                obj.to = decomposeValue(prop.value);
+                obj.to = decomposeValue(prop);
 
                 animatables.push(obj);
             })
@@ -91,7 +91,7 @@ class Motion {
         let end = anim.to.number;
         let currentValue = start + eased * (end - start); // eslint-disable-line
 
-        return currentValue + anim.to.string;
+        return currentValue + anim.to.unit;
     }
 
     setAnimationProgress(currentTime) {
