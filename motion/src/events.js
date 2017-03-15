@@ -39,22 +39,18 @@ class Events {
 	off(event, handler) {
 		// remove all listeners in all events
 		if (!arguments.length) {
-			this.offAll();
+			this._events = Object.create(null);
 			return this;
 		}
 		// remove the specific handler of specific event
 		let events = this._events[event];
 		if (events && handler) {
 			events.splice(events.indexOf(handler) >>> 0, 1); // eslint-disable-line
+			if(!events.length) delete this._events[event];
 			return this;
 		}
 		// remove the specific event
 		if (events) delete this._events[event];
-		return this;
-	}
-
-	offAll() {
-		this._events = Object.create(null);
 		return this;
 	}
 

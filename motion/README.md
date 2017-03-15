@@ -1,57 +1,57 @@
 ## motion.js
 
-### �ܹ�ѧ��ʲô��
-1. Ҫʵ��ʲô���������ʲô���⣬��������˼·���࿴��������ôʵ�ֵģ�����Щ��ֵ�ý����ѧϰ�ĵط���
-2�� ��ô�ӽ�����������֣�Ȼ��˼��api��ô���, ��Щ�Ǳ�¶��ȥ�ģ���Щ���ڲ�ʵ�ֵġ�˼����������Ľṹ������Щ������ʵ�����api,������Ŀ�Ĵ�������������������ġ�
-3�� ��ô��˼·ת��Ϊʵ�ʵĴ��룬�������֯��װ�����ģʽ���������ģ�黯��������Ż�ϸ�ڡ�
-4�� �Ż���
+### 能够学到什么？
+1. 要实现什么东西，解决什么问题，解决问题的思路，多看别人是怎么实现的，有哪些是值得借鉴和学习的地方。
+2。 怎么从解决的问题入手，然后思考api怎么设计, 哪些是暴露出去的，哪些是内部实现的。思考整个代码的结构，用哪些方法来实现这个api,整个项目的代码的生命周期是怎样的。
+3。 怎么把思路转化为实际的代码，代码的组织封装，设计模式，代码抽象模块化，具体的优化细节。
+4。 优化。
 
-### ���嵽�����Ŀ
+### 具体到这个项目
 
-#### 1. ʵ��ʲô�����ʲô���⣿
+#### 1. 实现什么，解决什么问题？
 
-#### 2. ˼·��
-��ôʵ�֣�
-dom �����ı�����ʲô�� JS_DOM������ʵ��ԭ������ô��һ��Ԫ�ض�������
-ѧϰ�ͽ��velocity.js , anime.js
+#### 2. 思路：
+怎么实现：
+dom 动画的本质是什么？ JS_DOM动画的实现原理？怎么让一个元素动起来。
+学习和借鉴velocity.js , anime.js
 
-#### 3. API��ƺ�ʵ��
+#### 3. API设计和实现
 
-- �ο�����api��ƣ��ο�css��������ο�����easing-function��ʵ�ֺ�ʹ�ã���Ƹ��ֻص���
-- ��ô��ȡ���п��Զ���dom�ڵ㡣
-- ��ô��һ�����Զ���ת���������ڴ�����ʹ�õĽṹ���ܹ��õ������յ㡣
-- ��ôͬʱ�ö��Ԫ���˶���������Ӱ��ͳ�ͻ����ô�ö��ʵ��ͬʱӵ���Լ����˶����̡�
-- ��Щ�ӿ��Ǳ�¶��ȥ�ģ���Щ���ڲ�ʵ�ֵġ�
-- ��ôʵ�ָ���setting��������÷�����
-- ��ô��һ��Ԫ�ص��˶����� ת���� ������������ģ��Ӷ�ת��Ϊ������̣�һ��Ԫ���˶������������������ġ�
-- ����ϸ�ڣ���ô����css��svg��transform,��ôʹ��easing-function,��ôʹ��requstAnimation.
--���ο�jquery��queue����ES6��generator������ƶ�������
-- ��ô֧��transform��������ɫ����,svg��������
+- 参考其他api设计，参考css动画概念，参考各种easing-function的实现和使用，设计各种回调。
+- 怎么获取所有可以动的dom节点。
+- 怎么将一个属性对象转换成易于在代码中使用的结构，能够拿到起点和终点。
+- 怎么同时让多个元素运动而不互相影响和冲突，怎么让多个实例同时拥有自己的运动进程。
+- 哪些接口是暴露出去的，哪些是内部实现的。
+- 怎么实现各种setting里面的配置方法。
+- 怎么将一个元素的运动过程 转换成 人类易于理解的，从而转换为代码过程，一次元素运动的生命周期是怎样的。
+- 各种细节，怎么区分css和svg和transform,怎么使用easing-function,怎么使用requstAnimation.
+-（参考jquery的queue或者ES6的generator）来设计动画队列
+- 怎么支持transform动画、颜色过渡,svg动画过渡
 
-#### 4. ��������д
+#### 4. 具体代码编写
 
-- ��ô��ļ�Ŀ¼�ṹ�����������ļ���ڣ������Ǹ��������������ǳ������ã���Щ�������Զ���д��һ������ļ���
-  ģ�黯��ǰ���±���һ���ļ��Ĵ���������Ҫ����100�У�����100�еĴ���ͻ�Ƚ������Ķ���ά����
-- ��ô���������ܹ�����Щ��Ҫ��¶��ȥ�ģ��Ȱ�һ����Ҫʵ�ֵķ���������д�ã���Ҫ����ȥ���ϸ�ڡ�
-- ����˼����Щ�������Ծۺϳ�һ���࣬�����߼��������ڲ�ʵ�֣�Ȼ����Ⱪ¶�ӿڣ��������������ķ�ʽ������
-- ˼�������õ���Щ���ģʽ���ô���ɶ��ԣ���ά���ԣ������Ը�ǿ��
+- 怎么搭建文件目录结构，哪里是主文件入口，哪里是辅助函数，哪里是抽离配置，哪些东西可以独立写成一个类和文件，
+  模块化的前提下保持一个文件的代码行数不要超过100行，超过100行的代码就会比较难以阅读和维护。
+- 怎么搭建代码整体架构，哪些是要暴露出去的，先把一个个要实现的方法函数名写好，不要急于去填充细节。
+- 尽量思考哪些东西可以聚合成一个类，让其逻辑尽量在内部实现，然后对外暴露接口，尽量用面向对象的方式开发。
+- 思考可以用到哪些设计模式，让代码可读性，可维护性，抽象性更强。
 
-1. ����ģʽ��ʵ��easing-function,����������
-2. ������ģʽ��ʵ�ֶ���������е���������ͬʱ���ж��������ѭ�����С�
-3. ����-������ģʽ����ʵ�ֶ����ص���֪ͨ�������е����á�
-4. ����ģʽ��������ʵ�ֶ������С�
+1. 策略模式来实现easing-function,缓动函数。
+2. 迭代器模式来实现动画数组进行迭代，可以同时进行多个动画的循环进行。
+3. 发布-订阅者模式可以实现动画回调，通知动画队列的作用。
+4. 命令模式可以用来实现动画队列。
 
-#### 5. �Ż��Ͳ���
+#### 5. 优化和测试
 
 
 ### **(version: 0.1.0)**
-(֪ʶ��ϵ�� EventEmitter, Promise, queue, generator��)
-(���ģʽ��������ģʽ�����ģʽ������ģʽ������ģʽ��)
+(知识体系： EventEmitter, Promise, queue, generator等)
+(设计模式：迭代器模式、外观模式、策略模式、命令模式等)
 
 ## API
 ----
 
-#### **1.������**
+#### **1.主函数**
 
 ```javascript
 motion(target, properties, options);
@@ -61,24 +61,24 @@ motion(target, properties, options);
 
 - target: css Selector, dom; (wait: NodeList, object, array)
 - properties: css property object(include transform property, color transform)(wait: SVG, DOM, OBject properties)
-- options:��object
+- options:　object
 
 1. duration: number; (wait: function)
 2. delay: number;(wait: function)
 3. easing: string;(wait: function)
-4. loop: number;(�������}�Ӯ����ٴ�)
-5. direction: 'reverse';(�Ӻ���ǰ���Ŷ���)
-6. autoPlay: false, (�Ƿ��Զ�ִ�ж���)
+4. loop: number;(可以重複動畫多少次)
+5. direction: 'reverse';(从后往前播放动画)
+6. autoPlay: false, (是否自动执行动画)
 
 7: callbacks:
 
-begin: (������ʼ��ʱ��ִ��)
-run: (����ÿ֡��ʱ��ִ��һ��)
-done: (����������ʱ��ִ��һ��)
+begin: (动画开始的时候执行)
+run: (动画每帧的时候执行一次)
+done: (动画结束的时候执行一次)
 
 
 
-#### **��������: sequence**��(�ο�jquery��queue����ES6��generator)
+#### **动画队列: sequence**　(参考jquery的queue或者ES6的generator)
 
 ```
 var mySequence = motion.sequence({
@@ -136,15 +136,15 @@ Penner's equations:
 
 
 
-## anime.jsѧϰ����
+## anime.js学习分析
 
 
-###  �ṹ����
+###  结构分析
 
 #### Default Config
-Ĭ�����ã�ʵ��������������������Ϊ�������Ե�transform���ԣ�
+默认配置（实例，缓动函数，可以作为动画属性的transform属性）
 
-#### Util���ߺ���
+#### Util工具函數
 
 * includes,
 * is,
@@ -168,7 +168,7 @@ Penner's equations:
 * get property Unit (20px,em, deg => px, em, deg)
 
 
-#### ��ȡ�˶�Ԫ�ص�valueֵ
+#### 获取运动元素的value值
 
 
 * getAnimationType (normal css, transform, attribute(like scrollTop, scrollLeft))
@@ -183,18 +183,18 @@ getOriginalTargetValue => {
 		attribute: return getAttribute()
 }
 ```
-#### ��ȡ�˶�Ԫ�ص����пν��ж���������
+#### 获取运动元素的所有课进行动画的属性
 
-#### ��ȡ�˶�Ԫ�ص�·��
-
-
-#### ��ȡ�˶�Ԫ��
-
-normalizeTweens()�ú��������еĲ���������һ���˶��������á�
+#### 获取运动元素的路径
 
 
+#### 获取运动元素
 
-#### ����ʵ��
+normalizeTweens()该函数将所有的参数解析成一个运动对象配置。
+
+
+
+#### 创建实例
 
 createNewInstance(params) => return config object;
 
@@ -202,14 +202,14 @@ createNewInstance(params) => return config object;
 ### **CORE MODULE**
 
 
-#### ��������engine
-���ڶ���requestAnimationFrame���������γɶ���Ч����
+#### 动画引擎engine
+用于定义requestAnimationFrame来真正的形成动画效果。
 
-#### ����ʵ����������
+#### 动画实例函数对象
 
 
 
-## velocity.js����ѧϰ
+## velocity.js分析学习
 
 ### jQuery-shim
 
@@ -267,31 +267,31 @@ createNewInstance(params) => return config object;
 
 
 
-## ������������֪ʶ��
+## 动画引擎所需知识点
 
-### 1. ׼ȷ�Ļ�ȡԪ�ص���ʽ��������ͨ��ʽ��transform��ʽ����ɫrgbֵ��
+### 1. 准确的获取元素的样式（包含普通样式，transform样式，颜色rgb值）
 
-### 2. ��Ϥ���õĻ���������easeIn, easeOut, easeInOut, linear;)
+### 2. 熟悉常用的缓动函数（easeIn, easeOut, easeInOut, linear;)
 
-- Sine��ʾ�����Ǻ���ʵ�ֵĻ�������
-- Quad �Ƕ��η�
-- Cubic�����η�
-- Quart���Ĵη�
-- Qunit����η�
-- Circʹ�ÿ�ƽ���޵�Math.sqit
-- Expoʹ�ÿ�������
-- Elastic�ǽ�����Ǻ����뿪���������ĳ�������Ч��
-- Back��ʹ����һ��1.70158�ĳ���������Ļ���Ч��
-- Bounce�Ǹ߼�����Ч��
+- Sine表示由三角函数实现的缓动函数
+- Quad 是二次方
+- Cubic是三次方
+- Quart是四次方
+- Qunit是五次方
+- Circ使用开平方恨的Math.sqit
+- Expo使用开立方根
+- Elastic是结合三角函数与开立三方根的初级弹簧效果
+- Back是使用了一个1.70158的常数来计算的回退效果
+- Bounce是高级弹簧效果
 
-### 3. API���
+### 3. API设计
 
-* ���У����飩��insertFrame, deleteFrame, enterFrame��
-* ���䶯��
-* �ص�����
-* �����ؼ�֡(parseFrames)��ÿ���ؼ�֡������ʽ����������ʽ����ʼֵ��Ĭ�ϼ��㣩������ֵ���û����룩����λ�����͡�
-����ͨ���ַ�Ϊ��ɫֵ�任�������任���Լ�Ĭ�ϱ任��
+* 队列（数组）（insertFrame, deleteFrame, enterFrame）
+* 补间动画
+* 回调函数
+* 分析关键帧(parseFrames)，每个关键帧包含样式名，缓动公式、开始值（默认计算）、结束值（用户传入）、单位和类型。
+类型通常又分为颜色值变换，滚动变换，以及默认变换。
 
 ### 4. requestAnimationFrame
 
-### 5. css3��һЩ����֪ʶ
+### 5. css3的一些动画知识
