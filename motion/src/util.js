@@ -89,25 +89,10 @@ function getUnit(property) {
 // TO_DO: get the value by different style types
 export const getOriginValue = (node, prop, propType) => {
     let originValue = value[propType](node, prop);
-    console.log(originValue);
-    console.log(getUnit(prop))
     return {
         number: parseInt(originValue),
         unit: getUnit(prop), // FIX_ME
     }
-}
-
-export const setTargetValue = (anim, val) =>  {
-    // let transforms = undefined;
-    // let 
-    // switch(anim.type) {
-    //     case 'css': anim.target.style[ania.name] = val; break;
-    //     // case 'attribute': anim.target.style[ania.name] = val; break;
-    //     case 'transform': 
-    //         if(!transfroms) transforms = {};
-    //         if(anim.id) transforms = {}
-
-    // }
 }
 
 export const decomposeValue = prop => {

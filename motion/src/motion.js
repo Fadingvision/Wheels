@@ -1,5 +1,5 @@
 import {DEFAULT_ANI_CONFIG} from './config';
-import {is, flattenArray, toArray, select, getOriginValue, decomposeValue, setTargetValue} from './util'; // eslint-disable-line
+import {is, flattenArray, toArray, select, getOriginValue, decomposeValue, setTargetValue, getAnimationType} from './util'; // eslint-disable-line
 import tween from './tween';
 
 class Motion {
@@ -112,14 +112,18 @@ class Motion {
                 case 'css': anim.target.style[anim.name] = currentValue; break;
                 // case 'attribute': anim.target.style[anim.name] = currentValue; break;
                 case 'transform': 
-                    if(!transfroms) transforms = {};
+                    if(!transforms) transforms = {};
                     if(!transforms[id]) transforms[id] = [];
                     transforms[id].push(currentValue);
                     break;
             }
             // transform can only be setted once,
             // so wo must join all the property and then set the transform style once .
-            if(transforms) Object.keys(transforms).map(key => anim.animatables[key].target.style.transform = transforms[key].join(' '));
+        });
+        if(transforms) Object.keys(transforms).forEach(id => {
+        	var anim = this.animatables.filter(anima => anima.id === id)[0];
+        	console.log(transforms[id].join(''))
+        	anim && (anim.target.style.transform = `translateX(${transforms[id].join(' ')})` );
         });
 
         if (this.setting.update) this.setting.update(this);
