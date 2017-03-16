@@ -1,5 +1,5 @@
 import {DEFAULT_ANI_CONFIG} from './config';
-import {is, flattenArray, toArray, select, getOriginValue, decomposeValue} from './util'; // eslint-disable-line
+import {is, flattenArray, toArray, select, getOriginValue, decomposeValue, setTargetValue} from './util'; // eslint-disable-line
 import tween from './tween';
 
 class Motion {
@@ -56,7 +56,9 @@ class Motion {
                 let obj = Object.assign({}, prop, setting);
                 // TO_DO: 先只考虑普通css类型的运动
                 obj.target = target;
-                obj.from = getOriginValue(target, prop.name);
+                obj.id = tarObj.id;
+                obj.type = getAnimationType(target, prop.name);
+                obj.from = getOriginValue(target, prop.name, obj.type);
                 obj.to = decomposeValue(prop);
 
                 animatables.push(obj);
@@ -96,14 +98,30 @@ class Motion {
 
     setAnimationProgress(currentTime) {
 
-        this.time = Math.min(currentTime, this.totalDuration); // 不能让动画时间超过定义的过渡时间
+        this.time = Math.min(currentTime, this.totalDuration); // the running time can not be more than the totalDuration time
         this.percent = (this.time / this.totalDuration) * 100; // eslint-disable-line
+
+        let transforms = undefined; // object fot composing transform property of the same target
         this.animatables.forEach(anim => {
             anim.currentValue = this.getCurrentValue(anim, currentTime);
-            let {currentValue} = anim;
+            let {currentValue, id} = anim;
 
-            anim.target.style[anim.name] = currentValue;
-        })
+            // setTargetValue(anim, currentValue);
+            
+            switch(anim.type) {
+                case 'css': anim.target.style[anim.name] = currentValue; break;
+                // case 'attribute': anim.target.style[anim.name] = currentValue; break;
+                case 'transform': 
+                    if(!transfroms) transforms = {};
+                    if(!transforms[id]) transforms[id] = [];
+                    transforms[id].push(currentValue);
+                    break;
+            }
+            // transform can only be setted once,
+            // so wo must join all the property and then set the transform style once .
+            if(transforms) Object.keys(transforms).map(key => anim.animatables[key].target.style.transform = transforms[key].join(' '));
+        });
+
         if (this.setting.update) this.setting.update(this);
     }
 
