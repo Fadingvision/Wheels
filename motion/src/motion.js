@@ -20,7 +20,7 @@ class Motion {
         this.percent = 0; // 运动进程百分比
         this.running = false; // 是否正在运动
         this.ended = false; // 运动是否已经结束
-        
+
         this.progress = {}; // 记录运动声明周期中的各种参数
     }
 
@@ -105,12 +105,11 @@ class Motion {
         this.animatables.forEach(anim => {
             anim.currentValue = this.getCurrentValue(anim, currentTime);
             let {currentValue, id} = anim;
-
             // setTargetValue(anim, currentValue);
             switch(anim.type) {
                 case 'css': anim.target.style[anim.name] = `${anim.from.unit[0]}${currentValue}${anim.from.unit[1]}`; break;
                 // case 'attribute': anim.target.style[anim.name] = currentValue; break;
-                case 'transform': 
+                case 'transform':
                     if(!transforms) transforms = {};
                     if(!transforms[id]) transforms[id] = [];
 
@@ -123,8 +122,6 @@ class Motion {
         // so wo must join all the property and then set the transform style once .
         if(transforms) Object.keys(transforms).forEach(id => {
         	var anim = this.animatables.filter(anima => anima.id === +id)[0];
-
-        	// TO_DO: compose the value and unit!
         	anim && (anim.target.style.transform = `${transforms[id].join(' ')}`);
         });
 
@@ -133,13 +130,16 @@ class Motion {
 
     // 启动动画声明周期
 	play() {
-        const zero = 0;
+        const zero = 0, {setting: s} = this;
         this.pause();
         this.running = true;
 
         this.progress.start = Date.now();
         // 用于保存暂停后重新启动的时候，暂停之前运动持续的时间
         this.progress.last = this.ended ? zero : this.time;
+
+        if(s.direction === 'reverse') this.reverseAnimation();
+        if(s.direction === 'alternate' && !s.loop) s.loop = 1;
 
         let tick = this.tick.bind(this);
 		this.raf = window.requestAnimationFrame(tick);
@@ -163,17 +163,53 @@ class Motion {
         }
         // 如果动画持续时间已经大于过渡时间，则停止动画
         if(progress.current >= this.totalDuration) {
-            this.pause();
-            this.ended = true;
-            s.complete && s.complete(this); // eslint-disable-line
+            if(s.loop) {
+                progress.start = Date.now();
+                if(s.direction === 'alternate') this.reverseAnimation();
+                if(is.number(s.loop)) s.loop--;
+                this.raf = window.requestAnimationFrame(() => this.tick());
+            } else {
+                this.pause();
+                this.ended = true;
+                s.complete && s.complete(this); // eslint-disable-line
+                // this.finished();
+            }
+
+            progress.last = 0; // 将持续时间重置为0
         } else { // 继续执行动画
             this.raf = window.requestAnimationFrame(() => this.tick());
         }
     }
 
+    reverseAnimation() {
+        this.animatables.forEach(obj => {
+            let [from, to] = [obj.to.number, obj.from.number];
+            obj.from.number = from;
+            obj.to.number = to;
+        })
+    }
+
     pause() {
-        this.running = false; // 暂停不代表结束 
+        this.running = false; // 暂停不代表结束
         this.raf && window.cancelAnimationFrame(this.raf);  // eslint-disable-line
+    }
+
+
+    restart() {
+
+    }
+
+    reverse () {
+
+    }
+
+
+    finished() {
+        let resolve;
+        new Promise((res, re) => {
+            resolve = res;
+        })
+        return reslove;
     }
 }
 

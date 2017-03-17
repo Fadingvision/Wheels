@@ -5,6 +5,7 @@ export const is = {
     string: s => typeof s === 'string',
     node: s => s.nodeType > 0, // eslint-disable-line
     array: s => Array.isArray(s),
+    number: s => typeof s === 'number',
     nodeList: s => s instanceof NodeList || s instanceof HTMLCollection, // only works in modern browser such as IE9+, chrome, firefox etc.
 }
 
@@ -31,15 +32,15 @@ const value = {
     },
 
     /**
-     * 
+     *
      * unfortunately getting the initial transforms values with getComputedStyle is tricky
-     * It will return a transform matrix, 
+     * It will return a transform matrix,
      * and the code needed to decode and extract the values from the matrix will double the size of the library!
      *
      * so if you're not specify the initial transform value of inline-style,
      * we'll set the transform value as if it has no transform value.
-     *     
-     * 
+     *
+     *
      * @return {number}         the transform value of the specific node
      */
     transform: function getTransformValue(node, property) {
@@ -68,6 +69,7 @@ const value = {
 }
 
 export function getAnimationType(node, prop) {
+
     if(validTransforms.indexOf(prop) > -1) return 'transform';
     if(prop !== 'transform' && value.css(node, prop)) return 'css';
     if(node.getAttribute(prop)) return 'attribute';

@@ -31,15 +31,18 @@
 	<script src="../dist/main.bundle.js"></script>
 	<script>
 		var ins = motion(document.querySelectorAll('.demo'), { // eslint-disable-line
-			// transform: 'translateX(100px)',
-			translateX: '800px',
-			rotate: '30deg',
+			translateX: '500px',
+			// left: 800,
+			rotate: 90,
 			scale: 2,
-			top: '500px',
+			top: 200,
+			opacity: 0.5
 			// left: '100px',
 		}, {
-			duration: 3000,
-			easing: 'easeInOutCubic'
+			duration: 1000,
+			easing: 'linear',
+			direction: 'reverse',
+			loop: 2,
 		});
 	</script>
 </body>

@@ -6,11 +6,11 @@ export const DEFAULT_ANI_CONFIG = {
 	begin: undefined,
 	update: undefined,
 	complete: undefined,
-
-	round: false,
-	loop: 1,
+	loop: 0,
 	direction: 'normal',
 	autoPlay: true,
+
+    round: false,
 };
 
 export const validTransforms = ['translateX', 'translateY', 'translateZ', 'rotate', 'rotateX', 'rotateY', 'rotateZ', 'scale', 'scaleX', 'scaleY', 'scaleZ', 'skewX', 'skewY'];
