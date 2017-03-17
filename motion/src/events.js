@@ -15,7 +15,7 @@ class Events {
 		if (Array.isArray(event)) {
 			event.forEach(e => this.on(e, handler));
 		} else {
-			(this._events[event] || (this._events[event] = [])).push(event);
+			(this._events[event] || (this._events[event] = [])).push(handler);
 		}
 		return this;
 	}

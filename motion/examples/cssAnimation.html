@@ -39,11 +39,16 @@
 			opacity: 0.5
 			// left: '100px',
 		}, {
-			duration: 1000,
+			duration: 3000,
 			easing: 'linear',
-			direction: 'reverse',
-			loop: 2,
+			// loop: true,
+			// direction: 'reverse',
 		});
+
+		// setTimeout(() => ins.seek(20), 2000)
+		console.log(ins.finished)
+		ins.finished.then(() => console.log('animation is finished'))
+		// setTimeout(() => ins.reverse(), 2000)
 	</script>
 </body>
 </html>

@@ -2,6 +2,8 @@ import {DEFAULT_ANI_CONFIG} from './config';
 import {is, flattenArray, toArray, select, getOriginValue, decomposeValue, setTargetValue, getAnimationType} from './util'; // eslint-disable-line
 import tween from './tween';
 
+import Events from './events';
+
 class Motion {
 	// set motionInstance by params
 	constructor(target, properties, setting) {
@@ -16,12 +18,20 @@ class Motion {
         this.animatables = this.getAnimatables(this.targets, this.properties, this.setting);
         this.totalDuration = this.setting.duration + this.setting.delay;
 
+        this.initEvents(this.setting);
+
         this.time = 0; // 开始运动后的时间
         this.percent = 0; // 运动进程百分比
         this.running = false; // 是否正在运动
         this.ended = false; // 运动是否已经结束
+        this.reversed = false; // 运动是否被反转过
+        this.finished = new Promise(resolve => this.resolve = resolve); // 运动结束时被reslove的promise;
 
         this.progress = {}; // 记录运动声明周期中的各种参数
+    }
+
+    initEvents() {
+        this.event = new Events(); // 回调时间注册器
     }
 
     // resolve targets from params
@@ -92,7 +102,7 @@ class Motion {
         let start = anim.from.number;
         let end = anim.to.number;
         let currentValue = start + eased * (end - start); // eslint-disable-line
-
+        currentValue = setting.round ? Math.round(currentValue) : currentValue;
         return currentValue;
     }
 
@@ -171,10 +181,9 @@ class Motion {
             } else {
                 this.pause();
                 this.ended = true;
+                this.resolve();
                 s.complete && s.complete(this); // eslint-disable-line
-                // this.finished();
             }
-
             progress.last = 0; // 将持续时间重置为0
         } else { // 继续执行动画
             this.raf = window.requestAnimationFrame(() => this.tick());
@@ -187,6 +196,7 @@ class Motion {
             obj.from.number = from;
             obj.to.number = to;
         })
+        this.reversed = !this.reversed;
     }
 
     pause() {
@@ -194,22 +204,23 @@ class Motion {
         this.raf && window.cancelAnimationFrame(this.raf);  // eslint-disable-line
     }
 
-
     restart() {
-
+        if(this.reversed) this.reverseAnimation();
+        this.pause();
+        this.seek(0);
+        this.play();
     }
 
+    // TO_FIX: 不能够平缓的在当前位置立即反向.
     reverse () {
-
+        this.reverseAnimation();
     }
 
-
-    finished() {
-        let resolve;
-        new Promise((res, re) => {
-            resolve = res;
-        })
-        return reslove;
+    // TO_FIX: 不起作用
+    seek(progress){
+        var time = (progress / 100) * this.totalDuration;
+        this.progress.current = time;
+        this.setAnimationProgress(time);
     }
 }
 

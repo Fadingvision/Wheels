@@ -6,11 +6,12 @@ export const DEFAULT_ANI_CONFIG = {
 	begin: undefined,
 	update: undefined,
 	complete: undefined,
-	loop: 0,
+	loop: false,
 	direction: 'normal',
 	autoPlay: true,
 
-    round: false,
+    // when the property is scale,opacity, etc, there's a bug in this config;
+    /*round: false, (desprecated)*/
 };
 
 export const validTransforms = ['translateX', 'translateY', 'translateZ', 'rotate', 'rotateX', 'rotateY', 'rotateZ', 'scale', 'scaleX', 'scaleY', 'scaleZ', 'skewX', 'skewY'];
