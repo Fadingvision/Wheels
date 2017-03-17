@@ -22,7 +22,7 @@ class Events {
 
 	once(event, handler) {
 		let fn = () => {
-			this.off(event, handler);
+			this.off(event, fn);
 			handler.call(this);
 		}
 		this.on(event, fn);

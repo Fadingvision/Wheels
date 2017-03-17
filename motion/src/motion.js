@@ -30,8 +30,10 @@ class Motion {
         this.progress = {}; // 记录运动声明周期中的各种参数
     }
 
-    initEvents() {
-        this.event = new Events(); // 回调时间注册器
+    initEvents(setting) {
+        this.event = new Events(); // 回调事件注册器
+        ['begin', 'complete'].forEach(cb => setting[cb] && this.event.once(cb, setting[cb]));
+        setting.update && this.event.on(`update`, setting.update);
     }
 
     // resolve targets from params
@@ -135,7 +137,7 @@ class Motion {
         	anim && (anim.target.style.transform = `${transforms[id].join(' ')}`);
         });
 
-        if (this.setting.update) this.setting.update(this);
+        if (this.setting.update)  this.event.emit('update');
     }
 
     // 启动动画声明周期
@@ -164,13 +166,16 @@ class Motion {
         progress.now = Date.now();
         progress.current = progress.last + progress.now - progress.start;
 
+        if(progress.current >= s.delay ) {
+            // s.begin(this);
+            // s.begin = null;
+            this.event.emit('begin');
+        }
+
         // 真正对元素进行设置值，让元素产生动画
         this.setAnimationProgress(progress.current);
 
-        if(s.begin && progress.current >= s.delay ) {
-            s.begin(this);
-            s.begin = null;
-        }
+
         // 如果动画持续时间已经大于过渡时间，则停止动画
         if(progress.current >= this.totalDuration) {
             if(s.loop) {
@@ -180,9 +185,10 @@ class Motion {
                 this.raf = window.requestAnimationFrame(() => this.tick());
             } else {
                 this.pause();
+
                 this.ended = true;
                 this.resolve();
-                s.complete && s.complete(this); // eslint-disable-line
+                s.complete && this.event.emit('complete');
             }
             progress.last = 0; // 将持续时间重置为0
         } else { // 继续执行动画
