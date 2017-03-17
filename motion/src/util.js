@@ -86,12 +86,20 @@ function getUnit(property) {
     }
 }
 
+function splitUnit(prop, propType) {
+    if(propType === 'transform') {
+        return [`${prop}(`, `${getUnit(prop)})`]
+    } else if(propType === 'css') {
+        return ['', `${getUnit(prop)}`]
+    }
+}
+
 // TO_DO: get the value by different style types
 export const getOriginValue = (node, prop, propType) => {
     let originValue = value[propType](node, prop);
     return {
         number: parseInt(originValue),
-        unit: getUnit(prop), // FIX_ME
+        unit: splitUnit(prop, propType), // FIX_ME
     }
 }
 

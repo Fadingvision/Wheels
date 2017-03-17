@@ -12,10 +12,10 @@
 			/*transform: translateX(50px);*/
 		}
 		.demo1 {
-			left: 10px;
+			left: 0;
 			top: 0;
 		}.demo2 {
-			left: 20px;
+			left: 0;
 			top: 200px;
 		}.demo3 {
 			left: 0;
@@ -33,9 +33,13 @@
 		var ins = motion(document.querySelectorAll('.demo'), { // eslint-disable-line
 			// transform: 'translateX(100px)',
 			translateX: '800px',
+			rotate: '30deg',
+			scale: 2,
+			top: '500px',
 			// left: '100px',
 		}, {
 			duration: 3000,
+			easing: 'easeInOutCubic'
 		});
 	</script>
 </body>

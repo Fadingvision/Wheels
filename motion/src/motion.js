@@ -59,7 +59,7 @@ class Motion {
                 obj.id = tarObj.id;
                 obj.type = getAnimationType(target, prop.name);
                 obj.from = getOriginValue(target, prop.name, obj.type);
-                obj.to = decomposeValue(prop);
+                obj.to = decomposeValue(prop, obj.type);
 
                 animatables.push(obj);
             })
@@ -93,7 +93,7 @@ class Motion {
         let end = anim.to.number;
         let currentValue = start + eased * (end - start); // eslint-disable-line
 
-        return currentValue + anim.to.unit;
+        return currentValue;
     }
 
     setAnimationProgress(currentTime) {
@@ -107,23 +107,25 @@ class Motion {
             let {currentValue, id} = anim;
 
             // setTargetValue(anim, currentValue);
-            
             switch(anim.type) {
-                case 'css': anim.target.style[anim.name] = currentValue; break;
+                case 'css': anim.target.style[anim.name] = `${anim.from.unit[0]}${currentValue}${anim.from.unit[1]}`; break;
                 // case 'attribute': anim.target.style[anim.name] = currentValue; break;
                 case 'transform': 
                     if(!transforms) transforms = {};
                     if(!transforms[id]) transforms[id] = [];
-                    transforms[id].push(currentValue);
+
+                    transforms[id].push(`${anim.from.unit[0]}${currentValue}${anim.from.unit[1]}`);
                     break;
             }
-            // transform can only be setted once,
-            // so wo must join all the property and then set the transform style once .
         });
+
+        // transform can only be setted once,
+        // so wo must join all the property and then set the transform style once .
         if(transforms) Object.keys(transforms).forEach(id => {
-        	var anim = this.animatables.filter(anima => anima.id === id)[0];
-        	console.log(transforms[id].join(''))
-        	anim && (anim.target.style.transform = `translateX(${transforms[id].join(' ')})` );
+        	var anim = this.animatables.filter(anima => anima.id === +id)[0];
+
+        	// TO_DO: compose the value and unit!
+        	anim && (anim.target.style.transform = `${transforms[id].join(' ')}`);
         });
 
         if (this.setting.update) this.setting.update(this);
