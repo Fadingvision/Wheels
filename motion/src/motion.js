@@ -241,5 +241,24 @@ function motion(target, properties, setting = {}) {
     return new Motion(target, properties, setting);
 }
 
+// frequently-used methods
+motion.fadeIn = function(target) {
+    return new Motion(target, {
+        opacity: 1,
+    }, {
+        duration: 1500,
+        easing: 'linear',
+    });
+}
+
+motion.fadeOut = function(target) {
+    return new Motion(target, {
+        opacity: 0,
+    }, {
+        duration: 1500,
+        easing: 'linear',
+    });
+}
+
 module.exports = motion;
 

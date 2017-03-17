@@ -21,16 +21,23 @@
 			left: 0;
 			top: 400px;
 		}
+
+		.demo4 {
+			left: 0;
+			top: 500px;
+			opacity: 0;
+		}
 	</style>
 </head>
 <body>
 	<div class="demo demo1"></div>
 	<div class="demo demo2"></div>
 	<div class="demo demo3"></div>
+	<div class="demo demo4"></div>
 	<script src="../dist/vendor.bundle.js"></script>
 	<script src="../dist/main.bundle.js"></script>
 	<script>
-		var ins = motion(document.querySelectorAll('.demo'), { // eslint-disable-line
+		var ins = motion(document.querySelectorAll('.demo1'), { // eslint-disable-line
 			translateX: '500px',
 			// left: 800,
 			rotate: 90,
@@ -47,6 +54,8 @@
 			update: () => console.log('update'),
 			complete: () => console.log('complete'),
 		});
+
+		motion.fadeIn('.demo4')
 
 		// setTimeout(() => ins.seek(20), 2000)
 		ins.finished.then(() => console.log('animation is finished'))
