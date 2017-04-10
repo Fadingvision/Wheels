@@ -3,10 +3,10 @@
 1. **es5&es6-shim**
 2. **promise(async/await, generator )**
 3. **fetch**
+4. **EventEmitter**
 
-4. **es6 class by es5**
-5. **AMD Loader**
-6. **EventEmitter**
+5. **es6 class by es5**
+6. **AMD Loader**
 7. **Template Engine**
 
 8. **Animate**
