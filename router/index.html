@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>StateMan API test</title>
+  <script src="/dist/main.bundle.js"></script>
+</head>
+<body>
+
+<h2>OPEN console to find the log</h2>
+
+<ul>
+  <li><strong>(app)</strong>  <a href="/app">/app </a></li>
+  <li><strong>(app.contact)</strong>  <a href="/app/contact">/app/contact </a></li>
+  <li><strong>(app.contact.message)</strong>  <a href="/app/contact/message">/app/contact/message </a></li>
+  <li><strong>(app.contact.detail)</strong>  <a href="/app/contact/2?name=leeluolee">/app/contact/2?name=leeluolee </a></li>
+  <li><strong>(app.contact.detail.setting)</strong>  <a href="/app/allen/contact/2">/app/allen/contact/2</a></li>
+  <li><strong>(app.contact.detail.setting)</strong>  <a href="/app/contact/3/setting">/app/contact/3/setting </a></li>
+  <li><strong>(app.user.list)</strong>  <a href="/app/user">/app/user </a></li>
+</ul>
+
+<script>
+var config = {
+  enter: function(option){ console.log("enter: " + JSON.stringify(option)) },
+}
+var router = router.default;
+
+router.add("app", {
+  url: '/app',
+  enter: config.enter,
+}).add("app.contact", {
+  url: '/app/contact',
+  enter: config.enter,
+}).add("app.contact.message", {
+  url: '/app/contact/message',
+  enter: config.enter,
+}).add("app.contact.detail", {
+  url: '/:sex/:name/contact/:id',
+  enter: config.enter,
+}).add("app.contact.detail.setting", {
+  url: '/app/contact/:id/setting',
+  enter: config.enter,
+}).start();
+
+</script>
+</body>
+</html>
