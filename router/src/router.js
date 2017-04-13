@@ -18,7 +18,6 @@ class Router{
 	}
 
 	start() {
-		console.log(stateArr)
 		let path = window.location.pathname.split('?');
 		let queryObj = util.query(path[1]);
 
@@ -56,7 +55,6 @@ class Router{
 			}
 		});
 		this.paramsObj = paramsObj;
-		console.log(paramsObj)
 		return states[0];
 	}
 
@@ -70,7 +68,7 @@ class Router{
 	}
 
 	listen() {
-		// notice: pushState or replaceState won't trigger popstate event
+		/* notice: pushState or replaceState won't trigger popstate event */
 		window.addEventListener('popstate', event => {
 			this.previous = this.current;
 			this.current = this.queryStateByName(event.state.stateName);
@@ -113,6 +111,4 @@ class Router{
 
 
 const router = new Router();
-
-// @TODO: single instance
 export default router;

@@ -23,4 +23,4 @@
 - router.previous
 - routerChangeEvent = fn(toRouter, toParams) [return false, 应该可以阻止路由跳转]
 
-- router.distory (销毁所有的事件和监听)
+- router.destory (销毁所有的事件和监听)
