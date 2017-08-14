@@ -9,6 +9,8 @@
 
 3. **fetch**
 
+    利用XMLHTTPRequest实现[fetch](https://github.com/blackLearning/Wheels/tree/master/fetch)API的实现和理解
+
 4. **es6 class by es5**
 5. **AMD Loader**
 6. **EventEmitter**
