@@ -7,19 +7,21 @@
 
     * [关于Promise实现和使用的一些理解](https://github.com/blackLearning/blackLearning.github.io/issues/6)
 
-3. **fetch**
+### **fetch**
+    * 利用XMLHTTPRequest实现[fetch](https://github.com/blackLearning/Wheels/tree/master/fetch)API的实现和理解
 
-    利用XMLHTTPRequest实现[fetch](https://github.com/blackLearning/Wheels/tree/master/fetch)API的实现和理解
+4. **EventEmitter**
+    * 如何简单的利用发布-订阅者模式来实现一个全局的[eventEmitter](https://github.com/blackLearning/Wheels/blob/master/eventEmitter/events.js)库。
 
+5. **Animate**
 4. **es6 class by es5**
 5. **AMD Loader**
 6. **EventEmitter**
 7. **Template Engine**
+8. **es6 class by es5**
 
-8. **Animate**
 9. **MVVM**
 10. **virtual Dom**
-
 11. **Router**
 12. **flux(redux/mobx)**
 13. **FP**

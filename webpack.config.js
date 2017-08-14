@@ -7,13 +7,13 @@ var projectRoot = path.resolve(__dirname, './');
 
 module.exports = {
     devtool: '#eval-source-map',
-    entry: path.join(__dirname, './motion/src/motion.js'),
+    entry: path.join(__dirname, './router/src/index.js'),
     output: {
         filename: '[name].bundle.js',
         publicPath: '',
-        path: path.join(__dirname, './motion/dist/'),
+        path: path.join(__dirname, './router/dist/'),
         libraryTarget: 'umd',
-        library: 'motion',
+        library: 'router',
         umdNamedDefine: true
     },
     module: {
@@ -24,16 +24,16 @@ module.exports = {
         }]
     },
     plugins: [
-        new HtmlWebpackPlugin({
-            template: './index.html',
-            inject: 'body',
-            hash: true
-        }),
-        new webpack.optimize.CommonsChunkPlugin({
-            name: 'vendor',
-            minChunks: function(module) {
-                return module.resource && module.resource.indexOf(path.resolve(__dirname, 'motion')) === -1;
-            }
-        })
+        // new HtmlWebpackPlugin({
+        //     template: './index.html',
+        //     inject: 'body',
+        //     hash: true
+        // })
+        // new webpack.optimize.CommonsChunkPlugin({
+        //     name: 'vendor',
+        //     minChunks: function(module) {
+        //         return module.resource && module.resource.indexOf(path.resolve(__dirname, 'motion')) === -1;
+        //     }
+        // })
     ]
 }
