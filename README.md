@@ -21,7 +21,7 @@
     > 关于参考[anime.js](https://github.com/juliangarnier/anime)实现一个js动画库的一些学习和思考
 
 
-# TODO: (some may never be done)
+# TODO: 
 
 * **es6 class by es5**
 * **AMD Loader**
