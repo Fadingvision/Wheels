@@ -1,0 +1,19 @@
+{
+  "name": "build-your-own-websocket-server",
+  "version": "1.0.0",
+  "description": "writing your own websocket-server in nodejs",
+  "main": "./lib/index.js",
+  "scripts": {
+    "test": "npm test"
+  },
+  "keywords": [
+    "websocket",
+    "node",
+    "typescript"
+  ],
+  "author": "blackLearning",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/node": "^11.11.3"
+  }
+}
