@@ -2,10 +2,23 @@
   "compilerOptions": {
     "outDir": "./lib",
     "allowJs": false,
-    "noImplicitAny": true,
     "target": "ES2015",
     "moduleResolution": "Node",
-    "module": "commonjs"
+    "module": "commonjs",
+    "declaration": true,
+    "noImplicitAny": true,
+    "noImplicitReturns": true,
+    "noImplicitThis": true,
+    "plugins": [
+      {
+        "name": "typescript-tslint-plugin",
+        "alwaysShowRuleFailuresAsWarnings": false,
+        "ignoreDefinitionFiles": true,
+        "configFile": "./tslint.json",
+        "suppressWhileTypeErrorsPresent": false,
+        "mockTypeScriptVersion": false
+      }
+    ]
   },
   "include": [
     "./src/**/*"

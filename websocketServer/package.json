@@ -2,7 +2,8 @@
   "name": "build-your-own-websocket-server",
   "version": "1.0.0",
   "description": "writing your own websocket-server in nodejs",
-  "main": "./lib/index.js",
+  "main": "lib/index.js",
+  "typings": "lib/index.d.ts",
   "scripts": {
     "test": "npm test"
   },
@@ -14,6 +15,8 @@
   "author": "blackLearning",
   "license": "MIT",
   "devDependencies": {
-    "@types/node": "^11.11.3"
+    "@types/node": "^11.11.3",
+    "typescript": "^3.3.3333",
+    "typescript-tslint-plugin": "^0.3.1"
   }
 }
