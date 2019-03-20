@@ -1,6 +1,13 @@
 {
   "extends": "tslint:recommended",
+  "linterOptions": {
+    "exclude": [
+      "node_modules/**/*.ts"
+    ]
+  },
   "rules": {
-    "no-any": true
+    "no-any": true,
+    "quotemark": false,
+    "object-literal-sort-keys":false
   }
 }
