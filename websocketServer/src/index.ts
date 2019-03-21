@@ -15,7 +15,7 @@ interface Ioptions {
 
 const MAGIC_STRING: string = '258EAFA5-E914-47DA-95CA-C5AB0DC85B11';
 
-function createSecAccept(secWebsocketKey: string) {
+function createSecAccept(secWebsocketKey: string): string {
   return crypto.createHash('sha1')
     .update(secWebsocketKey + MAGIC_STRING)
     .digest('base64');
@@ -39,11 +39,6 @@ export default class WebSocketServer extends EventEmitter {
     this.server.listen(opts.port);
   }
 
-  private handleData(socket: net.Socket) {
-    socket.on('data', (data) => {
-      console.log(data);
-    })
-  }
 
   /**
    * handle Upgrade requests on http channel
@@ -81,7 +76,7 @@ export default class WebSocketServer extends EventEmitter {
       this.clients.delete(client);
     });
 
-    this.handleData(socket);
+    this.emit('connection', client);
   }
 
   private abortHandshake(socket: net.Socket, code: number, message?: string, headers?: http.OutgoingHttpHeaders) {
