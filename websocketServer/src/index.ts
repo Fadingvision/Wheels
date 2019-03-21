@@ -39,7 +39,6 @@ export default class WebSocketServer extends EventEmitter {
     this.server.listen(opts.port);
   }
 
-
   /**
    * handle Upgrade requests on http channel
    * @param req

@@ -11,4 +11,4 @@ net,
 Stream,
 Buffer,
 crypto,
-js-bit-opreation
+[Bit Manipulation](https://hackernoon.com/programming-with-js-bitwise-operations-393eb0745dc4)
