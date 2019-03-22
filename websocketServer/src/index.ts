@@ -69,12 +69,11 @@ export default class WebSocketServer extends EventEmitter {
     socket.write([...headers, os.EOL].join(os.EOL));
 
     // tracking clients
-    const client = new WsClient(socket);
+    const client: WsClient = new WsClient(socket);
     this.clients.add(client);
     socket.on('close', () => {
       this.clients.delete(client);
     });
-
     this.emit('connection', client);
   }
 
