@@ -60,22 +60,23 @@ export default class WsClient extends EventEmitter {
 
     if (bytes < this.buffers[0].length) {
       const buf = this.buffers[0];
-      this.buffers[0] = buf.slice(0, bytes);
+      this.buffers[0] = buf.slice(bytes);
       return buf.slice(0, bytes);
     }
 
     const distBuffer: Buffer = Buffer.allocUnsafe(bytes);
 
     while (bytes > 0) {
-      if (bytes >= this.buffers[0].length) {
+      const buf = this.buffers[0];
+      if (bytes >= buf.length) {
         this.buffers.shift().copy(distBuffer, distBuffer.length - bytes);
       } else {
-        this.buffers[0].copy(distBuffer, distBuffer.length - bytes, 0, bytes);
-        this.buffers[0] = this.buffers[0].slice(bytes);
+        buf.copy(distBuffer, distBuffer.length - bytes, 0, bytes);
+        this.buffers[0] = buf.slice(bytes);
         break;
       }
 
-      bytes -= this.buffers[0].length;
+      bytes -= buf.length;
     }
 
     return distBuffer;
@@ -91,9 +92,8 @@ export default class WsClient extends EventEmitter {
       const buf = this.consume(2);
 
       const [firstByte, secondByte] = buf;
-
       this.isFin = Boolean(firstByte & 0x80); // 10000000
-      let rsv1 = Boolean(firstByte & 0x80); // 01000000
+      let rsv1 = Boolean(firstByte & 0x40); // 01000000
       let rsv2 = Boolean(firstByte & 0x20); // 00100000
       let rsv3 = Boolean(firstByte & 0x10); // 00010000
       this.isMask = Boolean(secondByte & 0x80); // 10000000
@@ -147,6 +147,7 @@ export default class WsClient extends EventEmitter {
     if (this.stage === Stage.MASK) {
       if (this.isMask) {
         maskingKey = this.consume(4);
+        this.stage = Stage.DATA;
       }
     }
 
@@ -176,7 +177,7 @@ export default class WsClient extends EventEmitter {
 
     // keep decoding
     if (this.bufferBytes > 0) {
-      process.nextTick(this.decodeFrame);
+      process.nextTick(this.decodeFrame.bind(this));
     }
   }
 
