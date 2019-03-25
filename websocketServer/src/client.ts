@@ -17,7 +17,28 @@ export enum Stage {
   COMPLETE,
 }
 
+interface IsendOptions {
+  fin?: boolean;
+  mask?: boolean;
+  binary?: boolean;
+  opcode?: number;
+}
+
+const MAXIMUM_TWO_BYTES_NUMBER = 65535;
+
 export default class WsClient extends EventEmitter {
+  static toBuffer(data: any) {
+    return Buffer.from(data);
+  }
+
+  static unmask(data: Buffer, maskingKey: Buffer): void {
+    const bufferLength = data.length;
+    for (var i = 0; i < bufferLength; i++) {
+      data[i] = data[i] ^ maskingKey[i % 4];
+    }
+  }
+
+
   public state: State = State.CONNECTING;
   private socket: net.Socket;
   private buffers: Buffer[] = [];
@@ -25,6 +46,7 @@ export default class WsClient extends EventEmitter {
   private stage: Stage = Stage.HEAD;
 
   private isFin: boolean = false;
+  private isFirstFragment: boolean = true;
   private opcode: number = 0;
   private fragmentOpCode: number = 0;
   private payloadLength: number = 0;
@@ -42,10 +64,74 @@ export default class WsClient extends EventEmitter {
       this.decodeFrame();
     });
 
+    socket.on('error', this.onSocketClose.bind(this));
+
     this.state = State.OPEN;
   }
 
-  public send(data: string | object): void {}
+  public send(data: string | Buffer, options?: IsendOptions, callback?: Function): void {
+    const buffer = Buffer.allocUnsafe(0);
+    const isBuffer = Buffer.isBuffer(data);
+    let frameBytes = 2; // contains first two bytes
+    const buf = isBuffer ? data as Buffer : WsClient.toBuffer(data);
+    options = Object.assign({
+      fin: true,
+      mask: false,
+      binary: typeof data !== 'string'
+    }, options);
+
+    let opcode = options.binary ? 0x02 : 0x01;
+
+    this.isFirstFragment = Boolean(options.fin);
+
+    if (this.isFirstFragment) {
+      if (!options.fin) this.isFirstFragment = false;
+    } else {
+      // indicates it's continuate frame
+      opcode = 0x00;
+      // since it's the last frame, we reset first flag
+      if (options.fin) this.isFirstFragment = true;
+    }
+
+    options.opcode = options.opcode || opcode;
+
+    let payloadLength = buf.length;
+    let extendPayloadByteLength = 0;
+
+    if (payloadLength > 125) {
+      payloadLength =
+        payloadLength > MAXIMUM_TWO_BYTES_NUMBER ? 127 : 126;
+      extendPayloadByteLength = payloadLength > MAXIMUM_TWO_BYTES_NUMBER ? 8 : 2;
+    }
+
+    frameBytes += extendPayloadByteLength;
+
+    const message = Buffer.allocUnsafe(frameBytes + buf.length);
+    // fill the buffer with info
+    message[0] = options.fin ? (options.opcode | 0x80) : options.opcode;
+    message[1] = payloadLength;
+
+    if (payloadLength === 126) {
+      message.writeUInt16BE(buf.length, 2);
+    } else if (payloadLength === 127) {
+      message.writeUInt16BE(0, 2);
+      message.writeUInt16BE(buf.length, 6);
+    }
+
+    buf.copy(message, frameBytes);
+
+    this.socket.write(message, err => {
+      if (err) {
+        this.emit('err', err);
+      } else {
+        callback && callback();
+      }
+    });
+  }
+
+  public ping() {}
+
+  public pong(data: Buffer) {}
 
   private consume(bytes: number): Buffer {
     if (bytes > this.bufferBytes) {
@@ -102,11 +188,11 @@ export default class WsClient extends EventEmitter {
       this.payloadLength = secondByte & 0x0F; // 01111111
 
       if (rsv1 || rsv2 || rsv3) {
-        return this.abortConnection('RSV bit are not be supported');
+        return this.handleError('RSV bit are not be supported');
       }
 
       if (!this.isMask) {
-        return this.abortConnection('the client\'s message must be masked');
+        return this.handleError('the client\'s message must be masked');
       }
 
       // if it's the first fragment, save the opcode for the upcoming fragments
@@ -159,12 +245,12 @@ export default class WsClient extends EventEmitter {
       data = this.consume(this.payloadLength);
 
       if (this.isMask) {
-        unmask(data, maskingKey);
+        WsClient.unmask(data, maskingKey);
       }
 
       // control frames, wo handle it separately
       if (this.opcode > 0x07) {
-        return this.controlMessage(data);
+        return this.handleControlFrames(data);
       }
 
       // message frames
@@ -202,39 +288,57 @@ export default class WsClient extends EventEmitter {
     }
   }
 
-  private controlMessage(data: Buffer): void {
+  private close(data?: string | Buffer) {
+    this.state = State.CLOSING;
+    this.send(data, {
+      fin: true,
+      opcode: 0x08,
+      mask: true
+    }, () => {
+      this.state = State.CLOSED;
+      this.emit('close');
+      this.socket.destroy();
+    })
+  }
+
+  private handleControlFrames(data: Buffer): void {
     switch(this.opcode) {
       // close singal
       case 0x08: {
-
-      }
+        this.emit('close');
+        this.close();
+      };
       // ping
       case 0x09: {
-
-      }
+        this.emit('ping', data);
+        // we need to send our 'pong' back to client
+        this.pong(data);
+      };
       // pong
       case 0x0A: {
-
+        this.emit('pong', data);
       }
-      default: 
+      default:
         break;
     }
   }
 
-  private abortConnection(err: string) {
+  private handleError(err: string) {
     this.emit('error', err);
-    this.socket.end();
+    this.emit('close');
     this.socket.destroy();
   }
-}
 
-
-function unmask(data: Buffer, maskingKey: Buffer): void {
-  const bufferLength = data.length;
-  for (var i = 0; i < bufferLength; i++) {
-    data[i] = data[i] ^ maskingKey[i % 4];
+  private onSocketClose(err: Error) {
+    this.emit("error", err);
+    this.emit("close");
+    this.socket.removeAllListeners();
+    this.removeAllListeners();
   }
 }
+
+
+
 
 function concat(buffers: Buffer[]) {
   const length = buffers.reduce((len: number, buffer: Buffer) => {

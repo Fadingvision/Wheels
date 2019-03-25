@@ -1,8 +1,8 @@
-import * as socketIO from "socket.io";
+// import * as socketIO from "socket.io";
 
-function socketServer() {
-  const wsServer = socketIO();
-  wsServer.listen(9001);
+// function socketServer() {
+  // const wsServer = socketIO();
+  // wsServer.listen(9001);
   // wsServer.on("connection", clientSocket => {
   //   clientSocket.on("PING", msg => {
   //     // console.log('Received PING from ', clientSocket.handshake.headers);
@@ -11,28 +11,30 @@ function socketServer() {
   //     clientSocket.emit("PONG", `PONG ${new Date()}`);
   //   });
   // }); //end of on Client connection event
-}
-socketServer();
+// }
+// socketServer();
 
 
-// import WsClient from '../src/client';
-// import WebSocketServer from '../src/index';
+import WsClient from '../src/client';
+import WebSocketServer from '../src/index';
 
 // import * as webSocket from "ws";
 // const WebSocketServer = webSocket.Server;
 
-// const wss = new WebSocketServer({
-//   port: 9001
-// });
+const wss = new WebSocketServer({
+  port: 8888
+});
 
-// interface IMessage {
-//   a: string;
-// }
+interface IMessage {
+  a: string;
+}
 
-// wss.on('connection', function connection(ws: WsClient) {
-//   ws.on('message', function incoming(message: string) {
-//     // Broadcast to everyone else.
-//     console.log(JSON.parse(message));
-//   });
-//   // ws.send('something');
-// });
+wss.on('connection', function connection(ws: WsClient) {
+  ws.on('message', function incoming(message: string) {
+    // Broadcast to everyone else.
+    console.log(message);
+  });
+  setTimeout(() => {
+    ws.send("Hello Client!");
+  }, 3000)
+});

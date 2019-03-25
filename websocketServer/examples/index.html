@@ -11,7 +11,7 @@
 
     // Connection opened
     socket.addEventListener('open', function (event) {
-        socket.send(JSON.stringify('kk'));
+        socket.send('Hello server');
     });
 
     // Listen for messages

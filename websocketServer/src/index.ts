@@ -71,7 +71,7 @@ export default class WebSocketServer extends EventEmitter {
     // tracking clients
     const client: WsClient = new WsClient(socket);
     this.clients.add(client);
-    socket.on('close', () => {
+    client.on('close', () => {
       this.clients.delete(client);
     });
     this.emit('connection', client);
