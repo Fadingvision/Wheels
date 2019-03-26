@@ -27,6 +27,7 @@ interface IsendOptions {
 const MAXIMUM_TWO_BYTES_NUMBER = 65535;
 
 export default class WsClient extends EventEmitter {
+  
   static toBuffer(data: any) {
     return Buffer.from(data);
   }
@@ -41,6 +42,10 @@ export default class WsClient extends EventEmitter {
 
   public state: State = State.CONNECTING;
   private socket: net.Socket;
+
+  // close
+  private closeCode: number;
+  private closeReason: string;
   
   // Send 
   private isFirstFragment: boolean = true;
@@ -69,7 +74,11 @@ export default class WsClient extends EventEmitter {
       this.decodeFrame();
     });
 
-    socket.on('error', this.onSocketClose.bind(this));
+    socket.on('close', this.onSocketClose.bind(this));
+    socket.on("error", (err: Error) => {
+      this.emit("error", err);
+    });
+    // socket.on("end", this.onSocketClose.bind(this));
 
     this.state = State.OPEN;
   }
@@ -234,6 +243,7 @@ export default class WsClient extends EventEmitter {
     if (this.stage === Stage.MASK) {
       if (this.isMask) {
         maskingKey = this.consume(4);
+        console.log(this.opcode, maskingKey);
         this.stage = Stage.DATA;
       }
     }
@@ -289,12 +299,12 @@ export default class WsClient extends EventEmitter {
     }
   }
 
-  private close(reason: string = '') {
+  private close(code?: number, reason: string = '') {
     if (this.state === State.CLOSED) return;
 
     if (this.state === State.CLOSING) {
       if (this.isCloseFrameReceived && this.isCloseFrameSent) {
-        this.socket.end();
+        this.socket.destroy();
       }
       return;
     }
@@ -306,9 +316,9 @@ export default class WsClient extends EventEmitter {
       mask: true
     }, () => {
       this.isCloseFrameSent = true;
-      this.state = State.CLOSED;
-      this.socket.end();
-      this.socket.destroy();
+      if (this.isCloseFrameReceived) {
+        this.socket.destroy();
+      }
     })
   }
   
@@ -321,7 +331,14 @@ export default class WsClient extends EventEmitter {
       // close singal
       case 0x08: {
         this.isCloseFrameReceived = true;
-        this.emit('close', data);
+
+        if (data.length === 0) {
+          this.closeCode = 1005;
+          this.closeReason = '';
+        } else {
+          this.closeCode = data.readUInt16BE(0);
+          this.closeReason = data.slice(2).toString();
+        }
         this.close();
       };
       // ping
@@ -344,16 +361,14 @@ export default class WsClient extends EventEmitter {
     this.socket.destroy();
   }
 
-  private onSocketClose(err: Error) {
-    if (err) this.emit('error', err);
+  private onSocketClose() {
+    console.log('onClose');
+    this.state = State.CLOSED;
+    this.emit('close', this.closeCode, this.closeReason);
     this.socket.removeAllListeners();
-    this.socket.destroy();
     this.removeAllListeners();
   }
 }
-
-
-
 
 function concat(buffers: Buffer[]) {
   const length = buffers.reduce((len: number, buffer: Buffer) => {

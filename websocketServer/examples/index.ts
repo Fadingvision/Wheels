@@ -34,6 +34,11 @@ wss.on('connection', function connection(ws: WsClient) {
     // Broadcast to everyone else.
     console.log(message);
   });
+
+  ws.on('close', (code, reason) => {
+    console.log(code, reason);
+  });
+
   setTimeout(() => {
     ws.send("Hello Client!");
   }, 3000);

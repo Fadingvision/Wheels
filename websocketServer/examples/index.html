@@ -17,7 +17,7 @@
     // Listen for messages
     socket.addEventListener('message', function (event) {
       console.log('Message from server ', event.data);
-      WebSocket.close(1001, 'just want to break up');
+      socket.close(1000, 'just want to break up');
     });
 
     socket.addEventListener('error', function (event) {
