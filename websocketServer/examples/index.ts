@@ -36,5 +36,5 @@ wss.on('connection', function connection(ws: WsClient) {
   });
   setTimeout(() => {
     ws.send("Hello Client!");
-  }, 3000)
+  }, 3000);
 });

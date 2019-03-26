@@ -11,12 +11,21 @@
 
     // Connection opened
     socket.addEventListener('open', function (event) {
-        socket.send('Hello server');
+      socket.send('Hello server');
     });
 
     // Listen for messages
     socket.addEventListener('message', function (event) {
-        console.log('Message from server ', event.data);
+      console.log('Message from server ', event.data);
+      WebSocket.close(1001, 'just want to break up');
+    });
+
+    socket.addEventListener('error', function (event) {
+      console.log('error');
+    });
+
+    socket.addEventListener('close', function (event) {
+      console.log('close');
     });
   </script>
 </body>

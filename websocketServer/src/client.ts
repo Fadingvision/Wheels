@@ -41,12 +41,17 @@ export default class WsClient extends EventEmitter {
 
   public state: State = State.CONNECTING;
   private socket: net.Socket;
+  
+  // Send 
+  private isFirstFragment: boolean = true;
+  private isCloseFrameSent: boolean = false;
+  // Receive
+  private isCloseFrameReceived: boolean = false;
   private buffers: Buffer[] = [];
   private bufferBytes: number = 0;
   private stage: Stage = Stage.HEAD;
 
   private isFin: boolean = false;
-  private isFirstFragment: boolean = true;
   private opcode: number = 0;
   private fragmentOpCode: number = 0;
   private payloadLength: number = 0;
@@ -128,10 +133,6 @@ export default class WsClient extends EventEmitter {
       }
     });
   }
-
-  public ping() {}
-
-  public pong(data: Buffer) {}
 
   private consume(bytes: number): Buffer {
     if (bytes > this.bufferBytes) {
@@ -288,24 +289,39 @@ export default class WsClient extends EventEmitter {
     }
   }
 
-  private close(data?: string | Buffer) {
+  private close(reason: string = '') {
+    if (this.state === State.CLOSED) return;
+
+    if (this.state === State.CLOSING) {
+      if (this.isCloseFrameReceived && this.isCloseFrameSent) {
+        this.socket.end();
+      }
+      return;
+    }
+
     this.state = State.CLOSING;
-    this.send(data, {
+    this.send(reason, {
       fin: true,
       opcode: 0x08,
       mask: true
     }, () => {
+      this.isCloseFrameSent = true;
       this.state = State.CLOSED;
-      this.emit('close');
+      this.socket.end();
       this.socket.destroy();
     })
   }
+  
+  public ping() {}
+
+  public pong(data: Buffer) {}
 
   private handleControlFrames(data: Buffer): void {
     switch(this.opcode) {
       // close singal
       case 0x08: {
-        this.emit('close');
+        this.isCloseFrameReceived = true;
+        this.emit('close', data);
         this.close();
       };
       // ping
@@ -325,14 +341,13 @@ export default class WsClient extends EventEmitter {
 
   private handleError(err: string) {
     this.emit('error', err);
-    this.emit('close');
     this.socket.destroy();
   }
 
   private onSocketClose(err: Error) {
-    this.emit("error", err);
-    this.emit("close");
+    if (err) this.emit('error', err);
     this.socket.removeAllListeners();
+    this.socket.destroy();
     this.removeAllListeners();
   }
 }
