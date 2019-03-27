@@ -39,7 +39,18 @@ wss.on('connection', function connection(ws: WsClient) {
     console.log(code, reason);
   });
 
+  ws.on('ping', (data) => {
+    console.log('ping:', data);
+  });
+
+  ws.on('pong', (data) => {
+    console.log('pong:', data.toString());
+    wss.close();
+  });
+
   setTimeout(() => {
     ws.send("Hello Client!");
+
+    ws.ping('123');
   }, 3000);
 });

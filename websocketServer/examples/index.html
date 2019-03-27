@@ -16,8 +16,8 @@
 
     // Listen for messages
     socket.addEventListener('message', function (event) {
-      console.log('Message from server ', event.data);
-      socket.close(1000, 'just want to break up');
+      console.log('Message from server ', event);
+      // socket.close(1000, 'just want to break up');
     });
 
     socket.addEventListener('error', function (event) {
@@ -25,7 +25,7 @@
     });
 
     socket.addEventListener('close', function (event) {
-      console.log('close');
+      console.log('close', event);
     });
   </script>
 </body>
