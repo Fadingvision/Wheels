@@ -76,8 +76,8 @@ export default class WsClient extends EventEmitter {
     });
 
     socket.on('close', this.onSocketClose.bind(this));
-    socket.on("error", (err: Error) => {
-      this.emit("error", err);
+    socket.on('error', (err: Error) => {
+      this.emit('error', err);
     });
     // socket.on("end", this.onSocketClose.bind(this));
 
