@@ -29,6 +29,7 @@ const MAXIMUM_TWO_BYTES_NUMBER = 65535;
 export default class WsClient extends EventEmitter {
   
   static toBuffer(data: any) {
+    if (Buffer.isBuffer(data)) return data;
     return Buffer.from(data);
   }
 
@@ -41,7 +42,7 @@ export default class WsClient extends EventEmitter {
 
 
   public state: State = State.CONNECTING;
-  private socket: net.Socket;
+  public socket: net.Socket;
 
   // close
   private closeCode: number;
@@ -87,7 +88,7 @@ export default class WsClient extends EventEmitter {
     const buffer = Buffer.allocUnsafe(0);
     const isBuffer = Buffer.isBuffer(data);
     let frameBytes = 2; // contains first two bytes
-    const buf = isBuffer ? data as Buffer : WsClient.toBuffer(data);
+    const buf = WsClient.toBuffer(data);
     options = Object.assign({
       fin: true,
       mask: false,
@@ -107,7 +108,7 @@ export default class WsClient extends EventEmitter {
       if (options.fin) this.isFirstFragment = true;
     }
 
-    options.opcode = options.opcode || opcode;
+    options.opcode = typeof options.opcode !== 'undefined' ? options.opcode : opcode;
 
     let payloadLength = buf.length;
     let extendPayloadByteLength = 0;
@@ -243,9 +244,8 @@ export default class WsClient extends EventEmitter {
     if (this.stage === Stage.MASK) {
       if (this.isMask) {
         maskingKey = this.consume(4);
-        console.log(this.opcode, maskingKey);
-        this.stage = Stage.DATA;
       }
+      this.stage = Stage.DATA;
     }
 
     if (this.stage === Stage.DATA) {
@@ -297,9 +297,12 @@ export default class WsClient extends EventEmitter {
         this.emit('message', messageBuffer);
       }
     }
+
+    // reset state
+    this.stage = Stage.HEAD;
   }
 
-  private close(code?: number, reason: string = '') {
+  public close(code: number = 1000, reason: string = '') {
     if (this.state === State.CLOSED) return;
 
     if (this.state === State.CLOSING) {
@@ -310,10 +313,15 @@ export default class WsClient extends EventEmitter {
     }
 
     this.state = State.CLOSING;
-    this.send(reason, {
+
+    const buf = Buffer.allocUnsafe(2 + Buffer.byteLength(reason));
+    buf.writeUInt16BE(code, 0);
+    if (reason) buf.write(reason, 2, 'utf-8');
+
+    this.send(buf, {
       fin: true,
       opcode: 0x08,
-      mask: true
+      mask: false
     }, () => {
       this.isCloseFrameSent = true;
       if (this.isCloseFrameReceived) {
@@ -322,9 +330,25 @@ export default class WsClient extends EventEmitter {
     })
   }
   
-  public ping() {}
+  public ping(data: any) {
+    if (this.state !== State.OPEN) {
+      this.emit('error', 'An endpoint Can only send a Ping frame after the connection is established and before the connection is closed.')
+      return;
+    }
+    const buf = WsClient.toBuffer(data);
+    this.send(buf, { opcode: 0x09 });
+  }
 
-  public pong(data: Buffer) {}
+  public pong(data: any) {
+    console.log(this.state)
+    if (this.state !== State.OPEN) {
+      this.emit('error', 'An endpoint Can only send a Pong frame after the connection is established and before the connection is closed.')
+      return;
+    }
+
+    const buf = WsClient.toBuffer(data);
+    this.send(buf, { opcode: 0xA });
+  }
 
   private handleControlFrames(data: Buffer): void {
     switch(this.opcode) {
@@ -344,7 +368,7 @@ export default class WsClient extends EventEmitter {
       // ping
       case 0x09: {
         this.emit('ping', data);
-        // we need to send our 'pong' back to client
+        // send pong frame back as soon as possible
         this.pong(data);
       };
       // pong
@@ -354,6 +378,9 @@ export default class WsClient extends EventEmitter {
       default:
         break;
     }
+
+    // reset state
+    this.stage = Stage.HEAD;
   }
 
   private handleError(err: string) {
@@ -362,7 +389,6 @@ export default class WsClient extends EventEmitter {
   }
 
   private onSocketClose() {
-    console.log('onClose');
     this.state = State.CLOSED;
     this.emit('close', this.closeCode, this.closeReason);
     this.socket.removeAllListeners();

@@ -22,9 +22,9 @@ function createSecAccept(secWebsocketKey: string): string {
 }
 
 export default class WebSocketServer extends EventEmitter {
-  public opts: Ioptions;
   public clients: Set<WsClient>;
   public server: http.Server;
+  private opts: Ioptions;
 
   constructor(opts: Ioptions) {
     super();
@@ -37,6 +37,19 @@ export default class WebSocketServer extends EventEmitter {
     });
 
     this.server.listen(opts.port);
+  }
+
+  public close() {
+    if (this.clients.size) {
+      this.clients.forEach((client) => {
+        client.socket.destroy();
+      });
+      this.clients.clear();
+    }
+
+    this.server.removeAllListeners();
+    this.server.close(() => this.emit('close'));
+    this.server = null;
   }
 
   /**
