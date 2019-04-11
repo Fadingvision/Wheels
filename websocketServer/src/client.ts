@@ -17,6 +17,8 @@ export enum Stage {
   COMPLETE,
 }
 
+type Bit = 0 | 1;
+
 interface IsendOptions {
   fin?: boolean;
   mask?: boolean;
@@ -25,6 +27,21 @@ interface IsendOptions {
 }
 
 const MAXIMUM_TWO_BYTES_NUMBER = 65535;
+
+function getBit(number: number, bitPosition: number): boolean {
+  return Boolean((number >> bitPosition) & 1);
+}
+
+function updateBit(number: number, bitPosition: number, bitValue: Bit) {
+  // Normalized bit value.
+  const bitValueNormalized = bitValue ? 1 : 0;
+
+  // Init clear mask.
+  const clearMask = ~(1 << bitPosition);
+
+  // Clear bit value and then set it up to required value.
+  return (number & clearMask) | (bitValueNormalized << bitPosition);
+}
 
 export default class WsClient extends EventEmitter {
   
@@ -193,9 +210,9 @@ export default class WsClient extends EventEmitter {
       let rsv1 = Boolean(firstByte & 0x40); // 01000000
       let rsv2 = Boolean(firstByte & 0x20); // 00100000
       let rsv3 = Boolean(firstByte & 0x10); // 00010000
-      this.isMask = Boolean(secondByte & 0x80); // 10000000
-
       this.opcode = firstByte & 0x0F; // 00001111
+      
+      this.isMask = Boolean(secondByte & 0x80); // 10000000
       this.payloadLength = secondByte & 0x0F; // 01111111
 
       if (rsv1 || rsv2 || rsv3) {
