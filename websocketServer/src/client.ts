@@ -353,7 +353,6 @@ export default class WsClient extends EventEmitter {
   }
 
   public pong(data: any) {
-    console.log(this.state)
     if (this.state !== State.OPEN) {
       this.emit('error', 'An endpoint Can only send a Pong frame after the connection is established and before the connection is closed.')
       return;

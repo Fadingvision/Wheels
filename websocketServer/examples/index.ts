@@ -45,12 +45,17 @@ wss.on('connection', function connection(ws: WsClient) {
 
   ws.on('pong', (data) => {
     console.log('pong:', data.toString());
-    wss.close();
   });
 
-  setTimeout(() => {
-    ws.send("Hello Client!");
+  ws.send('first', {
+    fin: false
+  });
 
-    ws.ping('123');
-  }, 3000);
+  ws.send('second', {
+    fin: false
+  });
+
+  ws.send('last', {
+    fin: true
+  });
 });
