@@ -102,8 +102,6 @@ export default class WsClient extends EventEmitter {
   }
 
   public send(data: string | Buffer, options?: IsendOptions, callback?: Function): void {
-    const buffer = Buffer.allocUnsafe(0);
-    const isBuffer = Buffer.isBuffer(data);
     let frameBytes = 2; // contains first two bytes
     const buf = WsClient.toBuffer(data);
     options = Object.assign({
@@ -113,8 +111,6 @@ export default class WsClient extends EventEmitter {
     }, options);
 
     let opcode = options.binary ? 0x02 : 0x01;
-
-    this.isFirstFragment = Boolean(options.fin);
 
     if (this.isFirstFragment) {
       if (!options.fin) this.isFirstFragment = false;
